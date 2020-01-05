@@ -1,0 +1,44 @@
+IMAPAccount fastmail
+Host imap.fastmail.com
+User svmhdvn@fastmail.com
+PassCmd "cat $HOME/.password-store/secret/fastmail-imap.txt"
+SSLType IMAPS
+CertificateFile /etc/ssl/cert.pem
+
+IMAPStore fastmail-remote
+Account fastmail
+
+MaildirStore fastmail-local
+Subfolders Verbatim
+Path ~/mail/
+Inbox ~/mail/INBOX
+
+Channel fastmail-inbox
+Master ":fastmail-remote:INBOX"
+Slave ":fastmail-local:INBOX"
+
+Channel fastmail-archive
+Master ":fastmail-remote:Archive"
+Slave ":fastmail-local:archive"
+
+Channel fastmail-drafts
+Master ":fastmail-remote:Drafts"
+Slave ":fastmail-local:drafts"
+
+Channel fastmail-sent
+Master ":fastmail-remote:Sent"
+Slave ":fastmail-local:sent"
+
+Channel fastmail-trash
+Master ":fastmail-remote:Trash"
+Slave ":fastmail-local:trash"
+
+Group fastmail
+Channel fastmail-trash
+Channel fastmail-inbox
+Channel fastmail-drafts
+Channel fastmail-sent
+Channel fastmail-archive
+
+Create Both
+SyncState *

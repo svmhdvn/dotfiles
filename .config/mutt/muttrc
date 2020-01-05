@@ -1,0 +1,77 @@
+# Paths ----------------------------------------------
+#set mailcap_path     = ~/.config/mutt/mailcap       # entries for filetypes
+
+# Basic Options --------------------------------------
+set wait_key = no        # shut up, mutt
+set mbox_type = Maildir  # mailbox type
+set timeout = 0          # no idle time before scanning
+set sleep_time = 0       # don't sleep on switching between folders
+set mail_check = 0       # minimum time between scans
+set delete = yes         # don't ask, just do
+set confirmappend = no   # don't ask, just do!
+set mark_old = no        # read/new is good enough for me
+set pipe_decode = yes    # strip headers and eval mimes when piping
+set markers = no         # no line wrap markers
+set smart_wrap = yes     # wrap by word boundary
+set sort = threads
+set sort_aux = reverse-last-date-received
+alternative_order text/plain text/enriched text/html
+auto_view text/html
+
+# Compose View Options -------------------------------
+set realname = "Siva Mahadevan"           # who am i?
+set attribution = "%n wrote:"             # cleaner attribution
+set use_envelope_from = yes               # use "from" header to send
+set edit_headers = yes                    # show headers when composing
+set fast_reply = yes                      # skip to compose when replying
+set reverse_name = yes                    # reply as whomever it was to
+set include = yes                         # include message in replies
+set date_format = "%F at %R %Z"
+set index_format = "%Z %[%b %d] %-30.30n | %s"
+
+# Pager View Options ---------------------------------
+set pager_index_lines = 10 # number of index lines to show
+set pager_context = 3      # number of context lines to show
+set pager_stop = yes       # don't go to next message automatically
+set menu_scroll = yes      # scroll in menus
+set tilde = yes            # show tildes like in vim
+
+# Header Options -------------------------------------
+ignore *                                # ignore all headers
+unignore from: to: cc: date: subject:   # show only these
+
+# Account Settings -----------------------------------
+set spoolfile = "+INBOX"
+set record    = "+sent"
+set from      = "svmhdvn@fastmail.com"
+set trash     = "+trash"
+set postponed = "+drafts"
+set sendmail  = "msmtp"
+
+# Vim keybindings ------------------------------------
+
+# Sync email
+macro index % "<shell-escape>mbsync fastmail<enter>" "run mbsync to sync all mail"
+
+# URLscan functionality
+macro index,pager \Cu "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+macro attach,compose \Cu "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+
+macro index,pager d "<save-message>=trash<enter>" "Trash"
+macro index,pager y "<save-message>=archive<enter>" "Archive"
+
+# Quick navigation of folders
+macro index ga "<change-folder>=archive<enter>" "Go to archive"
+macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
+macro index gt "<change-folder>=trash<enter>" "Go to trash"
+macro index gs "<change-folder>=sent<enter>" "Go to sent"
+macro index gd "<change-folder>=drafts<enter>" "Go to drafts"
+
+# patch syntax highlighting
+color body cyan default "^diff \-.*"
+color body cyan default "^index [a-f0-9].*"
+color body cyan default "^\-\-\- .*"
+color body cyan default "^[\+]{3} .*"
+color body green default "^[\+][^\+]+.*"
+color body red default "^\-[^\-]+.*"
+color body brightblue default "^@@ .*"

@@ -1,0 +1,421 @@
+Siva's personal emacs config
+
+#+BEGIN_SRC emacs-lisp
+;;; -*- lexical-binding: t -*-
+#+END_SRC
+
+* =use-package= initialization
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (setq package-enable-at-startup nil)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package) 
+    (package-refresh-contents) 
+    (package-install 'use-package))
+
+  (eval-when-compile
+    (require 'use-package))
+#+END_SRC
+* Default settings
+This section contains settings for built-in Emacs features.
+
+** GUI settings
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(horizontal-scroll-bar-mode -1)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(load-theme 'deeper-blue)
+(add-to-list 'default-frame-alist '(font . "Hack-14"))
+(setq ring-bell-function 'ignore)
+#+END_SRC
+** Garbage collection
+Allow 20MB of memory (instead of the default 0.76 MB) before calling garbage
+collection. This means that the GC runs less often, which speeds up certain
+operations.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold 20000000)
+#+END_SRC
+
+** Disable backup and autosave files
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+#+END_SRC
+
+** Always follow symlinks
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+** Improve scrolling performance
+#+BEGIN_SRC emacs-lisp
+(setq auto-window-vscroll nil)
+#+END_SRC
+** Disable sentence double space after period
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+** =dired-mode= settings
+
+Ability to use =a= to visit a new directory or file instead of using =RET=.
+This allows for reusing the current buffer instead of creating new ones.
+
+#+BEGIN_SRC emacs-lisp
+(put 'dired-find-alternate-file 'disabled nil)
+#+END_SRC
+
+Human-readable units by default
+
+#+BEGIN_SRC emacs-lisp
+(setq-default dired-listing-switches "-alh")
+#+END_SRC
+
+** Ask =y/n= instead of =yes/no=
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Auto revert files on change
+
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode t)
+#+END_SRC
+
+** Automatic line breaks
+
+Do not enable automatic line breaks for all text-mode based hooks,
+because several text-modes (markdown, mails) enjoy the pain of long
+lines. So here, I only add whitelisted modes sparingly. The other
+modes have a =visual-clean= configuration which makes the text look
+nice locally, at least.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+#+END_SRC
+
+** Enable narrow to region
+
+Enable =narrow-to-region= commands =(C-x n n or C-x n w)=. This is disabled by
+default to not confuse beginners.
+
+#+BEGIN_SRC emacs-lisp
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+** Remember the cursor position of files when reopening them
+#+BEGIN_SRC emacs-lisp
+(setq save-place-file "~/.emacs.d/saveplace")
+(setq-default save-place t)
+(require 'saveplace)
+#+END_SRC
+
+** =windmove=
+Windmove is built into emacs. It lets you move from window to window using Shift
+and the arrow keys.
+
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'windmove-default-keybindings)
+    (windmove-default-keybindings))
+#+END_SRC
+
+** =eww=
+When entering =eww=, use cursors to scroll without changing the point.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eww-mode-hook 'scroll-lock-mode)
+#+END_SRC
+
+** Customize file
+#+BEGIN_SRC emacs-lisp
+(setq custom-file "~/.emacs.d/custom-settings.el")
+(load custom-file t)
+#+END_SRC
+
+** Add OS package manager's paths to load-path
+These are emacs files that have been installed with the OS's package manager,
+like homebrew for example.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+    (normal-top-level-add-subdirs-to-load-path))
+#+END_SRC
+
+** Helper functions to clean up the gazillion buffers
+When switching projects in Emacs, it can be prudent to clean up every
+once in a while. Deleting all buffers except the current one is one of
+the things I often do (especially in the long-running =emacsclient=).
+
+#+BEGIN_SRC emacs-lisp
+  (defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+#+END_SRC
+
+** Clean up messy buffers (i.e. web wikis or elfeed-show)
+#+BEGIN_SRC emacs-lisp
+  (defun visual-clean ()
+    "Clean up messy buffers (i.e. web wikis or elfeed-show)"
+    (interactive)
+    (visual-line-mode)
+    (visual-fill-column-mode))
+#+END_SRC
+
+** Default emacs email configuration
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Siva Mahadevan")
+  (setq send-mail-function 'smtpmail-send-it)
+  (setq message-citation-line-format "%f wrote:")
+  (setq message-citation-line-function 'message-insert-formatted-citation-line)
+  (setq message-cite-reply-position 'traditional)
+  (setq message-kill-buffer-on-exit t)
+  (setq message-sendmail-envelope-from 'header)
+#+END_SRC
+* Programming settings
+** Code folding
+Enable code folding for programming modes
+
+** Highlight matching parentheses
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode t)
+#+END_SRC
+** Indentation settings
+#+BEGIN_SRC emacs-lisp
+  (setq-default js-indent-level 4)
+  (setq-default c-default-style
+		'((java-mode . "java")
+		  (awk-mode . "awk")
+		  (other . "linux")))
+  (setq backward-delete-char-untabify-method 'all)
+#+END_SRC
+* Third-party package settings
+This section contains settings for non-built-in Emacs features/packages.
+
+** TODO =editorconfig=
+** =elfeed=
+#+BEGIN_SRC emacs-lisp
+  (use-package elfeed
+    :config
+    '("https://drewdevault.com/feed.xml"
+      "https://danluu.com/atom.xml"
+      "https://jvns.ca/atom.xml"
+      "http://thume.ca/atom.xml"
+      "https://blog.trello.com/feed"
+      "https://ambrevar.xyz/atom.xml"
+      "https://andrewkelley.me/rss.xml")
+    :hook (elfeed-show-mode . visual-clean))
+#+END_SRC
+** =exec-path-from-shell=
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell
+    :ensure t
+    :if (eq window-system 'ns)
+    :config
+    (exec-path-from-shell-initialize))
+#+END_SRC
+** =haskell-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :mode (("\\.hs\\'" . haskell-mode)
+	   ("\\.cabal\\'" . haskell-cabal-mode))
+    :interpreter ("haskell" . haskell-mode))
+#+END_SRC
+** =ivy=, =counsel=, and =swiper=
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :config
+    (setq ivy-mode 1)
+    (setq enable-recursive-minibuffers t)
+    (setq projectile-completion-system 'ivy)
+    (setq mu4e-completing-read-function 'ivy-completing-read))
+
+  (use-package swiper
+    :ensure t
+    :bind ("C-s" . swiper))
+
+  (use-package counsel
+    :ensure t
+    :config
+    (counsel-mode 1))
+#+END_SRC
+** =ledger-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package ledger-mode
+	       :ensure t
+	       :mode "ledger\\.dat\\'")
+#+END_SRC
+** =magit=
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status))
+#+END_SRC
+** =mu4e=
+#+BEGIN_SRC emacs-lisp
+  (use-package mu4e
+    :init
+    (defun mu4e-action-view-as-patch (msg)
+      "Interpret the message as a patch and show it in a diff-mode buffer."
+      (let* ((diff-default-read-only t)
+	     (subject (concat "Subject: " (mu4e-message-field msg :subject) "\n\n"))
+	     (body (mu4e-message-field msg :body-txt))
+	     (buf (generate-new-buffer "*mu4e-patch*"))
+	     (map (make-sparse-keymap)))
+	(define-key map "q" 'quit-window)
+	(switch-to-buffer buf)
+	(let ((inhibit-read-only t))
+	  (insert subject)
+	  (insert body))
+	(set-buffer-modified-p nil)
+	(diff-mode)
+	(let ((new-ro-bind (cons 'buffer-read-only map)))
+	  (add-to-list 'minor-mode-overriding-map-alist new-ro-bind))
+	(goto-char (point-min))))
+    :config
+    (setq mail-user-agent 'mu4e-user-agent)
+    (setq mu4e-attachment-dir "~/Downloads")
+
+    (setq mu4e-headers-fields
+	  '((:human-date . 12)
+	    (:flags . 6)
+	    (:mailing-list . 25)
+	    (:from . 30)
+	    (:subject)))
+
+    ;; show images
+    (setq mu4e-show-images t)
+
+    ;; always show email addresses when showing people's names
+    (setq mu4e-view-show-addresses t)
+
+    ;; attempt to show images when viewing messages
+    (setq mu4e-view-show-images t)
+
+    ;; rename files to avoid name collision when moving to other folders
+    (setq mu4e-change-filenames-when-moving t)
+
+    ;; convert html emails properly
+    ;; Possible options:
+    ;;   - html2text -utf8 -width 72
+    ;;   - textutil -stdin -format html -convert txt -stdout
+    ;;   - html2markdown | grep -v '&nbsp_place_holder;' (Requires html2text pypi)
+    ;;   - w3m -dump -cols 80 -T text/html
+    ;;   - view in browser (provided below)
+    ;; (setq mu4e-html2text-command "w3m -dump -T text/html")
+
+    ;; add option to view html message in a browser
+    ;; `aV` in view to activate
+    (add-to-list 'mu4e-view-actions
+		 '("bview in browser" . mu4e-action-view-in-browser) t)
+    (add-to-list 'mu4e-view-actions
+		 '("git apply patch" . mu4e-action-git-apply-mbox) t)
+    (add-to-list 'mu4e-view-actions
+		 '("pview as patch" . mu4e-action-view-as-patch) t)
+
+    (setq mu4e-confirm-quit nil)
+    (setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
+    (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+
+    ;; mu4e context-specific settings
+    ;; =====
+    (setq mu4e-contexts
+	  `(,(make-mu4e-context
+	      :name "Personal"
+	      :enter-func (lambda ()
+			    (mu4e-message "Switch to the Personal context"))
+	      :match-func (lambda (msg)
+			    (when msg
+			      (string= "~/mail"
+				       (mu4e-message-field msg :maildir))))
+	      :vars '((mu4e-maildir . "~/mail")
+		      (user-mail-address . "svmhdvn@fastmail.com")
+		      (smtpmail-smtp-server . "smtp.fastmail.com")
+		      (smtpmail-smtp-service . 465)
+		      (smtpmail-stream-type . ssl)
+		      (mu4e-get-mail-command . "mbsync fastmail")))
+	    ,(make-mu4e-context
+	      :name "Local Dev"
+	      :enter-func (lambda ()
+			    (mu4e-message "Switch to the Local Dev context"))
+	      :match-func (lambda (msg)
+			    (when msg
+			      (string= "~/Maildir"
+				       (mu4e-message-field msg :maildir))))
+	      :vars '((mu4e-maildir . "~/Maildir")
+		      (user-mail-address . "siva@svmhdvn.local")
+		      (smtpmail-smtp-server . "svmhdvn.local")
+		      (smtpmail-smtp-service . 587)
+		      (smtpmail-stream-type . starttls)
+		      (mu4e-get-mail-command . "true")))))
+
+    (setq mu4e-context-policy 'pick-first)
+    (setq mu4e-compose-context-policy nil))
+#+END_SRC
+** =org=
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :config
+    (setq org-agenda-files
+	  '("~/Dropbox/gtd/inbox.org"
+	    "~/Dropbox/gtd/projects.org"
+	    "~/Dropbox/gtd/calendar.org"
+	    "~/Dropbox/gtd/reminders.org"))
+    (setq org-capture-templates
+	  '(("i" "Inbox" entry
+	     (file "~/Dropbox/gtd/inbox.org")
+	     "* TODO %i%?")
+	    ("r" "Reminders" entry
+	     (file "~/Dropbox/gtd/reminders.org")
+	     "* TODO %i%?\n%T")
+	    ("c" "Calendar" entry
+	     (file "~/Dropbox/gtd/calendar.org")
+	     "* %i%?\n%T")))
+    (setq org-todo-keywords
+	  '((sequence "TODO(t)" "INPROGRESS(p)" "WAITING(w)" "|"
+		      "DONE(d)" "CANCELLED(c)")))
+    (setq org-refile-use-outline-path 'file)
+    (setq org-refile-targets
+	  '(("~/Dropbox/gtd/projects.org" :maxlevel . 3)
+	    ("~/Dropbox/gtd/someday.org" :level . 1)
+	    ("~/Dropbox/gtd/calendar.org" :level . 1)
+	    ("~/Dropbox/gtd/reminders.org" :level . 1)))
+    (setq org-confirm-babel-evaluate nil)
+    :bind (("C-c l" . org-store-link)
+	   ("C-c a" . org-agenda)
+	   ("C-c c" . org-capture)))
+#+END_SRC
+** =projectile=
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (projectile-mode +1)
+    :bind ("C-c p" . projectile-command-map))
+#+END_SRC
+** =visual-fill-column=
+#+BEGIN_SRC emacs-lisp
+  (use-package visual-fill-column
+    :ensure t)
+#+END_SRC
+** =which-key=
+=which-key= displays available keybindings in a popup window.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :hook (org-mode . which-key-mode))
+#+END_SRC
+* Start the server
+#+BEGIN_SRC emacs-lisp
+(server-start)
+#+END_SRC

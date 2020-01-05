@@ -1,0 +1,82 @@
+filetype plugin indent on
+syntax on
+
+"""Stuff from defaults.vim"""
+
+set nocompatible " Use Vim settings rather than Vi settings
+set backspace=indent,eol,start " Backspace over everything in insert mode.
+set wildmenu " display completion matches in a status line
+set incsearch " Do incremental searching
+set mouse=a " Enable the mouse
+
+"""My settings"""
+
+" Global variables
+let g:mapleader="\<Space>"
+
+" Always UTF-8
+set encoding=utf-8
+
+" Cause regexes backslashes to actually escape things rather than be used for
+" regular regex usage (see ':help magic')
+set magic
+
+" 4 space tabs by default
+set expandtab
+set softtabstop=4
+set tabstop=4
+set shiftwidth=4
+set autoindent
+autocmd Filetype ruby set softtabstop=2 shiftwidth=2 tabstop=2
+
+" Vim Display.
+set shortmess+=I                     " Hide splash screen.
+set tw=80                            " Always prefer an 80-character textwidth
+set colorcolumn=+0                   " Show a vertical line at the textwidth
+
+" Text Display.
+set hlsearch                         " Search highlighting.
+set nowrap                           " No word wrapping (use 0 and $ instead)
+
+" Searching and matching.
+set ignorecase|set smartcase         " Ignore case for lowercase only
+set wildignorecase
+set showmatch                        " Flash matching bracket when inserted
+
+" Miscellaneous settings
+set hidden
+set lazyredraw
+set noswapfile
+set nobackup
+set nowritebackup
+set ttimeoutlen=0
+
+" Netrw settings
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_sort_sequence = '[\/]$,*'
+
+" Switch buffers.
+nnoremap <C-h> :bprev<CR>
+nnoremap <C-l> :bnext<CR>
+
+"""Misc Mappings"""
+noremap U <C-r>
+nnoremap <CR> o<Esc>
+nnoremap p p=`]
+
+"save file"
+nnoremap <leader>w :w<CR>
+
+"Open the Netrw file browser in the directory of the current buffer's file
+nnoremap <leader>d :E<CR>
+
+"delete buffer but don't close window (go to previous buffer first)"
+nnoremap <silent> <leader>q :bp\|bd #<CR>
+
+" Remove all trailing whitespace in a file at once, without being intrusive
+nnoremap <silent> <leader>s :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+" Find and buffer commands
+nnoremap <leader>f :e<Space>
+nnoremap <leader>b :ls<CR>:b<Space>

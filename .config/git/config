@@ -1,0 +1,32 @@
+[user]
+	name = Siva Mahadevan
+	email = svmhdvn@fastmail.com
+[push]
+	default = simple
+	followTags = true
+[fetch]
+	prune = true
+[pull]
+	rebase = true
+[sendemail]
+	#smtpEncryption = tls
+	#smtpServer = smtp.fastmail.com
+	#smtpUser = svmhdvn@fastmail.com
+	#smtpAuth = PLAIN
+	#smtpServerPort = 465
+	smtpServer = /usr/local/bin/msmtp
+[stash]
+	showPatch = true
+[commit]
+	gpgsign = true
+[diff]
+	tool = opendiff
+[merge]
+	tool = ediff
+[mergetool "ediff"]
+	cmd = ec -c -a \"\"  --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
+[rebase]
+	autoStash = true
+	autoSquash = true
+[rerere]
+	enabled = true
