@@ -26,7 +26,8 @@ settings:
     global: same-domain
   content.headers.user_agent:
     accounts.google.com: Mozilla/5.0 (X11; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/77.0
-    global: null
+    global: Mozilla/5.0 ({os_info}) AppleWebKit/{webkit_version} (KHTML, like Gecko)
+      {qt_key}/{qt_version} {upstream_browser_key}/{upstream_browser_version} Safari/{webkit_version}
   content.host_blocking.enabled:
     global: true
   content.host_blocking.lists:
@@ -46,6 +47,10 @@ settings:
     global: false
   content.javascript.enabled:
     global: true
+  content.notifications:
+    https://web.whatsapp.com: true
+  content.register_protocol_handler:
+    https://mail.google.com?extsrc=mailto&url=%25s: false
   downloads.location.prompt:
     global: false
   tabs.wrap:
