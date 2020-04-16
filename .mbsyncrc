@@ -41,4 +41,5 @@ Channel fastmail-sent
 Channel fastmail-archive
 
 Create Both
+Expunge Both
 SyncState *

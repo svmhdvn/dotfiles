@@ -1,0 +1,11 @@
+[Unit]
+Description=Wayland notification daeomon
+Documentation=man:mako(1)
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/mako
+
+[Install]
+WantedBy=sway-session.target

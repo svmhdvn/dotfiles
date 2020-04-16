@@ -6,56 +6,5 @@
 
 config_version: 2
 settings:
-  content.autoplay:
-    global: false
-  content.default_encoding:
-    global: utf-8
-  content.desktop_capture:
-    global: ask
-  content.dns_prefetch:
-    global: false
-  content.geolocation:
-    global: ask
-  content.headers.accept_language:
-    global: en-US,en
-  content.headers.custom:
-    global: null
-  content.headers.do_not_track:
-    global: true
-  content.headers.referer:
-    global: same-domain
-  content.headers.user_agent:
-    accounts.google.com: Mozilla/5.0 (X11; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/77.0
-    global: Mozilla/5.0 ({os_info}) AppleWebKit/{webkit_version} (KHTML, like Gecko)
-      {qt_key}/{qt_version} {upstream_browser_key}/{upstream_browser_version} Safari/{webkit_version}
-  content.host_blocking.enabled:
-    global: true
-  content.host_blocking.lists:
-    global:
-    - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-  content.host_blocking.whitelist:
-    global: null
-  content.hyperlink_auditing:
-    global: false
-  content.images:
-    global: true
-  content.javascript.alert:
-    global: true
-  content.javascript.can_access_clipboard:
-    global: false
-  content.javascript.can_open_tabs_automatically:
-    global: false
-  content.javascript.enabled:
-    global: true
-  content.notifications:
-    https://web.whatsapp.com: true
   content.register_protocol_handler:
     https://mail.google.com?extsrc=mailto&url=%25s: false
-  downloads.location.prompt:
-    global: false
-  tabs.wrap:
-    global: false
-  url.default_page:
-    global: about:blank
-  url.start_pages:
-    global: about:blank

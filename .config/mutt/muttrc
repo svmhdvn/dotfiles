@@ -2,6 +2,7 @@
 #set mailcap_path     = ~/.config/mutt/mailcap       # entries for filetypes
 
 # Basic Options --------------------------------------
+set folder = ~/mail
 set wait_key = no        # shut up, mutt
 set mbox_type = Maildir  # mailbox type
 set timeout = 0          # no idle time before scanning
