@@ -1,21 +1,11 @@
-"""Stuff from defaults.vim"""
+call plug#begin(stdpath('data') . '/plugged')
+Plug 'ziglang/zig.vim'
+call plug#end()
 
-set nocompatible " Use Vim settings rather than Vi settings
-set backspace=indent,eol,start " Backspace over everything in insert mode.
-set wildmenu " display completion matches in a status line
-set incsearch " Do incremental searching
 set mouse=a " Enable the mouse
 
-"""My settings"""
 let g:mapleader="\<Space>"
 let g:zig_fmt_autosave = 0
-
-" Colorscheme
-set background=light
-colorscheme PaperColor
-
-" Always UTF-8
-set encoding=utf-8
 
 " Cause regexes backslashes to actually escape things rather than be used for
 " regular regex usage (see ':help magic')
@@ -26,21 +16,17 @@ set expandtab
 set softtabstop=4
 set tabstop=4
 set shiftwidth=4
-set autoindent
 set smartindent
 autocmd Filetype ruby set softtabstop=2 shiftwidth=2 tabstop=2
 
 " Vim Display.
-set laststatus=2
-set shortmess+=I                     " Hide splash screen.
+"set shortmess+=I                     " Hide splash screen.
 set tw=80                            " Always prefer an 80-character textwidth
 set colorcolumn=+0                   " Show a vertical line at the textwidth
 set number
 set relativenumber
 
 " Text Display.
-set hlsearch                         " Search highlighting.
-set nowrapscan                       " Don't wrap search back at top of file
 set nowrap                           " No word wrapping (use 0 and $ instead)
 
 " Searching and matching.

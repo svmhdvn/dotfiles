@@ -1,8 +1,0 @@
-[Unit]
-Description=Siva's custom login commands
-
-[Service]
-ExecStart=%h/bin/my-login-commands
-
-[Install]
-WantedBy=default.target
