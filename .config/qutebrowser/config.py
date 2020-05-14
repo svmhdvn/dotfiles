@@ -1,3 +1,5 @@
+config.load_autoconfig()
+
 c.content.autoplay = False
 c.content.default_encoding = "utf-8"
 c.downloads.location.prompt = False
