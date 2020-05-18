@@ -65,10 +65,9 @@ onoremap r i
 noremap l ^
 noremap L $
 
-nnoremap <C-n> <C-d>
-nnoremap <C-e> <C-u>
+noremap <C-n> <C-d>
+noremap <C-e> <C-u>
 inoremap <C-e> <C-p>
-
 
 " Switch buffers.
 nnoremap <C-h> :bprev<CR>

@@ -35,14 +35,14 @@ set header_cache = $XDG_CACHE_HOME/mutt/hcache
 ####################
 # Message compositon
 #
+set sendmail = "msmtp"
 set editor = $EDITOR                      # don't use $VISUAL
 set edit_headers                          # show headers when composing
-set sendmail  = "msmtp"
 set attribution = "%n wrote:"             # cleaner attribution
 set fast_reply = yes                      # skip to compose when replying
 set include = yes                         # include message in replies
 set date_format = "%F at %R %Z"
-set index_format = "%Z %[%b %d] %-30.30n | %s"
+set index_format = "%Z %[%F] %-30.30n | %s"
 
 ####################
 # Basic Options
@@ -52,8 +52,8 @@ set mbox_type = Maildir  # mailbox type
 set timeout = 0          # no idle time before scanning
 set sleep_time = 0       # don't sleep on switching between folders
 set mail_check = 0       # minimum time between scans
-set delete = no          # don't delete, just move to trash
 set confirmappend = no   # don't ask, just do!
+set delete               # don't ask, just do!
 set mark_old = no        # read/new is good enough for me
 
 ####################
@@ -63,8 +63,29 @@ set pager_context = 3      # number of context lines to show
 set menu_scroll = yes      # scroll in menus
 
 ####################
-# Vim keybindings
+# Colemak keybindings
 #
+
+bind index n next-entry
+bind index \Cn half-down
+bind index e previous-entry
+bind index \Ce half-up
+bind index g first-entry
+bind index G last-entry
+bind index k search-next
+bind index E edit
+
+bind pager n next-line
+bind pager N next-entry
+bind pager \Cn half-down
+bind pager e previous-line
+bind pager E previous-entry
+bind pager \Ce half-up
+bind pager g top
+bind pager G bottom
+bind pager k search-next
+
+# Mail operations
 
 # Sync email
 macro index % "<shell-escape>mbsync fastmail<enter>" "run mbsync to sync all mail"
@@ -73,21 +94,40 @@ macro index % "<shell-escape>mbsync fastmail<enter>" "run mbsync to sync all mai
 macro index,pager \Cu "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 macro attach,compose \Cu "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 
-macro index,pager d "<save-message>+Trash<enter>" "Trash"
-macro index,pager y "<save-message>+Archive<enter>" "Archive"
+macro index,pager y "<save-message>=Archive<enter>" "Archive"
 
 # Quick navigation of folders
-macro index ga "<change-folder>+Archive<enter>" "Go to Archive"
-macro index gi "<change-folder>+INBOX<enter>" "Go to INBOX"
-macro index gt "<change-folder>+Trash<enter>" "Go to Trash"
-macro index gs "<change-folder>+Sent<enter>" "Go to Sent"
-macro index gd "<change-folder>+Drafts<enter>" "Go to Drafts"
+macro index ta "<change-folder>=Archive<enter>" "Go to Archive"
+macro index ti "<change-folder>=INBOX<enter>" "Go to INBOX"
+macro index tt "<change-folder>=Trash<enter>" "Go to Trash"
+macro index ts "<change-folder>=Sent<enter>" "Go to Sent"
+macro index td "<change-folder>=Drafts<enter>" "Go to Drafts"
 
-# patch syntax highlighting
-color body cyan default "^diff \-.*"
-color body cyan default "^index [a-f0-9].*"
-color body cyan default "^\-\-\- .*"
-color body cyan default "^[\+]{3} .*"
-color body green default "^[\+][^\+]+.*"
-color body red default "^\-[^\-]+.*"
-color body brightblue default "^@@ .*"
+# Patch syntax highlighting                                                     
+#color   normal  white           default                                         
+color   body    brightwhite     default         ^[[:space:]].*                  
+color   body    yellow          default         ^(diff).*                       
+#color   body    white           default         ^[\-\-\-].*                     
+#color   body    white           default         ^[\+\+\+].*                     
+#color   body    green           default         ^[\+].*                         
+#color   body    red             default         ^[\-].*                         
+#color   body    brightblue      default         [@@].*                          
+color   body    brightwhite     default         ^(\s).*                         
+color   body    cyan            default         ^(Signed-off-by).*
+color   body    cyan            default         ^(Docker-DCO-1.1-Signed-off-by).*
+color   body    brightwhite     default         ^(Cc)
+color   body    yellow          default         "^diff \-.*"
+color   body    brightwhite     default         "^index [a-f0-9].*"
+color   body    brightblue      default         "^---$"
+color   body    white           default         "^\-\-\- .*"
+color   body    white           default         "^[\+]{3} .*"
+color   body    green           default         "^[\+][^\+]+.*"
+color   body    red             default         "^\-[^\-]+.*"
+color   body    brightblue      default         "^@@ .*"
+color   body    green           default         "LGTM"
+color   body    brightmagenta   default         "-- Commit Summary --"
+color   body    brightmagenta   default         "-- File Changes --"
+color   body    brightmagenta   default         "-- Patch Links --"
+color   body    green           default         "^Merged #.*"
+color   body    red             default         "^Closed #.*"
+color   body    brightblue      default         "^Reply to this email.*"
