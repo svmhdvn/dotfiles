@@ -79,6 +79,7 @@ nnoremap E <C-w>k
 nnoremap I <C-w>l
 
 """Misc Mappings"""
+nnoremap j :noh<CR>
 noremap U <C-r>
 nnoremap <CR> o<Esc>
 nnoremap p p=`]
