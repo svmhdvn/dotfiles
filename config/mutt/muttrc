@@ -90,10 +90,10 @@ bind pager k search-next
 # Sync email
 macro index % "<shell-escape>mbsync fastmail<enter>" "run mbsync to sync all mail"
 
-# URLscan functionality
-macro index,pager \Cu "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
-macro attach,compose \Cu "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+# URLscan
+macro index,pager \Cu "<pipe-message>urlscan<enter>" "call urlscan to extract URLs out of a message"
 
+# Save to archive
 macro index,pager y "<save-message>=Archive<enter>" "Archive"
 
 # Quick navigation of folders

@@ -2,28 +2,15 @@ xwayland disable
 input * xkb_layout "us"
 input * xkb_variant "colemak"
 
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
-
-### Variables
-#
-# Logo key. Use Mod1 for Alt.
 set $mod Mod4
-# Home row direction keys, like vim
+
 set $left h
 set $down n
 set $up e
 set $right i
-# Your preferred terminal emulator
-set $term alacritty
-# Your preferred application launcher
-# Note: it's recommended that you pass the final command to sway
-#set $menu exec $term --name=launcher -e "bash -c 'compgen -c | grep -v fzf | sort -u | fzf --layout=reverse | xargs -r swaymsg -t command exec'"
-set $menu exec $term -t 'launcher' -e sh -c 'compgen -c | grep -v fzf | sort -u | fzf --layout=reverse | xargs -r swaymsg -t command exec'
-for_window [app_id="^launcher$"] floating enable, border none, opacity 0.8
+
+set $term termite -e 'fish -i'
+set $menu wofi --show drun
 
 ### Output configuration
 #
@@ -75,7 +62,7 @@ for_window [app_id="^launcher$"] floating enable, border none, opacity 0.8
     bindsym $mod+Shift+q kill
 
     # Start your launcher
-    bindsym $mod+r exec $menu
+    bindsym $mod+d exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -88,7 +75,7 @@ for_window [app_id="^launcher$"] floating enable, border none, opacity 0.8
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+x exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+x exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
 #
 # Moving around:
 #
@@ -203,11 +190,13 @@ bindsym $mod+Shift+r mode "resize"
 
 # siva's custom config
 
+bar {
+    swaybar_command waybar
+}
+
 bindsym XF86MonBrightnessUp exec light -A 2%
 bindsym XF86MonBrightnessDown exec light -U 2%
-bindsym XF86AudioRaiseVolume exec amixer set Master 5%+
-bindsym XF86AudioLowerVolume exec amixer set Master 5%-
+bindsym XF86AudioRaiseVolume exec amixer set Master 2%+
+bindsym XF86AudioLowerVolume exec amixer set Master 2%-
 bindsym XF86AudioMute exec amixer set Master toggle
 #TODO figure out the mic mute option
-
-exec "systemctl --user import-environment; systemctl --user start sway-session.target"

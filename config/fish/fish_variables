@@ -11,7 +11,6 @@ SETUVAR _fish_abbr_gp:git\x20push
 SETUVAR _fish_abbr_gpl:git\x20pull
 SETUVAR _fish_abbr_gps:git\x20push
 SETUVAR _fish_abbr_gs:git\x20status
-SETUVAR _fish_abbr_v:\x24VISUAL
 SETUVAR fish_color_autosuggestion:8e908c
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:8959a8

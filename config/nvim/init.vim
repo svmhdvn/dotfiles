@@ -1,6 +1,6 @@
-call plug#begin(stdpath('data') . '/plugged')
-Plug 'ziglang/zig.vim'
-call plug#end()
+"call plug#begin(stdpath('data') . '/plugged')
+"Plug 'ziglang/zig.vim'
+"call plug#end()
 
 set mouse=a " Enable the mouse
 
@@ -21,8 +21,7 @@ autocmd Filetype ruby set softtabstop=2 shiftwidth=2 tabstop=2
 
 " Vim Display.
 "set shortmess+=I                     " Hide splash screen.
-set tw=80                            " Always prefer an 80-character textwidth
-set colorcolumn=+0                   " Show a vertical line at the textwidth
+set colorcolumn=100                   " Show a vertical line at the textwidth
 set number
 set relativenumber
 
