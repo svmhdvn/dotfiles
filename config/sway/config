@@ -2,6 +2,11 @@ xwayland disable
 input * xkb_layout "us"
 input * xkb_variant "colemak"
 
+input "type:keyboard" {
+    repeat_delay 250
+    repeat_rate 50
+}
+
 set $mod Mod4
 
 set $left h
@@ -200,3 +205,5 @@ bindsym XF86AudioRaiseVolume exec amixer set Master 2%+
 bindsym XF86AudioLowerVolume exec amixer set Master 2%-
 bindsym XF86AudioMute exec amixer set Master toggle
 #TODO figure out the mic mute option
+
+exec gammastep

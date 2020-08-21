@@ -1,107 +1,76 @@
-###################
-# Identity
-#
-set realname = "Siva Mahadevan"
-set from     = "svmhdvn@fastmail.com"
-
-###################
-# Local mailboxes
-#
-set spoolfile = "+INBOX"
-set record    = "+Sent"
-set trash     = "+Trash"
-set postponed = "+Drafts"
-
-####################
-# Pager settings
-#
-ignore *
-unignore From Date To Cc Bcc Subject
-set pager_stop # don't go to next message automatically
-unset markers # no line wrap markers
+set attribution       = "%n wrote:"                     
+set confirmappend     = no             # don't ask, just do!
+set date_format       = "%F at %R %Z"  # 2020-01-01 at 00:00
+set delete            = yes            # don't ask, just do!
+set edit_headers      = yes            # show headers when composing
+set fast_reply        = yes            # skip to compose when replying
+set fcc_delimiter     = ","            # Allow `record` to multiple mailboxes
+set from              = "me@svmhdvn.name"
+set header_cache      = $XDG_CACHE_HOME/mutt/headers 
+set include           = yes            # quote original message in replies
+set index_format      = "%Z %[%F] %-30.30n | %s"  
+set mail_check        = 0              # don't periodically check for email
+set mailcap_path      = $XDG_CONFIG_HOME/mutt/mailcap  
+set mark_old          = no             # read/new is good enough for me
+set markers           = no             # no line wrap markers
+set mbox_type         = Maildir                           
+set menu_scroll       = yes            # scroll instead of new page
+set message_cachedir  = $XDG_CACHE_HOME/mutt/messages 
+set pager_context     = 3                             
+set pager_index_lines = 10                        
+set pager_stop        = yes            # don't go to next message automatically
+set postponed         = "+Drafts"
+set realname          = "Siva Mahadevan"
+set record            = "+Sent,+INBOX" # copy outgoing mails to both sent and INBOX
+set send_charset      = "utf-8"        # Encode outgoing as UTF-8
+set sleep_time        = 0              # don't wait when switching folders
+set smtp_url          = "smtps://me@svmhdvn.name@smtp.fastmail.com:465"
+set smtp_pass         = `cat $HOME/.password-store/secret/fastmail.txt`
+set sort              = threads
+set sort_aux          = reverse-last-date-received
+set ssl_force_tls     = yes            # Force all connections to be encrypted with TLS
+set spoolfile         = "+INBOX"
+set timeout           = 0              # no idle time before scanning
+set trash             = "+Trash"
+set wait_key          = no             # shut up, mutt
 
 alternative_order text/plain text/enriched text/html
 auto_view text/html
-set mailcap_path = $XDG_CONFIG_HOME/mutt/mailcap
+ignore *
+unignore From Date To Cc Bcc Subject
 
-####################
-# Index
-#
-set sort     = threads
-set sort_aux = reverse-last-date-received
-
-set header_cache = $XDG_CACHE_HOME/mutt/hcache
-
-####################
-# Message compositon
-#
-set sendmail = "msmtp"
-set editor = $EDITOR                      # don't use $VISUAL
-set edit_headers                          # show headers when composing
-set attribution = "%n wrote:"             # cleaner attribution
-set fast_reply = yes                      # skip to compose when replying
-set include = yes                         # include message in replies
-set date_format = "%F at %R %Z"
-set index_format = "%Z %[%F] %-30.30n | %s"
-
-####################
-# Basic Options
-#
-set wait_key = no        # shut up, mutt
-set mbox_type = Maildir  # mailbox type
-set timeout = 0          # no idle time before scanning
-set sleep_time = 0       # don't sleep on switching between folders
-set mail_check = 0       # minimum time between scans
-set confirmappend = no   # don't ask, just do!
-set delete               # don't ask, just do!
-set mark_old = no        # read/new is good enough for me
-
-####################
-# Pager view
-set pager_index_lines = 10 # number of index lines to show
-set pager_context = 3      # number of context lines to show
-set menu_scroll = yes      # scroll in menus
-
-####################
 # Colemak keybindings
-#
 
-bind index n next-entry
+bind index E edit
+bind index G last-entry
+bind index \Ce half-up
 bind index \Cn half-down
 bind index e previous-entry
-bind index \Ce half-up
 bind index g first-entry
-bind index G last-entry
 bind index k search-next
-bind index E edit
-
-bind pager n next-line
+bind index n next-entry
+bind index ra group-chat-reply
+bind index ro reply
+bind pager E previous-entry
+bind pager G bottom
 bind pager N next-entry
+bind pager \Ce half-up
 bind pager \Cn half-down
 bind pager e previous-line
-bind pager E previous-entry
-bind pager \Ce half-up
 bind pager g top
-bind pager G bottom
 bind pager k search-next
+bind pager n next-line
+bind pager ra group-chat-reply
+bind pager ro reply
 
-# Mail operations
-
-# Sync email
-macro index % "<shell-escape>mbsync fastmail<enter>" "run mbsync to sync all mail"
-
-# URLscan
-macro index,pager \Cu "<pipe-message>urlscan<enter>" "call urlscan to extract URLs out of a message"
-
-# Save to archive
-macro index,pager y "<save-message>=Archive<enter>" "Archive"
-
-# Quick navigation of folders
+macro index % "<shell-escape>mbsync personal<enter>" "run mbsync to sync mail"
 macro index ta "<change-folder>=Archive<enter>" "Go to Archive"
-macro index ti "<change-folder>=INBOX<enter>" "Go to INBOX"
-macro index tt "<change-folder>=Trash<enter>" "Go to Trash"
-macro index ts "<change-folder>=Sent<enter>" "Go to Sent"
 macro index td "<change-folder>=Drafts<enter>" "Go to Drafts"
+macro index ti "<change-folder>=INBOX<enter>" "Go to INBOX"
+macro index ts "<change-folder>=Sent<enter>" "Go to Sent"
+macro index tt "<change-folder>=Trash<enter>" "Go to Trash"
+macro index,pager \Cu "<pipe-message>urlscan<enter>" "call urlscan to extract URLs out of a message"
+macro index,pager y "<save-message>=Archive<enter>" "Archive"
 
 # Patch syntax highlighting                                                     
 #color   normal  white           default                                         

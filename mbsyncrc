@@ -1,24 +1,24 @@
-IMAPAccount fastmail
+IMAPAccount personal
 Host imap.fastmail.com
 Port 993
-User svmhdvn@fastmail.com
+User me@svmhdvn.name
 # App-specific password
-PassCmd "cat $HOME/.password-store/secret/fastmail-imap-smtp.txt"
+PassCmd "cat $HOME/.password-store/secret/fastmail.txt"
 SSLType IMAPS
 # TODO update this for TLSv1.3 when it is released
 SSLVersions TLSv1.2
 
-IMAPStore fastmail-remote
-Account fastmail
+IMAPStore personal-remote
+Account personal
 
-MaildirStore fastmail-local
+MaildirStore personal-local
 Path ~/Mail/
 Inbox ~/Mail/INBOX
 Subfolders Verbatim
 
-Channel fastmail
-Master :fastmail-remote:
-Slave :fastmail-local:
+Channel personal
+Master :personal-remote:
+Slave :personal-local:
 Patterns *
 
 # Create missing folders on both local and remote

@@ -6,7 +6,7 @@ c.downloads.location.prompt = False
 c.hints.chars = "arstdhneio"
 c.tabs.wrap = False
 c.url.default_page = "about:blank"
-c.url.searchengines = {"DEFAULT": "https://duckduckgo.com/lite?q={}"}
+c.url.searchengines = {"DEFAULT": "https://google.com/search?q={}"}
 c.url.start_pages = "about:blank"
 c.colors.webpage.prefers_color_scheme_dark = True
 
