@@ -17,6 +17,9 @@ set $right i
 set $term termite -e 'fish -i'
 set $menu wofi --show drun
 
+client.focused #4c7899 #285577 #ffffff #2e9ef4 #ffff00
+default_border pixel
+
 ### Output configuration
 #
 # Default wallpaper

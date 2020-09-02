@@ -6,7 +6,7 @@
 #cell_width_scale = 1.0
 #clickable_url = true
 dynamic_title = false
-font = Terminus Bold 16px
+font = Inconsolata Semibold 23px
 #fullscreen = true
 #icon_name = terminal
 #mouse_autohide = false
@@ -35,43 +35,7 @@ scrollback_lines = 10000
 #modify_other_keys = false
 
 # set size hints for the window
-#size_hints = false
+size_hints = true
 
 # "off", "left" or "right"
 #scrollbar = off
-
-
-#[colors]
-## Base16 PaperColor-Light
-## Scheme: Nguyen Nguyen (http://github.com/NLKNguyen)
-#
-#foreground      = #4d4d4c
-#foreground_bold = #4d4d4c
-#cursor          = #4d4d4c
-#background      = #f3f3f3
-#
-## 16 color space
-#color0  = #262626
-#color1  = #8959a8
-#color2  = #718c00
-#color3  = #4271ae
-#color4  = #005f87
-#color5  = #d7005f
-#color6  = #3e999f
-#color7  = #d0d0d0
-#color8  = #808080
-#color9  = #8959a8
-#color10 = #718c00
-#color11 = #4271ae
-#color12 = #005f87
-#color13 = #d7005f
-#color14 = #3e999f
-#color15 = #f3f3f3
-#
-## 256 color space
-#color16 = #d75f00
-#color17 = #df0000
-#color18 = #262626
-#color19 = #4d4d4c
-#color20 = #949494
-#color21 = #f3f3f3

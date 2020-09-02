@@ -1,14 +1,16 @@
 config.load_autoconfig()
 
+c.colors.webpage.prefers_color_scheme_dark = True
 c.content.autoplay = False
 c.content.default_encoding = "utf-8"
 c.downloads.location.prompt = False
+c.fonts.default_size = "12pt"
 c.hints.chars = "arstdhneio"
 c.tabs.wrap = False
 c.url.default_page = "about:blank"
 c.url.searchengines = {"DEFAULT": "https://google.com/search?q={}"}
 c.url.start_pages = "about:blank"
-c.colors.webpage.prefers_color_scheme_dark = True
+c.zoom.default = "150%"
 
 # Colemak bindings
 
