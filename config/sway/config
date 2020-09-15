@@ -1,8 +1,9 @@
 xwayland disable
-input * xkb_layout "us"
-input * xkb_variant "colemak"
 
 input "type:keyboard" {
+    xkb_layout "us"
+    xkb_variant "colemak"
+    xkb_options "ctrl:ralt_rctrl"
     repeat_delay 250
     repeat_rate 50
 }
@@ -17,7 +18,7 @@ set $right i
 set $term termite -e 'fish -i'
 set $menu wofi --show drun
 
-client.focused #4c7899 #285577 #ffffff #2e9ef4 #ffff00
+client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
 default_border pixel
 
 ### Output configuration

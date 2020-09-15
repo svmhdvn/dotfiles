@@ -27,7 +27,6 @@ set showmatch
 set smartcase
 set smartindent
 set softtabstop=4
-set tabstop=4
 set ttimeoutlen=0
 set wildignorecase
 

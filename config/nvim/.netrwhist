@@ -1,5 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =9
+let g:netrw_dirhistcnt =0
+let g:netrw_dirhist_0='/home/siva/.emacs.d'
 let g:netrw_dirhist_9='/home/siva/src/forth_to_riscv/src'
 let g:netrw_dirhist_8='/home/siva/src/forth_to_riscv'
 let g:netrw_dirhist_7='/home/siva/src'

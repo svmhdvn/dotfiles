@@ -4,19 +4,26 @@ Siva's personal emacs config
 ;;; -*- lexical-binding: t -*-
 #+END_SRC
 
-* =use-package= initialization
+* bootstrap package manager helpers
+** =straight.el=
 #+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (setq package-enable-at-startup nil)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-  (package-initialize)
-
-  (unless (package-installed-p 'use-package) 
-    (package-refresh-contents) 
-    (package-install 'use-package))
-
-  (eval-when-compile
-    (require 'use-package))
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5)
+	(straight-use-package-by-default t))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+END_SRC
+** =use-package=
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package 'use-package)
 #+END_SRC
 * Default settings
 This section contains settings for built-in Emacs features.
@@ -29,8 +36,8 @@ This section contains settings for built-in Emacs features.
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-(load-theme 'deeper-blue)
+;(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;(load-theme 'deeper-blue)
 (add-to-list 'default-frame-alist '(font . "Hack-14"))
 (setq ring-bell-function 'ignore)
 #+END_SRC
@@ -58,11 +65,6 @@ operations.
 #+BEGIN_SRC emacs-lisp
 (setq auto-window-vscroll nil)
 #+END_SRC
-** Disable sentence double space after period
-#+BEGIN_SRC emacs-lisp
-(setq vc-follow-symlinks t)
-#+END_SRC
-
 ** =dired-mode= settings
 
 Ability to use =a= to visit a new directory or file instead of using =RET=.
@@ -111,13 +113,6 @@ default to not confuse beginners.
 (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
-** Remember the cursor position of files when reopening them
-#+BEGIN_SRC emacs-lisp
-(setq save-place-file "~/.emacs.d/saveplace")
-(setq-default save-place t)
-(require 'saveplace)
-#+END_SRC
-
 ** =windmove=
 Windmove is built into emacs. It lets you move from window to window using Shift
 and the arrow keys.
@@ -140,15 +135,6 @@ When entering =eww=, use cursors to scroll without changing the point.
 (load custom-file t)
 #+END_SRC
 
-** Add OS package manager's paths to load-path
-These are emacs files that have been installed with the OS's package manager,
-like homebrew for example.
-
-#+BEGIN_SRC emacs-lisp
-  (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
-    (normal-top-level-add-subdirs-to-load-path))
-#+END_SRC
-
 ** Helper functions to clean up the gazillion buffers
 When switching projects in Emacs, it can be prudent to clean up every
 once in a while. Deleting all buffers except the current one is one of
@@ -161,20 +147,11 @@ the things I often do (especially in the long-running =emacsclient=).
     (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 #+END_SRC
 
-** Clean up messy buffers (i.e. web wikis or elfeed-show)
-#+BEGIN_SRC emacs-lisp
-  (defun visual-clean ()
-    "Clean up messy buffers (i.e. web wikis or elfeed-show)"
-    (interactive)
-    (visual-line-mode)
-    (visual-fill-column-mode))
-#+END_SRC
-
 ** Default emacs email configuration
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Siva Mahadevan")
   (setq send-mail-function 'smtpmail-send-it)
-  (setq message-citation-line-format "%f wrote:")
+  (setq message-citation-line-format "%f said:")
   (setq message-citation-line-function 'message-insert-formatted-citation-line)
   (setq message-cite-reply-position 'traditional)
   (setq message-kill-buffer-on-exit t)
@@ -214,10 +191,10 @@ This section contains settings for non-built-in Emacs features/packages.
       "https://andrewkelley.me/rss.xml")
     :hook (elfeed-show-mode . visual-clean))
 #+END_SRC
-** =exec-path-from-shell=
+** COMMENT =exec-path-from-shell=
+Currently disabled because I don't think this is useful on Linux.
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
-    :ensure t
     :if (eq window-system 'ns)
     :config
     (exec-path-from-shell-initialize))
@@ -232,7 +209,6 @@ This section contains settings for non-built-in Emacs features/packages.
 ** =ivy=, =counsel=, and =swiper=
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
-    :ensure t
     :config
     (setq ivy-mode 1)
     (setq enable-recursive-minibuffers t)
@@ -240,27 +216,26 @@ This section contains settings for non-built-in Emacs features/packages.
     (setq mu4e-completing-read-function 'ivy-completing-read))
 
   (use-package swiper
-    :ensure t
     :bind ("C-s" . swiper))
 
   (use-package counsel
-    :ensure t
     :config
     (counsel-mode 1))
 #+END_SRC
 ** =ledger-mode=
 #+BEGIN_SRC emacs-lisp
-  (use-package ledger-mode
-	       :ensure t
-	       :mode "ledger\\.dat\\'")
+  (use-package
+    ledger-mode
+    :mode "ledger\\.dat\\'")
 #+END_SRC
 ** =magit=
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure t
     :bind ("C-x g" . magit-status))
 #+END_SRC
-** =mu4e=
+** COMMENT =mu4e=
+Currently switching to =notmuch= instead of =mu4e=.
+
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
     :init
@@ -366,29 +341,29 @@ This section contains settings for non-built-in Emacs features/packages.
   (use-package org
     :config
     (setq org-agenda-files
-	  '("~/Dropbox/gtd/inbox.org"
-	    "~/Dropbox/gtd/projects.org"
-	    "~/Dropbox/gtd/calendar.org"
-	    "~/Dropbox/gtd/reminders.org"))
+	  '("~/Syncthing/siva/org/inbox.org"
+	    "~/Syncthing/siva/org/projects.org"
+	    "~/Syncthing/siva/org/calendar.org"
+	    "~/Syncthing/siva/org/reminders.org"))
     (setq org-capture-templates
 	  '(("i" "Inbox" entry
-	     (file "~/Dropbox/gtd/inbox.org")
+	     (file "~/Syncthing/siva/org/inbox.org")
 	     "* TODO %i%?")
 	    ("r" "Reminders" entry
-	     (file "~/Dropbox/gtd/reminders.org")
+	     (file "~/Syncthing/siva/org/reminders.org")
 	     "* TODO %i%?\n%T")
 	    ("c" "Calendar" entry
-	     (file "~/Dropbox/gtd/calendar.org")
+	     (file "~/Syncthing/siva/org/calendar.org")
 	     "* %i%?\n%T")))
     (setq org-todo-keywords
 	  '((sequence "TODO(t)" "INPROGRESS(p)" "WAITING(w)" "|"
 		      "DONE(d)" "CANCELLED(c)")))
     (setq org-refile-use-outline-path 'file)
     (setq org-refile-targets
-	  '(("~/Dropbox/gtd/projects.org" :maxlevel . 3)
-	    ("~/Dropbox/gtd/someday.org" :level . 1)
-	    ("~/Dropbox/gtd/calendar.org" :level . 1)
-	    ("~/Dropbox/gtd/reminders.org" :level . 1)))
+	  '(("~/Syncthing/siva/org/projects.org" :maxlevel . 3)
+	    ("~/Syncthing/siva/org/someday.org" :level . 1)
+	    ("~/Syncthing/siva/org/calendar.org" :level . 1)
+	    ("~/Syncthing/siva/org/reminders.org" :level . 1)))
     (setq org-confirm-babel-evaluate nil)
     :bind (("C-c l" . org-store-link)
 	   ("C-c a" . org-agenda)
@@ -397,22 +372,15 @@ This section contains settings for non-built-in Emacs features/packages.
 ** =projectile=
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :ensure t
     :config
     (projectile-mode +1)
     :bind ("C-c p" . projectile-command-map))
-#+END_SRC
-** =visual-fill-column=
-#+BEGIN_SRC emacs-lisp
-  (use-package visual-fill-column
-    :ensure t)
 #+END_SRC
 ** =which-key=
 =which-key= displays available keybindings in a popup window.
 
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
-    :ensure t
     :hook (org-mode . which-key-mode))
 #+END_SRC
 * Start the server
