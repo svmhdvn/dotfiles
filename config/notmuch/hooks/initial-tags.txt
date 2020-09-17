@@ -1,0 +1,12 @@
+# Notmuch initial tagging script
+# Meant to be fed into `notmuch tag --batch`
+
+# Emails sent by NVIDIA or by 3rd-parties helping with
+# employment
++nvidia -- tag:new and (from:@nvidia.com or subject:nvidia)
+
+# Emails sent by me
++sent -- tag:new and (from:me@svmhdvn.name or from:svmhdvn@fastmail.com)
+
+# All new emails go into the inbox as unread
+-new +inbox +unread -- tag:new

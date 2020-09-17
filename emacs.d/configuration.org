@@ -4,7 +4,7 @@ Siva's personal emacs config
 ;;; -*- lexical-binding: t -*-
 #+END_SRC
 
-* bootstrap package manager helpers
+* Bootstrap package manager helpers
 ** =straight.el=
 #+BEGIN_SRC emacs-lisp
   (defvar bootstrap-version)
@@ -40,6 +40,10 @@ This section contains settings for built-in Emacs features.
 ;(load-theme 'deeper-blue)
 (add-to-list 'default-frame-alist '(font . "Hack-14"))
 (setq ring-bell-function 'ignore)
+#+END_SRC
+** Add local emacs package folder locations
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp")
 #+END_SRC
 ** Garbage collection
 Allow 20MB of memory (instead of the default 0.76 MB) before calling garbage
@@ -156,6 +160,10 @@ the things I often do (especially in the long-running =emacsclient=).
   (setq message-cite-reply-position 'traditional)
   (setq message-kill-buffer-on-exit t)
   (setq message-sendmail-envelope-from 'header)
+  (setq user-mail-address "me@svmhdvn.name")
+  (setq smtpmail-smtp-server "smtp.fastmail.com")
+  (setq smtpmail-smtp-service 465)
+  (setq smtpmail-stream-type 'ssl)
 #+END_SRC
 * Programming settings
 ** Code folding
@@ -335,6 +343,12 @@ Currently switching to =notmuch= instead of =mu4e=.
 
     (setq mu4e-context-policy 'pick-first)
     (setq mu4e-compose-context-policy nil))
+#+END_SRC
+** =notmuch=
+#+BEGIN_SRC emacs-lisp
+  (use-package notmuch
+    :config
+    (setq notmuch-fcc-dirs "INBOX"))
 #+END_SRC
 ** =org=
 #+BEGIN_SRC emacs-lisp

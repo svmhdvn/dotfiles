@@ -6,5 +6,5 @@ emacs.d/straight
 emacs.d/transient
 emacs.d/auto-save-list
 emacs.d/elpa
-
 emacs.d/configuration.el
+emacs.d/eshell

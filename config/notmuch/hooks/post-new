@@ -1,0 +1,3 @@
+#!/bin/sh
+
+notmuch tag --batch --input=./initial-tags.txt
