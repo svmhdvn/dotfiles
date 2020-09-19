@@ -205,9 +205,9 @@ bar {
 
 bindsym XF86MonBrightnessUp exec light -A 2%
 bindsym XF86MonBrightnessDown exec light -U 2%
-bindsym XF86AudioRaiseVolume exec amixer set Master 2%+
-bindsym XF86AudioLowerVolume exec amixer set Master 2%-
-bindsym XF86AudioMute exec amixer set Master toggle
-#TODO figure out the mic mute option
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec pactl set-source-mute 1 toggle
 
 exec gammastep

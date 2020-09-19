@@ -4,5 +4,5 @@ env \
     QT_QPA_PLATFORM=wayland \
     MOZ_ENABLE_WAYLAND=1 \
     SDL_VIDEODRIVER=wayland \
-    BROWSER=qutebrowser \
+    BROWSER=firefox \
     sway

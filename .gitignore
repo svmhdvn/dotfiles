@@ -8,3 +8,6 @@ emacs.d/auto-save-list
 emacs.d/elpa
 emacs.d/configuration.el
 emacs.d/eshell
+config/pulse
+config/systemd/user/default.target.wants/
+emacs.d/projectile-bookmarks.eld

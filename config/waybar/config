@@ -8,7 +8,7 @@
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
     //"modules-right": ["mpd", "idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "temperature", "backlight", "battery", "battery#bat2", "clock"],
-    "modules-right": ["idle_inhibitor", "network", "cpu", "memory", "temperature", "backlight", "battery", "clock", "tray"],
+    "modules-right": ["network", "cpu", "memory", "temperature", "backlight", "pulseaudio", "battery", "clock", "tray"],
     // Modules configuration
     // "sway/workspaces": {
     //     "disable-scroll": true,

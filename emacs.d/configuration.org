@@ -10,8 +10,7 @@ Siva's personal emacs config
   (defvar bootstrap-version)
   (let ((bootstrap-file
 	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5)
-	(straight-use-package-by-default t))
+	(bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
 	  (url-retrieve-synchronously
@@ -24,7 +23,7 @@ Siva's personal emacs config
 ** =use-package=
 #+BEGIN_SRC emacs-lisp
   (straight-use-package 'use-package)
-#+END_SRC
+#+end_SRC
 * Default settings
 This section contains settings for built-in Emacs features.
 
@@ -185,60 +184,83 @@ Enable code folding for programming modes
 * Third-party package settings
 This section contains settings for non-built-in Emacs features/packages.
 
+** =lsp-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+	   (zig-mode . lsp)
+	   ;; if you want which-key integration
+	   (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
+#+END_SRC
 ** TODO =editorconfig=
 ** =elfeed=
 #+BEGIN_SRC emacs-lisp
   (use-package elfeed
+    :straight t
     :config
-    '("https://drewdevault.com/feed.xml"
-      "https://danluu.com/atom.xml"
-      "https://jvns.ca/atom.xml"
-      "http://thume.ca/atom.xml"
-      "https://blog.trello.com/feed"
-      "https://ambrevar.xyz/atom.xml"
-      "https://andrewkelley.me/rss.xml")
-    :hook (elfeed-show-mode . visual-clean))
+    (setq elfeed-feeds
+	  '("https://drewdevault.com/feed.xml"
+	    "https://danluu.com/atom.xml"
+	    "https://jvns.ca/atom.xml"
+	    "https://thume.ca/atom.xml"
+	    "https://blog.trello.com/feed"
+	    "https://ambrevar.xyz/atom.xml"
+	    "https://andrewkelley.me/rss.xml")))
 #+END_SRC
 ** COMMENT =exec-path-from-shell=
 Currently disabled because I don't think this is useful on Linux.
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
     :if (eq window-system 'ns)
+    :straight t
     :config
     (exec-path-from-shell-initialize))
 #+END_SRC
 ** =haskell-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
+    :straight t
     :mode (("\\.hs\\'" . haskell-mode)
 	   ("\\.cabal\\'" . haskell-cabal-mode))
     :interpreter ("haskell" . haskell-mode))
 #+END_SRC
+** =zig-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package zig-mode
+    :straight t
+    :mode (("\\.zig\\'" . zig-mode)))
+#+END_SRC
 ** =ivy=, =counsel=, and =swiper=
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
+    :straight t
     :config
     (setq ivy-mode 1)
+    (setq ivy-count-format "(%d/%d) ")
     (setq enable-recursive-minibuffers t)
-    (setq projectile-completion-system 'ivy)
+    (setq projectilevy-completion-system 'ivy)
     (setq mu4e-completing-read-function 'ivy-completing-read))
 
   (use-package swiper
+    :straight t
     :bind ("C-s" . swiper))
 
   (use-package counsel
+    :straight t
     :config
     (counsel-mode 1))
 #+END_SRC
 ** =ledger-mode=
 #+BEGIN_SRC emacs-lisp
-  (use-package
-    ledger-mode
+  (use-package ledger-mode
+    :straight t
     :mode "ledger\\.dat\\'")
 #+END_SRC
 ** =magit=
 #+BEGIN_SRC emacs-lisp
   (use-package magit
+    :straight t
     :bind ("C-x g" . magit-status))
 #+END_SRC
 ** COMMENT =mu4e=
@@ -353,6 +375,7 @@ Currently switching to =notmuch= instead of =mu4e=.
 ** =org=
 #+BEGIN_SRC emacs-lisp
   (use-package org
+    :straight t
     :config
     (setq org-agenda-files
 	  '("~/Syncthing/siva/org/inbox.org"
@@ -386,6 +409,7 @@ Currently switching to =notmuch= instead of =mu4e=.
 ** =projectile=
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
+    :straight t
     :config
     (projectile-mode +1)
     :bind ("C-c p" . projectile-command-map))
@@ -395,6 +419,7 @@ Currently switching to =notmuch= instead of =mu4e=.
 
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
+    :straight t
     :hook (org-mode . which-key-mode))
 #+END_SRC
 * Start the server
