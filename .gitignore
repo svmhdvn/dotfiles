@@ -11,3 +11,6 @@ emacs.d/eshell
 config/pulse
 config/systemd/user/default.target.wants/
 emacs.d/projectile-bookmarks.eld
+config/dconf
+emacs.d/.lsp-session-v1
+emacs.d/eln-cache

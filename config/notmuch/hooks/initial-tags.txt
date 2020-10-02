@@ -3,10 +3,15 @@
 
 # Emails sent by NVIDIA or by 3rd-parties helping with
 # employment
-+nvidia -- tag:new and (from:@nvidia.com or subject:nvidia)
++nvidia -- tag:new and (from:nvidia or subject:nvidia)
 
-# Emails sent by me
-+sent -- tag:new and (from:me@svmhdvn.name or from:svmhdvn@fastmail.com)
+# Gemini protocol mailing list
++list/gemini -- tag:new and to:gemini@lists.orbitalfox.eu
 
-# All new emails go into the inbox as unread
++github -- tag:new and to:github
+
+# New emails sent by me shouldn't be considered "unread"
+-new +inbox +sent -- tag:new and (from:me@svmhdvn.name or from:svmhdvn@fastmail.com)
+
+# All other new emails go into the inbox as unread
 -new +inbox +unread -- tag:new

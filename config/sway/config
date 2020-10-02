@@ -8,6 +8,11 @@ input "type:keyboard" {
     repeat_rate 50
 }
 
+# input "type:touchpad" {
+#     accel_profile flat
+#     pointer_accel 0.5
+# }
+
 set $mod Mod4
 
 set $left h
@@ -205,8 +210,8 @@ bar {
 
 bindsym XF86MonBrightnessUp exec light -A 2%
 bindsym XF86MonBrightnessDown exec light -U 2%
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec pactl set-source-mute 1 toggle
 

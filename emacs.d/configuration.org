@@ -36,7 +36,8 @@ This section contains settings for built-in Emacs features.
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
 ;(add-to-list 'default-frame-alist '(fullscreen . maximized))
-;(load-theme 'deeper-blue)
+(load-theme 'deeper-blue)
+(set-cursor-color "white")
 (add-to-list 'default-frame-alist '(font . "Hack-14"))
 (setq ring-bell-function 'ignore)
 #+END_SRC
@@ -179,7 +180,7 @@ Enable code folding for programming modes
 		'((java-mode . "java")
 		  (awk-mode . "awk")
 		  (other . "linux")))
-  (setq backward-delete-char-untabify-method 'all)
+  (setq backward-delete-char-untabify-method 'hungry)
 #+END_SRC
 * Third-party package settings
 This section contains settings for non-built-in Emacs features/packages.
@@ -187,11 +188,42 @@ This section contains settings for non-built-in Emacs features/packages.
 ** =lsp-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
+    :straight t
+    :init
+    (setq lsp-keymap-prefix "C-c l")
     :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+	   (haskell-mode . lsp)
 	   (zig-mode . lsp)
 	   ;; if you want which-key integration
 	   (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp)
+    :commands lsp
+    :config
+    (add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
+    (add-to-list 'lsp-file-watch-ignored "[/\\\\]dist-newstyle")
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection "/home/siva/src/zls/zig-cache/bin/zls")
+      :major-modes '(zig-mode)
+      :server-id 'zls)))
+
+  (use-package lsp-ui
+    :straight t)
+
+  (use-package lsp-haskell
+    :straight t
+    :config
+    (setq lsp-haskell-process-path-hie "haskell-language-server-wrapper"))
+
+  (use-package lsp-ivy
+    :straight t
+    :commands lsp-ivy-workspace-symbol)
+
+  (use-package flycheck
+    :straight t)
+
+  (use-package flycheck-haskell
+    :straight t
+    :hook ((haskell-mode . flycheck-haskell-setup)))
 #+END_SRC
 ** TODO =editorconfig=
 ** =elfeed=
@@ -208,6 +240,11 @@ This section contains settings for non-built-in Emacs features/packages.
 	    "https://ambrevar.xyz/atom.xml"
 	    "https://andrewkelley.me/rss.xml")))
 #+END_SRC
+** =elpher=
+#+BEGIN_SRC emacs-lisp
+  (use-package elpher
+    :straight t)
+#+END_SRC
 ** COMMENT =exec-path-from-shell=
 Currently disabled because I don't think this is useful on Linux.
 #+BEGIN_SRC emacs-lisp
@@ -220,10 +257,7 @@ Currently disabled because I don't think this is useful on Linux.
 ** =haskell-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
-    :straight t
-    :mode (("\\.hs\\'" . haskell-mode)
-	   ("\\.cabal\\'" . haskell-cabal-mode))
-    :interpreter ("haskell" . haskell-mode))
+    :straight t)
 #+END_SRC
 ** =zig-mode=
 #+BEGIN_SRC emacs-lisp
@@ -369,6 +403,17 @@ Currently switching to =notmuch= instead of =mu4e=.
 ** =notmuch=
 #+BEGIN_SRC emacs-lisp
   (use-package notmuch
+    :bind
+    ((:map notmuch-search-mode-map
+	   ("d" . (lambda (&optional beg end)
+		    "delete single message while removing other useless tags"
+		    (interactive (notmuch-interactive-region))
+		    (notmuch-search-tag (list "-inbox" "-unread" "+deleted")))))
+     (:map notmuch-tree-mode-map
+	   ("d" . (lambda ()
+		    "delete entire thread while removing other useless tags"
+		    (interactive)
+		    (notmuch-tree-tag-thread (list "-inbox" "-unread" "+deleted"))))))
     :config
     (setq notmuch-fcc-dirs "INBOX"))
 #+END_SRC
@@ -402,9 +447,9 @@ Currently switching to =notmuch= instead of =mu4e=.
 	    ("~/Syncthing/siva/org/calendar.org" :level . 1)
 	    ("~/Syncthing/siva/org/reminders.org" :level . 1)))
     (setq org-confirm-babel-evaluate nil)
-    :bind (("C-c l" . org-store-link)
-	   ("C-c a" . org-agenda)
-	   ("C-c c" . org-capture)))
+    :bind (("C-c o l" . org-store-link)
+	   ("C-c o a" . org-agenda)
+	   ("C-c o c" . org-capture)))
 #+END_SRC
 ** =projectile=
 #+BEGIN_SRC emacs-lisp
@@ -420,8 +465,38 @@ Currently switching to =notmuch= instead of =mu4e=.
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :straight t
-    :hook (org-mode . which-key-mode))
+    :config
+    (which-key-mode))
 #+END_SRC
+** =yasnippet=
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :straight t
+    :config
+    (yas-global-mode 1))
+
+  (use-package yasnippet-snippets
+    :straight t)
+#+END_SRC
+** =company-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :straight t
+    :config
+    (setq company-minimum-prefix-length 3)
+    (global-company-mode t))
+
+#+END_SRC
+* My custom keybindings
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key (kbd "C-x o"))
+  (global-set-key (kbd "M-o") 'other-window)
+  (global-set-key (kbd "M-p") 'previous-buffer)
+  (global-set-key (kbd "M-n") 'next-buffer)
+  (global-unset-key (kbd "C-x b"))
+  (global-set-key (kbd "M-s") 'ivy-switch-buffer)
+#+END_SRC
+
 * Start the server
 #+BEGIN_SRC emacs-lisp
 (server-start)
