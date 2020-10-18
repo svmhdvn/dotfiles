@@ -192,7 +192,7 @@ This section contains settings for non-built-in Emacs features/packages.
     :init
     (setq lsp-keymap-prefix "C-c l")
     :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	   (haskell-mode . lsp)
+	   ;(haskell-mode . lsp) TODO completely unusable rn, runs out of memory on my machine
 	   (zig-mode . lsp)
 	   ;; if you want which-key integration
 	   (lsp-mode . lsp-enable-which-key-integration))
@@ -209,21 +209,15 @@ This section contains settings for non-built-in Emacs features/packages.
   (use-package lsp-ui
     :straight t)
 
-  (use-package lsp-haskell
-    :straight t
-    :config
-    (setq lsp-haskell-process-path-hie "haskell-language-server-wrapper"))
-
   (use-package lsp-ivy
     :straight t
     :commands lsp-ivy-workspace-symbol)
-
+#+END_SRC
+** =flycheck=
+#+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :straight t)
 
-  (use-package flycheck-haskell
-    :straight t
-    :hook ((haskell-mode . flycheck-haskell-setup)))
 #+END_SRC
 ** TODO =editorconfig=
 ** =elfeed=
@@ -254,10 +248,19 @@ Currently disabled because I don't think this is useful on Linux.
     :config
     (exec-path-from-shell-initialize))
 #+END_SRC
-** =haskell-mode=
+** Haskell related stuff
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
     :straight t)
+
+  ;; (use-package lsp-haskell
+  ;;   :straight t
+  ;;   :config
+  ;;   (setq lsp-haskell-process-path-hie "haskell-language-server-wrapper"))
+
+  (use-package flycheck-haskell
+    :straight t
+    :hook ((haskell-mode . flycheck-haskell-setup)))
 #+END_SRC
 ** =zig-mode=
 #+BEGIN_SRC emacs-lisp
@@ -491,8 +494,6 @@ Currently switching to =notmuch= instead of =mu4e=.
 #+BEGIN_SRC emacs-lisp
   (global-unset-key (kbd "C-x o"))
   (global-set-key (kbd "M-o") 'other-window)
-  (global-set-key (kbd "M-p") 'previous-buffer)
-  (global-set-key (kbd "M-n") 'next-buffer)
   (global-unset-key (kbd "C-x b"))
   (global-set-key (kbd "M-s") 'ivy-switch-buffer)
 #+END_SRC
