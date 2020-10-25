@@ -1,0 +1,78 @@
+# My alpine linux laptop setup notes
+
+Laptop specs:
+* Lenovo ThinkPad E495
+* AMD ryzen 3500U
+* Radeon vega graphics (AMDGPU)
+* 8 GB RAM (~5.76 GB usable, rest allocated for VRAM)
+* 500GB SSD
+
+## Initial installation
+
+Start by following the install guide to do a normal sys-mode installation of alpine linux. I used the following
+settings in the `setup-alpine` script:
+
+keymap: us-colemak
+hostname: alpine
+networking: wlan0 (wpa_supplicant)
+timezone: Canada/Eastern
+mirror: CDN
+ssh: none (will later install openssh for the sake of having the ssh client)
+ntp: busybox
+disk-install: sys
+
+## Things to do as root user
+
+### Right after first reboot
+
+* For wireless, add wpa_supplicant to RC
+
+```sh
+rc-update add wpa_supplicant
+```
+
+* Change the runlevels of the unnecessary 'boot'-level services to 'default'
+
+```sh
+# do this for each of the services you think should rather be at 'default'
+rc-update add <servicename> default
+rc-update del <servicename> boot
+```
+
+The ones I changed to 'default' are:
+* hostname
+* loadkmap
+* networking
+* ntpd
+
+This should help with speeding up boot times.
+TODO might be useful to figure out how to immediately send udhcpc to the background. It takes forever
+to get a lease.
+
+* Turn on Kernel Modesetting (KMS)
+
+First, enable KMS:
+
+```sh
+echo amdgpu >> /etc/modules
+echo fbcon >> /etc/modules
+```
+
+and add it to the list of features enabled in mkinitfs config:
+
+```
+/etc/mkinitfs/mkinitfs.conf:
+
+features="kms ..."
+```
+
+For some reason, the default installation of alpine linux specifically disables KMS through a GRUB command line
+parameter. Remove that from the grub entry and regenerate grub config:
+
+```
+/etc/default/grub:
+
+...
+GRUB_CMDLINE_LINUX_DEFAULT="..." # remove 'nomodesetting' from here
+```
+

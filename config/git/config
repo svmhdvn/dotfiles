@@ -1,7 +1,7 @@
 [user]
 	name = Siva Mahadevan
 	email = me@svmhdvn.name
-    signingKey = F1299E0B6ED2B95B
+    #signingKey = F1299E0B6ED2B95B
 [push]
 	default = simple
 	followTags = true
@@ -14,15 +14,7 @@
 	smtpAuth = PLAIN
 	smtpServerPort = 465
 [commit]
-	gpgsign = true
-[diff]
-	tool = opendiff
-[merge]
-	tool = ediff
-[mergetool "ediff"]
-	cmd = ec -c -a \"\"  --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
+	#gpgsign = true
 [rebase]
 	autoStash = true
 	autoSquash = true
-[rerere]
-	enabled = true
