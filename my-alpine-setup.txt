@@ -25,10 +25,11 @@ disk-install: sys
 
 ### Right after first reboot
 
-* For wireless, add wpa_supplicant to RC
+* For wireless, add wpa_supplicant to RC and start it up
 
 ```sh
 rc-update add wpa_supplicant
+rc-service wpa_supplicant start
 ```
 
 * Change the runlevels of the unnecessary 'boot'-level services to 'default'
@@ -48,6 +49,12 @@ The ones I changed to 'default' are:
 This should help with speeding up boot times.
 TODO might be useful to figure out how to immediately send udhcpc to the background. It takes forever
 to get a lease.
+
+* USEFUL PACKAGES TO INSTALL
+
+```sh
+apk add mandoc man-pages nano git git-doc 
+```
 
 * Turn on Kernel Modesetting (KMS)
 
@@ -76,3 +83,59 @@ parameter. Remove that from the grub entry and regenerate grub config:
 GRUB_CMDLINE_LINUX_DEFAULT="..." # remove 'nomodesetting' from here
 ```
 
+Finally reboot to enjoy the new "clean" system
+
+## Casual setup
+
+### Power management
+
+Power management is surprisingly hard to debug and setup for the first time. No hand-holding at all. Here
+are the steps I ended up with to get something working that I'm happy with (for now).
+
+* ACPI laptop lid suspend
+
+TODO clean up the editing commands
+
+```sh
+rc-update add acpid
+rc-service start acpid
+mkdir -p /etc/acpi/LID
+echo '#!/bin/sh' >> /etc/acpi/LID/00000080
+echo 'echo mem > /sys/power/state' >> /etc/acpi/LID/00000080
+chmod +x /etc/acpi/LID/00000080
+```
+
+That should be good enough. I tried to use `pm-utils`, but it seems quite old and I had to mess around with
+it too much. Unnecessary.
+
+* Laptop mode tools (power savings for laptop)
+
+This is a set of scripts that help with power saving on a laptop. I set up AC power adapter plug/unplug events
+to enable/disable laptop-mode.
+
+TODO maybe file issues or contribute back to this project to do the following things better for alpine
+* Add OpenRC-based service script
+* Remove the dependency on specific arguments in certain tools like `flock` that aren't supported in busybox
+* Fix detection of ACPI (although I don't think it is very useful to do this anyway since AC adapter doesn't work)
+
+```sh
+git clone https://<laptop-mode-tools repo>
+cd laptop-mode-tools
+ACPI=force ./install # TODO figure out if this is the best way
+```
+
+Then set up the `mdev` event handlers:
+
+```
+/etc/mdev.conf:
+
+...
+# Add a section for your own custom handlers
+
+SUBSYSTEM=power_supply;.*   root:root 0660 */usr/sbin/laptop_mode
+
+# Make sure that the last item is still the fallback (i.e. don't add your custom section to the end)
+
+# fallback for any!device -> any/device
+...
+```
