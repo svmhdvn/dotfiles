@@ -1,12 +1,4 @@
-#
-# ~/.bash_profile
-#
-
-[[ -f ~/.bashrc ]] && . ~/.bashrc
-
-[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-
-export PATH=$HOME/bin:$HOME/src/zig/build/:$PATH
+export PATH=$HOME/bin:$PATH
 export EDITOR=nvim
 export BROWSER=elinks
 export XDG_CONFIG_HOME=$HOME/.config

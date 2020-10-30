@@ -25,28 +25,6 @@ disk-install: sys
 
 ### Right after first reboot
 
-* For wireless, add wpa_supplicant to RC and start it up
-
-```sh
-rc-update add wpa_supplicant
-rc-service wpa_supplicant start
-```
-
-* Change the runlevels of the unnecessary 'boot'-level services to 'default'
-
-```sh
-# do this for each of the services you think should rather be at 'default'
-rc-update add <servicename> default
-rc-update del <servicename> boot
-```
-
-The ones I changed to 'default' are:
-* hostname
-* loadkmap
-* networking
-* ntpd
-
-This should help with speeding up boot times.
 TODO might be useful to figure out how to immediately send udhcpc to the background. It takes forever
 to get a lease.
 
@@ -74,13 +52,19 @@ features="kms ..."
 ```
 
 For some reason, the default installation of alpine linux specifically disables KMS through a GRUB command line
-parameter. Remove that from the grub entry and regenerate grub config:
+parameter. Remove that from the grub entry:
 
 ```
 /etc/default/grub:
 
 ...
 GRUB_CMDLINE_LINUX_DEFAULT="..." # remove 'nomodesetting' from here
+```
+
+Then regenerate grub config:
+
+```sh
+grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 Finally reboot to enjoy the new "clean" system
@@ -139,3 +123,15 @@ SUBSYSTEM=power_supply;.*   root:root 0660 */usr/sbin/laptop_mode
 # fallback for any!device -> any/device
 ...
 ```
+
+### Sway window manager
+
+First, follow the alpine wiki page on Sway exactly.
+
+There's a lot of extra packages that need to be added to sway's dependencies to work correctly.
+
+Here is a rough list for now:
+* elogind
+* mesa
+* mesa-dri-gallium
+* xkeyboard-config
