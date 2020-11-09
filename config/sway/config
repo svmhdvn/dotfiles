@@ -20,7 +20,7 @@ set $down n
 set $up e
 set $right i
 
-set $term termite -e 'fish -i'
+set $term alacritty
 set $menu wofi --show drun
 
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff

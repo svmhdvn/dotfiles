@@ -23,9 +23,8 @@ set postponed         = "+Drafts"
 set realname          = "Siva Mahadevan"
 set record            = "+Sent,+INBOX" # copy outgoing mails to both sent and INBOX
 set send_charset      = "utf-8"        # Encode outgoing as UTF-8
+set sendmail          = `which msmtp`  # let msmtp take care of SMTP config
 set sleep_time        = 0              # don't wait when switching folders
-set smtp_url          = "smtps://me@svmhdvn.name@smtp.fastmail.com:465"
-set smtp_pass         = `cat $HOME/.password-store/secret/fastmail.txt`
 set sort              = threads
 set sort_aux          = reverse-last-date-received
 set ssl_force_tls     = yes            # Force all connections to be encrypted with TLS
@@ -34,7 +33,7 @@ set timeout           = 0              # no idle time before scanning
 set trash             = "+Trash"
 set wait_key          = no             # shut up, mutt
 
-alternative_order text/plain text/enriched text/html
+alternative_order text/plain text/html
 auto_view text/html
 ignore *
 unignore From Date To Cc Bcc Subject
@@ -83,7 +82,6 @@ color   body    yellow          default         ^(diff).*
 #color   body    brightblue      default         [@@].*                          
 color   body    brightwhite     default         ^(\s).*                         
 color   body    cyan            default         ^(Signed-off-by).*
-color   body    cyan            default         ^(Docker-DCO-1.1-Signed-off-by).*
 color   body    brightwhite     default         ^(Cc)
 color   body    yellow          default         "^diff \-.*"
 color   body    brightwhite     default         "^index [a-f0-9].*"

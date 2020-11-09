@@ -1,20 +1,13 @@
 [user]
-	name = Siva Mahadevan
-	email = me@svmhdvn.name
+    name = Siva Mahadevan
+    email = me@svmhdvn.name
     #signingKey = F1299E0B6ED2B95B
 [push]
-	default = simple
-	followTags = true
+    default = simple
 [pull]
-	rebase = true
+    rebase = true
 [sendemail]
-	smtpEncryption = tls
-	smtpServer = smtp.fastmail.com
-	smtpUser = me@svmhdvn.name
-	smtpAuth = PLAIN
-	smtpServerPort = 465
+    smtpserver = /usr/bin/msmtp
+    annotate = yes
 [commit]
-	#gpgsign = true
-[rebase]
-	autoStash = true
-	autoSquash = true
+    #gpgsign = true

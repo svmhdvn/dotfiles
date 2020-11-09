@@ -6,7 +6,7 @@
 #cell_width_scale = 1.0
 #clickable_url = true
 dynamic_title = false
-font = Inconsolata Semibold 23px
+font = Dejavu Sans Mono 18px
 #fullscreen = true
 #icon_name = terminal
 #mouse_autohide = false

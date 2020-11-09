@@ -14,3 +14,5 @@ emacs.d/projectile-bookmarks.eld
 config/dconf
 emacs.d/.lsp-session-v1
 emacs.d/eln-cache
+config/glib-2.0
+config/mimeapps.list

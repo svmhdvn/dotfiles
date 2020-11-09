@@ -3,12 +3,12 @@ auth           plain
 tls            on
 tls_starttls   off
 
-account        fastmail
+account        personal
 host           smtp.fastmail.com
 port           465
-from           svmhdvn@fastmail.com
-user           svmhdvn@fastmail.com
-passwordeval   "cat $HOME/.password-store/secret/fastmail-imap-smtp.txt"
+from           me@svmhdvn.name
+user           me@svmhdvn.name
+passwordeval   "cat $HOME/.password-store/secret/fastmail-imap.txt"
 
 # Set a default account
-account default : fastmail
+account default : personal

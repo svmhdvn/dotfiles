@@ -1,8 +1,8 @@
 call plug#begin(stdpath('data') . '/plugged')
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-easy-align'
-Plug 'ziglang/zig.vim'
+Plug 'NLKNguyen/papercolor-theme'
+"Plug 'junegunn/fzf'
+"Plug 'junegunn/fzf.vim'
+"Plug 'ziglang/zig.vim'
 call plug#end()
 
 let g:mapleader="\<Space>"
@@ -11,8 +11,12 @@ let g:netrw_liststyle = 3
 let g:netrw_sort_sequence = '[\/]$,*'
 let g:zig_fmt_autosave = 0
 
+" default indentation settings (useful for most text editing needs)
 set colorcolumn=80
 set expandtab
+set shiftwidth=4
+
+set background=light
 set hidden
 set ignorecase
 set lazyredraw
@@ -22,15 +26,15 @@ set nobackup
 set noswapfile
 set nowrap
 set nowritebackup
-set shiftwidth=4
 set showmatch
 set smartcase
-set smartindent
-set softtabstop=4
 set ttimeoutlen=0
 set wildignorecase
 
-autocmd Filetype ruby set softtabstop=2 shiftwidth=2 tabstop=2
+colorscheme PaperColor
+
+autocmd Filetype haskell,ruby set shiftwidth=2
+autocmd Filetype c,cpp set noexpandtab shiftwidth=0
 
 " vim colemak bindings
 inoremap <C-e> <C-p>
@@ -64,5 +68,3 @@ noremap n j
 noremap s i
 noremap t e
 onoremap r i
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
