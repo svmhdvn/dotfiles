@@ -1,7 +1,7 @@
 call plug#begin(stdpath('data') . '/plugged')
 Plug 'NLKNguyen/papercolor-theme'
-"Plug 'junegunn/fzf'
-"Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 "Plug 'ziglang/zig.vim'
 call plug#end()
 
