@@ -1,5 +1,4 @@
 call plug#begin(stdpath('data') . '/plugged')
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 "Plug 'ziglang/zig.vim'
@@ -16,7 +15,6 @@ set colorcolumn=80
 set expandtab
 set shiftwidth=4
 
-set background=light
 set hidden
 set ignorecase
 set lazyredraw
@@ -30,8 +28,6 @@ set showmatch
 set smartcase
 set ttimeoutlen=0
 set wildignorecase
-
-colorscheme PaperColor
 
 autocmd Filetype haskell,ruby set shiftwidth=2
 autocmd Filetype c,cpp set noexpandtab shiftwidth=0
