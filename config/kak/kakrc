@@ -1,0 +1,49 @@
+set-option global scrolloff 3,0
+
+# colemak bindings
+
+## hjkl movement
+map global normal n j
+map global normal N J
+map global normal e k
+map global normal E K
+map global normal i l
+map global normal I L
+map global normal <c-n> <c-d>
+map global normal <c-e> <c-u>
+
+map global normal <a-i> <a-l>
+
+## word/WORD movement
+map global normal t e
+map global normal T E
+map global normal <a-t> <a-e>
+
+## multi-select and insert mode
+map global normal s i
+map global normal S I
+map global normal j s
+map global normal J S
+map global normal <a-j> <a-s>
+map global normal <a-J> <a-S>
+
+## searching
+map global normal k n
+map global normal K N
+map global normal <a-k> <a-n>
+map global normal <a-K> <a-N>
+
+## object selection
+map global normal <a-r> <a-i>
+
+## goto-mode movement
+map global goto h i
+map global goto n j
+map global goto e k
+map global goto i l
+map global goto l h
+
+## view-mode movement
+map global view n j
+map global view e k
+map global view i l

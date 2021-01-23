@@ -132,6 +132,4 @@ There's a lot of extra packages that need to be added to sway's dependencies to 
 
 Here is a rough list for now:
 * elogind
-* mesa
 * mesa-dri-gallium
-* xkeyboard-config

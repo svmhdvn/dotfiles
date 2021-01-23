@@ -8,7 +8,7 @@ host           smtp.fastmail.com
 port           465
 from           me@svmhdvn.name
 user           me@svmhdvn.name
-passwordeval   "cat $HOME/.password-store/secret/fastmail-imap.txt"
+passwordeval   "cat $HOME/.password-store/secret/fastmail-imap-smtp.txt"
 
 # Set a default account
 account default : personal

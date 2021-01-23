@@ -1,10 +1,6 @@
-export PATH=$HOME/.cabal/bin:$PATH
-export PATH=$HOME/.ghcup/bin:$PATH
 export PATH=$HOME/bin:$PATH
 
-export MANPATH=/usr/local/share/man:$MANPATH
-
-export EDITOR=nvim
+export EDITOR=kak
 export BROWSER=elinks
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
