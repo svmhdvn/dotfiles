@@ -24,7 +24,7 @@ set $term alacritty
 set $menu wofi --show drun
 
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
-default_border pixel
+default_border pixel 1
 
 ### Output configuration
 #
@@ -130,14 +130,11 @@ default_border pixel
 #
 # Layout stuff:
 #
-    # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
-    # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+    bindsym $mod+v splith
+    bindsym $mod+s splitv
 
     # Switch the current container between different layout styles
-    bindsym $mod+s layout toggle split
+    bindsym $mod+b layout toggle split
     bindsym $mod+w layout tabbed
 
     # Make the current focus fullscreen
@@ -190,8 +187,11 @@ bindsym $mod+Shift+r mode "resize"
 
 # siva's custom config
 
+# TODO move to standard swaybar
 bar {
-    swaybar_command waybar
+    status_command while $XDG_CONFIG_HOME/sway/bar.sh; do sleep 5; done
+    position top
+    font pango:DejaVu Sans Mono 12
 }
 
 bindsym XF86MonBrightnessUp exec light -A 2%
@@ -201,4 +201,5 @@ bindsym XF86AudioLowerVolume exec amixer set Master 5%-
 bindsym XF86AudioMute exec amixer set Master toggle
 bindsym XF86AudioMicMute exec amixer set Capture toggle
 
-exec gammastep
+exec mako
+# TODO exec gammastep

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+repo="$1"
+name="$2"
+version="$3"
+
+curdir="$PWD"
+cd "$HOME/src/aports/$repo/$name" # TODO check error
+
+# TODO try not doing intermediate file
+sed "s/^pkgver=.*\$/pkgver=$version/" APKBUILD > APKBUILD.new
+
+mv APKBUILD.new APKBUILD
+abuild checksum # TODO check error
+git add APKBUILD # TODO do this in a clean git working area with no prev changes
+git commit -m "$repo/$name: upgrade to $version"
+git send-email HEAD^
+
+cd "$curdir"

@@ -5,7 +5,6 @@ User me@svmhdvn.name
 # App-specific password
 PassCmd "cat $HOME/.password-store/secret/fastmail-imap-smtp.txt"
 SSLType IMAPS
-# TODO update this for TLSv1.3 when it is released
 SSLVersions TLSv1.2
 
 IMAPStore personal-remote
@@ -17,12 +16,10 @@ Inbox ~/Mail/INBOX
 Subfolders Verbatim
 
 Channel personal
-Master :personal-remote:
-Slave :personal-local:
+Far :personal-remote:
+Near :personal-local:
 Patterns *
-
 # Create missing folders on both local and remote
 Create Both
 # Make sure to propagate the correct mail arrival date
-CopyArrivalDate yes
 SyncState *

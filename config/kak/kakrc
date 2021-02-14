@@ -1,4 +1,13 @@
 set-option global scrolloff 3,0
+set-option global ui_options ncurses_set_title=false ncurses_assistant=none ncurses_enable_mouse=true ncurses_change_colors=false
+set-option global autoinfo command
+
+add-highlighter global/ column 80 default,rgb:444444
+
+hook global WinSetOption filetype=mail %{
+    set window autowrap_column 72
+    autowrap-enable
+}
 
 # colemak bindings
 

@@ -21,9 +21,9 @@ set pager_index_lines = 10
 set pager_stop        = yes            # don't go to next message automatically
 set postponed         = "+Drafts"
 set realname          = "Siva Mahadevan"
-set record            = "+Sent,+INBOX" # copy outgoing mails to both sent and INBOX
+set record            = "+Sent"
 set send_charset      = "utf-8"        # Encode outgoing as UTF-8
-set sendmail          = `which msmtp`  # let msmtp take care of SMTP config
+set sendmail          = msmtp          # let msmtp take care of SMTP config
 set sleep_time        = 0              # don't wait when switching folders
 set sort              = threads
 set sort_aux          = reverse-last-date-received
@@ -41,28 +41,28 @@ unignore From Date To Cc Bcc Subject
 # Colemak keybindings
 
 bind index E edit
-bind index G last-entry
+bind index gn last-entry
 bind index \Ce half-up
 bind index \Cn half-down
 bind index e previous-entry
-bind index g first-entry
+bind index ge first-entry
 bind index k search-next
 bind index n next-entry
 bind index ra group-chat-reply
 bind index ro reply
 bind pager E previous-entry
-bind pager G bottom
+bind pager gn bottom
 bind pager N next-entry
 bind pager \Ce half-up
 bind pager \Cn half-down
 bind pager e previous-line
-bind pager g top
+bind pager ge top
 bind pager k search-next
 bind pager n next-line
 bind pager ra group-chat-reply
 bind pager ro reply
 
-macro index % "<shell-escape>mbsync personal<enter>" "run mbsync to sync mail"
+macro index % "<shell-escape>mbsync -a<enter>" "run mbsync to sync mail"
 macro index ta "<change-folder>=Archive<enter>" "Go to Archive"
 macro index td "<change-folder>=Drafts<enter>" "Go to Drafts"
 macro index ti "<change-folder>=INBOX<enter>" "Go to INBOX"
@@ -72,7 +72,8 @@ macro index,pager \Cu "<pipe-message>urlscan<enter>" "call urlscan to extract UR
 macro index,pager y "<save-message>=Archive<enter>" "Archive"
 
 # Patch syntax highlighting                                                     
-color body      cyan            default         "^\\\+[^\\\+]{2}.*$/?"
+color body      green           default         "^\\\+[^\\\+]{2}.*$/?"
 color body      red             default         "^\-.*$"
-color body      brightgreen     default         "^\\\+\\\+\\\+ .*$"
-color body      brightgreen     default         "^\-\-\- .*$"
+color body      brightyellow    default         "^\\\+\\\+\\\+ .*$"
+color body      brightyellow    default         "^\-\-\- .*$"
+color body      cyan            default         "^@@.*@@.*$"
