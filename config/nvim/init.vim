@@ -29,8 +29,12 @@ set smartcase
 set ttimeoutlen=0
 set wildignorecase
 
+augroup filetypedetect
+    autocmd BufNew,BufNewFile,BufRead APKBUILD :setfiletype sh
+augroup END
+
 autocmd Filetype haskell,ruby set shiftwidth=2
-autocmd Filetype c,cpp set noexpandtab shiftwidth=0
+autocmd Filetype c,cpp,sh set noexpandtab shiftwidth=0
 
 " vim colemak bindings
 inoremap <C-e> <C-p>

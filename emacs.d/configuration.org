@@ -8,6 +8,7 @@ Siva's personal emacs config
 ** =straight.el=
 #+BEGIN_SRC emacs-lisp
   (defvar bootstrap-version)
+  (setq straight-disable-native-compile t)
   (let ((bootstrap-file
 	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
 	(bootstrap-version 5))
@@ -38,7 +39,7 @@ This section contains settings for built-in Emacs features.
 ;(add-to-list 'default-frame-alist '(fullscreen . maximized))
 (load-theme 'deeper-blue)
 (set-cursor-color "white")
-(add-to-list 'default-frame-alist '(font . "Hack-14"))
+(add-to-list 'default-frame-alist '(font . "Ubuntu Mono-18"))
 (setq ring-bell-function 'ignore)
 #+END_SRC
 ** Add local emacs package folder locations
@@ -403,7 +404,7 @@ Currently switching to =notmuch= instead of =mu4e=.
     (setq mu4e-context-policy 'pick-first)
     (setq mu4e-compose-context-policy nil))
 #+END_SRC
-** =notmuch=
+** COMMENT =notmuch=
 #+BEGIN_SRC emacs-lisp
   (use-package notmuch
     :bind
@@ -492,10 +493,7 @@ Currently switching to =notmuch= instead of =mu4e=.
 #+END_SRC
 * My custom keybindings
 #+BEGIN_SRC emacs-lisp
-  (global-unset-key (kbd "C-x o"))
-  (global-set-key (kbd "M-o") 'other-window)
-  (global-unset-key (kbd "C-x b"))
-  (global-set-key (kbd "M-s") 'ivy-switch-buffer)
+
 #+END_SRC
 
 * Start the server

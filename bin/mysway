@@ -5,5 +5,5 @@ QT_QPA_PLATFORM=wayland \
     MOZ_DBUS_REMOTE=1 \
     SDL_VIDEODRIVER=wayland \
     BROWSER=firefox \
-    XDG_RUNTIME_DIR=/tmp \
+    XDG_RUNTIME_DIR=$(mktemp -d) \
     dbus-run-session sway

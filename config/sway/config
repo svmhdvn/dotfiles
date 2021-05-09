@@ -8,10 +8,9 @@ input "type:keyboard" {
     repeat_rate 50
 }
 
-# input "type:touchpad" {
-#     accel_profile flat
-#     pointer_accel 0.5
-# }
+input "type:touchpad" {
+    natural_scroll enabled
+}
 
 set $mod Mod4
 
@@ -20,7 +19,7 @@ set $down n
 set $up e
 set $right i
 
-set $term alacritty
+set $term foot
 set $menu wofi --show drun
 
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
@@ -192,6 +191,7 @@ bar {
     status_command while $XDG_CONFIG_HOME/sway/bar.sh; do sleep 5; done
     position top
     font pango:DejaVu Sans Mono 12
+    pango_markup enabled
 }
 
 bindsym XF86MonBrightnessUp exec light -A 2%
