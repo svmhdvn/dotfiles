@@ -6,4 +6,5 @@ QT_QPA_PLATFORM=wayland \
     SDL_VIDEODRIVER=wayland \
     BROWSER=firefox \
     XDG_RUNTIME_DIR=$(mktemp -d) \
-    dbus-run-session sway
+    XDG_CURRENT_DESKTOP=sway \
+    dbus-launch --exit-with-session sway

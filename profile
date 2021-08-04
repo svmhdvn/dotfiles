@@ -1,4 +1,4 @@
-export PATH=$HOME/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 export EDITOR=nvim
 export BROWSER=elinks

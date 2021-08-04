@@ -11,3 +11,5 @@
     annotate = yes
 [commit]
     #gpgsign = true
+[init]
+	defaultBranch = main
