@@ -39,7 +39,7 @@ This section contains settings for built-in Emacs features.
 ;(add-to-list 'default-frame-alist '(fullscreen . maximized))
 (load-theme 'deeper-blue)
 (set-cursor-color "white")
-(add-to-list 'default-frame-alist '(font . "Ubuntu Mono-18"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Fixed-16"))
 (setq ring-bell-function 'ignore)
 #+END_SRC
 ** Add local emacs package folder locations
@@ -490,6 +490,11 @@ Currently switching to =notmuch= instead of =mu4e=.
     (setq company-minimum-prefix-length 3)
     (global-company-mode t))
 
+#+END_SRC
+** =agda-mode=
+#+BEGIN_SRC emacs-lisp
+(load-file (let ((coding-system-for-read 'utf-8))
+            (shell-command-to-string "agda-mode locate")))
 #+END_SRC
 * My custom keybindings
 #+BEGIN_SRC emacs-lisp
