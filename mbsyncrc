@@ -1,11 +1,10 @@
 IMAPAccount personal
-Host imap.fastmail.com
+Host imap.migadu.com
 Port 993
-User me@svmhdvn.name
-# App-specific password
-PassCmd "cat $HOME/.password-store/secret/fastmail-imap-smtp.txt"
+User mbsync-msmtp@svmhdvn.name
+PassCmd "cat $HOME/secrets/email-app-password.txt"
 SSLType IMAPS
-SSLVersions TLSv1.2
+SSLVersions TLSv1.3
 
 IMAPStore personal-remote
 Account personal

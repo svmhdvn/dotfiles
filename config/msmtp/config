@@ -4,11 +4,11 @@ tls            on
 tls_starttls   off
 
 account        personal
-host           smtp.fastmail.com
+host           smtp.migadu.com
 port           465
 from           me@svmhdvn.name
-user           me@svmhdvn.name
-passwordeval   "cat $HOME/.password-store/secret/fastmail-imap-smtp.txt"
+user           mbsync-msmtp@svmhdvn.name
+passwordeval   "cat $HOME/secrets/email-app-password.txt"
 
 # Set a default account
 account default : personal

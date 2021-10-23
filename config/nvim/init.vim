@@ -2,6 +2,7 @@ call plug#begin(stdpath('data') . '/plugged')
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'ziglang/zig.vim'
+Plug 'neovimhaskell/haskell-vim'
 call plug#end()
 
 let g:mapleader="\<Space>"

@@ -427,29 +427,29 @@ Currently switching to =notmuch= instead of =mu4e=.
     :straight t
     :config
     (setq org-agenda-files
-	  '("~/Syncthing/siva/org/inbox.org"
-	    "~/Syncthing/siva/org/projects.org"
-	    "~/Syncthing/siva/org/calendar.org"
-	    "~/Syncthing/siva/org/reminders.org"))
+	  '("~/syncthing/backup/org/inbox.org"
+	    "~/syncthing/backup/org/projects.org"
+	    "~/syncthing/backup/org/calendar.org"
+	    "~/syncthing/backup/org/reminders.org"))
     (setq org-capture-templates
 	  '(("i" "Inbox" entry
-	     (file "~/Syncthing/siva/org/inbox.org")
+	     (file "~/syncthing/backup/org/inbox.org")
 	     "* TODO %i%?")
 	    ("r" "Reminders" entry
-	     (file "~/Syncthing/siva/org/reminders.org")
+	     (file "~/syncthing/backup/org/reminders.org")
 	     "* TODO %i%?\n%T")
 	    ("c" "Calendar" entry
-	     (file "~/Syncthing/siva/org/calendar.org")
+	     (file "~/syncthing/backup/org/calendar.org")
 	     "* %i%?\n%T")))
     (setq org-todo-keywords
 	  '((sequence "TODO(t)" "INPROGRESS(p)" "WAITING(w)" "|"
 		      "DONE(d)" "CANCELLED(c)")))
     (setq org-refile-use-outline-path 'file)
     (setq org-refile-targets
-	  '(("~/Syncthing/siva/org/projects.org" :maxlevel . 3)
-	    ("~/Syncthing/siva/org/someday.org" :level . 1)
-	    ("~/Syncthing/siva/org/calendar.org" :level . 1)
-	    ("~/Syncthing/siva/org/reminders.org" :level . 1)))
+	  '(("~/syncthing/backup/org/projects.org" :maxlevel . 3)
+	    ("~/syncthing/backup/org/someday.org" :level . 1)
+	    ("~/syncthing/backup/org/calendar.org" :level . 1)
+	    ("~/syncthing/backup/org/reminders.org" :level . 1)))
     (setq org-confirm-babel-evaluate nil)
     :bind (("C-c o l" . org-store-link)
 	   ("C-c o a" . org-agenda)
