@@ -208,4 +208,6 @@ exec mako
 #exec pipewire
 #exec /usr/libexec/xdg-desktop-portal
 
+for_window [app_id="qemu"] resize set 1024 768
+
 # TODO exec gammastep
