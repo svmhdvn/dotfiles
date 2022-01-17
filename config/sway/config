@@ -19,7 +19,7 @@ set $down n
 set $up e
 set $right i
 
-set $term alacritty
+set $term foot --log-level=warning
 set $menu wofi --show drun
 
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
@@ -201,13 +201,11 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
-exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+# exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec mako
 
 #TODO move to pipewire when pulseaudio isn't needed
-#exec pipewire
+exec pipewire
 #exec /usr/libexec/xdg-desktop-portal
-
-for_window [app_id="qemu"] resize set 1024 768
 
 # TODO exec gammastep
