@@ -27,6 +27,7 @@ set nowrap
 set nowritebackup
 set showmatch
 set smartcase
+set termguicolors
 set ttimeoutlen=0
 set wildignorecase
 
