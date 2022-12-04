@@ -1,5 +1,4 @@
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-#export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 
 export EDITOR=nvim
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -9,3 +8,11 @@ export XDG_DATA_DIRS=/usr/local/share:/usr/share
 export XDG_CONFIG_DIRS=/etc/xdg
 export FZF_DEFAULT_COMMAND='fd --type file'
 export LEDGER_FILE="$HOME/finances/current.journal"
+
+if test -z "${XDG_RUNTIME_DIR}"; then
+	export XDG_RUNTIME_DIR="/tmp/$(id -u)-runtime-dir"
+	if ! test -d "${XDG_RUNTIME_DIR}"; then
+		mkdir "${XDG_RUNTIME_DIR}"
+		chmod 0700 "${XDG_RUNTIME_DIR}"
+	fi
+fi

@@ -3,6 +3,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'ziglang/zig.vim'
 Plug 'neovimhaskell/haskell-vim'
+Plug 'mlochbaum/BQN', {'rtp': 'editors/vim'}
 call plug#end()
 
 let g:mapleader="\<Space>"
@@ -23,12 +24,12 @@ set magic
 set mouse=a
 set nobackup
 set noswapfile
+set notimeout
 set nowrap
 set nowritebackup
 set showmatch
 set smartcase
 set termguicolors
-set ttimeoutlen=0
 set wildignorecase
 
 augroup filetypedetect

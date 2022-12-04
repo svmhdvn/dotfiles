@@ -2,7 +2,7 @@
 
 # SIVA: this is the battery fuel gauge driver. Currently set for
 # the pinebook pro
-battery_driver=cw2015-battery
+battery_driver=BAT0
 
 # The abbreviated weekday (e.g., "Sat"), followed by the ISO-formatted date
 # # like 2018-10-06 and the time (e.g., 14:01)

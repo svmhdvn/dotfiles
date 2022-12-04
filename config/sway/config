@@ -196,16 +196,16 @@ bar {
 
 bindsym XF86MonBrightnessUp exec light -A 2%
 bindsym XF86MonBrightnessDown exec light -U 2%
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
 # exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec mako
+#exec mako
 
 #TODO move to pipewire when pulseaudio isn't needed
-exec pipewire
+exec /usr/libexec/pipewire-launcher
 #exec /usr/libexec/xdg-desktop-portal
 
 # TODO exec gammastep
