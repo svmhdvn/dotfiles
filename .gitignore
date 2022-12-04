@@ -1,5 +1,4 @@
 config/configstore
-config/htop
 config/light
 config/syncthing
 emacs.d/straight
