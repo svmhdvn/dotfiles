@@ -17,7 +17,6 @@ set colorcolumn=80
 set expandtab
 set shiftwidth=4
 
-set cmdheight=0
 set hidden
 set ignorecase
 set lazyredraw
