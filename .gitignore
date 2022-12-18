@@ -8,6 +8,7 @@ emacs.d/elpa
 emacs.d/configuration.el
 emacs.d/eshell
 config/pulse
+config/user-dirs.*
 config/systemd/user/default.target.wants/
 emacs.d/projectile-bookmarks.eld
 config/dconf
