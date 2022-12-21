@@ -10,7 +10,7 @@ c.tabs.wrap = False
 c.url.default_page = "about:blank"
 c.url.searchengines = {"DEFAULT": "https://google.com/search?q={}"}
 c.url.start_pages = "about:blank"
-c.zoom.default = "125%"
+c.zoom.default = "150%"
 
 # Colemak bindings
 
@@ -51,7 +51,7 @@ rebind("k", "e", "scroll up")
 rebind("l", "i", "scroll right")
 rebind("n", "k", "search-next")
 rebind("N", "K", "search-prev")
-rebind("i", "s", "enter-mode insert")
+rebind("i", "s", "mode-enter insert")
 
 # custom commands
 config.bind(";m", "hint links spawn mpv {hint-url}")
