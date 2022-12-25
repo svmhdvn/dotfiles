@@ -1,5 +1,14 @@
 config/configstore
 config/dconf
+config/emacs/.lsp-session-v1
+config/emacs/auto-save-list
+config/emacs/configuration.el
+config/emacs/eln-cache
+config/emacs/elpa
+config/emacs/eshell
+config/emacs/projectile-bookmarks.eld
+config/emacs/straight
+config/emacs/transient
 config/glib-2.0
 config/light
 config/mimeapps.list
@@ -8,12 +17,3 @@ config/pulse
 config/syncthing
 config/systemd/user/default.target.wants
 config/user-dirs.*
-emacs.d/.lsp-session-v1
-emacs.d/auto-save-list
-emacs.d/configuration.el
-emacs.d/eln-cache
-emacs.d/elpa
-emacs.d/eshell
-emacs.d/projectile-bookmarks.eld
-emacs.d/straight
-emacs.d/transient

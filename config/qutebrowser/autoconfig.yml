@@ -9,5 +9,7 @@ settings:
   content.geolocation:
     https://www.google.com: true
   content.javascript.enabled:
-      https://*.google.ca: false
-      https://*.google.com: false
+    https://google.ca: false
+    https://google.com: false
+  content.notifications.enabled:
+    https://www.youtube.com: false
