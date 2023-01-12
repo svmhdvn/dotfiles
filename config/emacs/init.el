@@ -22,8 +22,8 @@
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
 ;(add-to-list 'default-frame-alist '(fullscreen . maximized))
-;(load-theme 'deeper-blue)
-;(set-cursor-color "white")
+(load-theme 'deeper-blue)
+(set-cursor-color "white")
 (add-to-list 'default-frame-alist '(font . "Iosevka Fixed-14"))
 (setq ring-bell-function 'ignore)
 
@@ -80,25 +80,6 @@
 		(awk-mode . "awk")
 		(other . "linux")))
 (setq backward-delete-char-untabify-method 'hungry)
-
-(use-package lsp-mode
-  :straight t
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	 ;(haskell-mode . lsp) TODO completely unusable rn, runs out of memory on my machine
-	 (zig-mode . lsp)
-	 ;; if you want which-key integration
-	 (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp
-  :config
-  (add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
-  (add-to-list 'lsp-file-watch-ignored "[/\\\\]dist-newstyle")
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection "/home/siva/src/zls/zig-cache/bin/zls")
-    :major-modes '(zig-mode)
-    :server-id 'zls)))
 
 (use-package lsp-ui
   :straight t)

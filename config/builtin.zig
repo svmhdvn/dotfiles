@@ -75,12 +75,12 @@ pub const os = std.Target.Os{
             .min = .{
                 .major = 6,
                 .minor = 1,
-                .patch = 0,
+                .patch = 2,
             },
             .max = .{
                 .major = 6,
                 .minor = 1,
-                .patch = 0,
+                .patch = 2,
             },
         },
         .glibc = .{

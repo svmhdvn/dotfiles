@@ -72,8 +72,8 @@ macro index,pager \Cu "<pipe-message>urlscan<enter>" "call urlscan to extract UR
 macro index,pager y "<save-message>=Archive<enter>" "Archive"
 
 # Patch syntax highlighting                                                     
-color body      green           default         "^\\\+[^\\\+]{2}.*$/?"
-color body      red             default         "^\-.*$"
-color body      brightyellow    default         "^\\\+\\\+\\\+ .*$"
-color body      brightyellow    default         "^\-\-\- .*$"
-color body      cyan            default         "^@@.*@@.*$"
+color body      brightgreen    default         "^\\\+[^\\\+]{2}.*$/?"
+color body      red            default         "^\-.*$"
+color body      brightmagenta  default         "^\\\+\\\+\\\+ .*$"
+color body      brightmagenta  default         "^\-\-\- .*$"
+color body      brightyellow   default         "^@@.*@@.*$"

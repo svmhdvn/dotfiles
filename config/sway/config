@@ -177,10 +177,10 @@ bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
 # exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+# TODO notifications
 #exec mako
 
-#TODO move to pipewire when pulseaudio isn't needed
 exec /usr/libexec/pipewire-launcher
 #exec /usr/libexec/xdg-desktop-portal
 
-# TODO exec gammastep
+exec gammastep

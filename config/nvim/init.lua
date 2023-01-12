@@ -56,7 +56,6 @@ vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
 
 vim.opt.backup = false
-vim.opt.hidden = true
 vim.opt.ignorecase = true
 vim.opt.lazyredraw = true
 vim.opt.magic = true

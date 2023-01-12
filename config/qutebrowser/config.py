@@ -1,6 +1,6 @@
 config.load_autoconfig()
 
-c.colors.webpage.preferred_color_scheme = "light"
+c.colors.webpage.preferred_color_scheme = "dark"
 c.content.autoplay = False
 c.content.default_encoding = "utf-8"
 c.downloads.location.prompt = False

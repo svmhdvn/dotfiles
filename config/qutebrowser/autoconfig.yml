@@ -8,8 +8,15 @@ config_version: 2
 settings:
   content.geolocation:
     https://www.google.com: true
+    https://www.staples.ca: false
   content.javascript.enabled:
     https://google.ca: false
     https://google.com: false
+  content.media.audio_capture:
+    https://meet.jit.si: true
+  content.media.audio_video_capture:
+    https://meet.jit.si: true
+  content.media.video_capture:
+    https://meet.jit.si: true
   content.notifications.enabled:
     https://www.youtube.com: false
