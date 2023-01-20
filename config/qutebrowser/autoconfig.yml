@@ -13,10 +13,14 @@ settings:
     https://google.ca: false
     https://google.com: false
   content.media.audio_capture:
+    https://meet.google.com: true
     https://meet.jit.si: true
   content.media.audio_video_capture:
+    https://meet.google.com: true
     https://meet.jit.si: true
   content.media.video_capture:
+    https://meet.google.com: true
     https://meet.jit.si: true
   content.notifications.enabled:
+    https://meet.google.com: true
     https://www.youtube.com: false

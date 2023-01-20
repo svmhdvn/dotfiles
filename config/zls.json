@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/zigtools/zls/master/schema.json",
-    "zig_exe_path": "/usr/bin/zig",
+    "zig_exe_path": "/home/siva/.local/bin/zig",
     "enable_snippets": true,
     "enable_ast_check_diagnostics": true,
     "enable_autofix": false,

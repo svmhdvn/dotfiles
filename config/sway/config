@@ -163,7 +163,7 @@ bindsym $mod+Shift+r mode "resize"
 
 # TODO move to standard swaybar
 bar {
-    status_command while $XDG_CONFIG_HOME/sway/bar.sh; do sleep 5; done
+    status_command while $XDG_CONFIG_HOME/sway/bar.sh; do sleep 10; done
     position top
     font pango:DejaVu Sans Mono 12
     pango_markup enabled

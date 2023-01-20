@@ -1,7 +1,7 @@
 const std = @import("std");
 /// Zig version. When writing code that supports multiple versions of Zig, prefer
 /// feature detection (i.e. with `@hasDecl` or `@hasField`) over version checks.
-pub const zig_version = std.SemanticVersion.parse("0.10.0") catch unreachable;
+pub const zig_version = std.SemanticVersion.parse("0.11.0-dev.1350+bbab4beda") catch unreachable;
 pub const zig_backend = std.builtin.CompilerBackend.stage2_x86_64;
 
 pub const output_mode = std.builtin.OutputMode.Exe;
