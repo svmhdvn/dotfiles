@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd $HOME/src/emacs
+CFLAGS='-O2 -march=native -pipe -fomit-frame-pointer' ./configure --prefix=$HOME/.local --enable-link-time-optimization --with-native-compilation=aot --with-json --with-pgtk --with-tree-sitter
+make -j$(nproc) install

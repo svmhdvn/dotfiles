@@ -1,12 +1,11 @@
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
+    use 'neovim/nvim-lspconfig'
     use {'junegunn/fzf.vim', requires = 'junegunn/fzf'}
     use {'ziglang/zig.vim', ft = {'zig'}}
     use {'neovimhaskell/haskell-vim', ft = {'haskell'}}
     use {'dracula/vim'}
-
-    use 'neovim/nvim-lspconfig'
-    -- use 'mlochbaum/BQN'
+    use {'mlochbaum/BQN', rtp = 'editors/vim'}
 end)
 
 -- Mappings.
