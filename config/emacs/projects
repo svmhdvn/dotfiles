@@ -1,3 +1,5 @@
 ;;; -*- lisp-data -*-
-(("~/src/zig-gmni/")
+(("~/dotfiles/config/emacs/straight/repos/bqn-mode/")
+ ("~/src/CBQN/")
+ ("~/src/zig-gmni/")
  ("~/dotfiles/"))

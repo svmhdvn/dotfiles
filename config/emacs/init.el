@@ -257,8 +257,7 @@
   :straight (bqn-mode
 	     :type git
 	     :host github
-	     :repo "museoa/bqn-mode"
-	     :fork (:host github :repo "svmhdvn/bqn-mode")))
+	     :repo "museoa/bqn-mode"))
 
 (use-package package-lint
   :straight t)
