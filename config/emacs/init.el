@@ -27,7 +27,7 @@
 (add-to-list 'default-frame-alist '(font . "Iosevka Term-18"))
 (setq ring-bell-function 'ignore)
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 
 (setq gc-cons-threshold 20000000)
 
@@ -67,10 +67,6 @@
 (setq message-cite-reply-position 'traditional)
 (setq message-kill-buffer-on-exit t)
 (setq message-sendmail-envelope-from 'header)
-(setq user-mail-address "me@svmhdvn.name")
-(setq smtpmail-smtp-server "smtp.migadu.com")
-(setq smtpmail-smtp-service 465)
-(setq smtpmail-stream-type 'ssl)
 
 (show-paren-mode t)
 
@@ -261,6 +257,90 @@
 
 (use-package package-lint
   :straight t)
+
+(use-package mu4e
+  :init
+  ; TODO msg doesn't contain body field, need to find out how to retrieve it
+  (defun mu4e-action-view-as-patch (msg)
+    "Interpret the message as a patch and show it in a diff-mode buffer."
+    (let* ((diff-default-read-only t)
+	   (subject (concat "Subject: " (mu4e-message-field msg :subject) "\n\n"))
+	   (body (mu4e-message-field msg :body-txt))
+	   (buf (generate-new-buffer "*mu4e-patch*"))
+	   (map (make-sparse-keymap)))
+      (define-key map "q" 'quit-window)
+      (switch-to-buffer buf)
+      (insert subject)
+      (insert body)
+      (set-buffer-modified-p nil)
+      (diff-mode)
+      (let ((new-ro-bind (cons 'buffer-read-only map)))
+	(add-to-list 'minor-mode-overriding-map-alist new-ro-bind))
+      (goto-char (point-min))))
+  :config
+  (setq mail-user-agent 'mu4e-user-agent)
+  (setq mu4e-attachment-dir "~/Downloads")
+
+  (setq mu4e-headers-fields
+	'((:human-date . 12)
+	  (:flags . 6)
+	  (:mailing-list . 25)
+	  (:from . 30)
+	  (:subject)))
+
+  ;; show images
+  (setq mu4e-show-images t)
+
+  ;; always show email addresses when showing people's names
+  (setq mu4e-view-show-addresses t)
+
+  ;; attempt to show images when viewing messages
+  (setq mu4e-view-show-images t)
+
+  ;; rename files to avoid name collision when moving to other folders
+  (setq mu4e-change-filenames-when-moving t)
+
+  ;; convert html emails properly
+  ;; Possible options:
+  ;;   - html2text -utf8 -width 72
+  ;;   - textutil -stdin -format html -convert txt -stdout
+  ;;   - html2markdown | grep -v '&nbsp_place_holder;' (Requires html2text pypi)
+  ;;   - w3m -dump -cols 80 -T text/html
+  ;;   - view in browser (provided below)
+  ;; (setq mu4e-html2text-command "w3m -dump -cols 80 -T text/html")
+
+  ;; add option to view html message in a browser
+  ;; `aV` in view to activate
+  (add-to-list 'mu4e-view-actions
+	       '("git apply patch" . mu4e-action-git-apply-mbox) t)
+  (add-to-list 'mu4e-view-actions
+	       '("pview as patch" . mu4e-action-view-as-patch) t)
+
+  (setq mu4e-confirm-quit nil)
+  ;(add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+
+  ;; mu4e context-specific settings
+  ;; =====
+  (setq mu4e-contexts
+	`(,(make-mu4e-context
+	    :name "Personal"
+	    :enter-func (lambda ()
+			  (mu4e-message "Switch to the Personal context"))
+	    :match-func (lambda (msg)
+			  (when msg
+			    (string= "~/Mail" (mu4e-message-field msg :maildir))))
+	    :vars '((mu4e-maildir . "~/Mail")
+		    (mu4e-sent-folder . "/Sent")
+		    (mu4e-drafts-folder . "/Drafts")
+		    (mu4e-trash-folder . "/Trash")
+		    (mu4e-refile-folder . "/Archive")
+		    (user-mail-address . "me@svmhdvn.name")
+		    (smtpmail-smtp-server . "smtp.migadu.com")
+		    (smtpmail-smtp-service . 465)
+		    (smtpmail-stream-type . ssl)))))
+  
+  (setq mu4e-context-policy 'pick-first)
+  (setq mu4e-compose-context-policy nil))
 
 ;(load-file (let ((coding-system-for-read 'utf-8))
 ;            (shell-command-to-string "agda-mode locate")))
