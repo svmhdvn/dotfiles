@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cd $HOME/dotfiles
+cp /etc/doas.conf gentoo_specific/etc/
+cp /var/lib/portage/world gentoo_specific/worldlist.txt
+cp /etc/portage/{package.use,make.conf} gentoo_specific/etc/portage/
+git add gentoo_specific
+git commit -m "(automated) gentoo system backup"
+git push
