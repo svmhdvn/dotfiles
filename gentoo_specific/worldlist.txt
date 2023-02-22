@@ -1,4 +1,5 @@
 app-admin/doas
+app-admin/keepassxc
 app-admin/sysklogd
 app-editors/nano
 app-editors/neovim
@@ -7,11 +8,15 @@ app-portage/cpuid2cpuflags
 app-shells/fish
 app-shells/fzf
 app-text/tree
+app-text/zathura
+app-text/zathura-meta
+app-text/zathura-pdf-mupdf
 dev-lang/elixir
 dev-libs/light
 dev-vcs/git
 gui-apps/foot
 gui-apps/mako
+gui-apps/wl-clipboard
 gui-apps/wofi
 gui-libs/xdg-desktop-portal-wlr
 gui-wm/sway
@@ -22,6 +27,7 @@ net-misc/curl
 net-misc/dhcpcd
 net-misc/netifrc
 net-misc/yt-dlp
+net-p2p/syncthing
 net-wireless/iw
 net-wireless/iwd
 net-wireless/wireless-regdb
