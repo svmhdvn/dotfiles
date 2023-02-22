@@ -3,6 +3,7 @@ app-admin/keepassxc
 app-admin/sysklogd
 app-editors/nano
 app-editors/neovim
+app-eselect/eselect-repository
 app-misc/tmux
 app-portage/cpuid2cpuflags
 app-shells/fish
@@ -13,6 +14,8 @@ app-text/zathura-meta
 app-text/zathura-pdf-mupdf
 dev-lang/elixir
 dev-libs/light
+dev-libs/tree-sitter-meta
+dev-util/samurai
 dev-vcs/git
 gui-apps/foot
 gui-apps/mako
@@ -21,6 +24,8 @@ gui-apps/wofi
 gui-libs/xdg-desktop-portal-wlr
 gui-wm/sway
 media-fonts/iosevka
+media-fonts/noto
+media-fonts/noto-emoji
 media-video/mpv
 net-misc/chrony
 net-misc/curl
@@ -31,6 +36,8 @@ net-p2p/syncthing
 net-wireless/iw
 net-wireless/iwd
 net-wireless/wireless-regdb
+sys-apps/fd
+sys-apps/ripgrep
 sys-boot/efibootmgr
 sys-devel/llvm
 sys-kernel/gentoo-sources
