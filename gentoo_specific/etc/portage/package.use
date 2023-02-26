@@ -1,6 +1,5 @@
 net-wireless/iwd standalone
 sys-auth/seatd server
-sys-devel/gcc -lto
 # required by app-shells/fish-3.6.0::gentoo
 # required by fish (argument)
 >=dev-libs/libpcre2-10.42-r1 pcre32
@@ -17,3 +16,35 @@ dev-qt/qtgui eglfs egl
 # required by dev-qt/qtwayland-5.15.8::gentoo
 >=media-libs/libglvnd-1.6.0 X
 app-text/zathura-meta pdf
+
+# TODO re-enable when policykit has been figured out
+#sys-apps/pcsc-lite policykit
+
+# TODO re-enable when ready to integrate with LDAP
+#sys-auth/pam_yubico ldap
+# required by dev-python/PyQtWebEngine-5.15.6::gentoo
+# required by www-client/qutebrowser-2.5.3::gentoo[python_single_target_python3_10]
+# required by qutebrowser (argument)
+>=dev-python/PyQt5-5.15.7 sql widgets printsupport opengl network gui declarative webchannel
+# required by www-client/qutebrowser-2.5.3::gentoo
+# required by qutebrowser (argument)
+>=dev-qt/qtcore-5.15.8-r3 icu
+# required by dev-python/PyQtWebEngine-5.15.6::gentoo
+# required by www-client/qutebrowser-2.5.3::gentoo[python_single_target_python3_10]
+# required by qutebrowser (argument)
+>=dev-qt/qtwebengine-5.15.8_p20230112 widgets
+# required by dev-qt/qtwebengine-5.15.8_p20230112::gentoo
+# required by dev-python/PyQtWebEngine-5.15.6::gentoo
+# required by www-client/qutebrowser-2.5.3::gentoo[python_single_target_python3_10]
+# required by qutebrowser (argument)
+>=dev-libs/libxml2-2.10.3-r1 icu
+# required by dev-qt/qtwebengine-5.15.8_p20230112::gentoo
+# required by dev-python/PyQtWebEngine-5.15.6::gentoo
+# required by www-client/qutebrowser-2.5.3::gentoo[python_single_target_python3_10]
+# required by qutebrowser (argument)
+>=dev-qt/qtwebchannel-5.15.8 qml
+# required by dev-qt/qtwebengine-5.15.8_p20230112::gentoo
+# required by dev-python/PyQtWebEngine-5.15.6::gentoo
+# required by www-client/qutebrowser-2.5.3::gentoo[python_single_target_python3_10]
+# required by qutebrowser (argument)
+>=sys-libs/zlib-1.2.13-r1 minizip

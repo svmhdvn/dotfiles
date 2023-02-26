@@ -1,6 +1,8 @@
 app-admin/doas
 app-admin/keepassxc
 app-admin/sysklogd
+app-crypt/ccid
+app-crypt/p11-kit
 app-editors/nano
 app-editors/neovim
 app-eselect/eselect-repository
@@ -8,6 +10,7 @@ app-misc/tmux
 app-portage/cpuid2cpuflags
 app-shells/fish
 app-shells/fzf
+app-text/sloccount
 app-text/tree
 app-text/zathura
 app-text/zathura-meta
@@ -15,7 +18,13 @@ app-text/zathura-pdf-mupdf
 dev-lang/elixir
 dev-libs/light
 dev-libs/tree-sitter-meta
+dev-util/cppcheck
+dev-util/ctags
+dev-util/meld
+dev-util/pahole
+dev-util/poke
 dev-util/samurai
+dev-util/vbindiff
 dev-vcs/git
 gui-apps/foot
 gui-apps/mako
@@ -38,6 +47,9 @@ net-wireless/iwd
 net-wireless/wireless-regdb
 sys-apps/fd
 sys-apps/ripgrep
+sys-auth/pam_u2f
+sys-auth/pam_yubico
+sys-auth/yubico-piv-tool
 sys-boot/efibootmgr
 sys-devel/llvm
 sys-kernel/gentoo-sources
