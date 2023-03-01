@@ -45,6 +45,7 @@ net-p2p/syncthing
 net-wireless/iw
 net-wireless/iwd
 net-wireless/wireless-regdb
+sys-apps/dmidecode
 sys-apps/fd
 sys-apps/ripgrep
 sys-auth/pam_u2f
@@ -52,6 +53,7 @@ sys-auth/pam_yubico
 sys-auth/yubico-piv-tool
 sys-boot/efibootmgr
 sys-devel/llvm
+sys-devel/mold
 sys-kernel/gentoo-sources
 sys-kernel/linux-firmware
 sys-process/cronie
