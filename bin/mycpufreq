@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ ! -e /sys/bus/cpu/devices/cpu0/cpufreq/scaling_governor ]; then
+    >&2 echo "ERROR: cpufreq driver file doesn't exist!"
+    exit 1
+fi
+
+case $1 in
+    powersave|schedutil|performance)
+        echo $1 | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
+        ;;
+    *)
+        >&2 echo "ERROR: invalid argument '$1'"
+        ;;
+esac

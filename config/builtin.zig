@@ -1,14 +1,14 @@
 const std = @import("std");
 /// Zig version. When writing code that supports multiple versions of Zig, prefer
 /// feature detection (i.e. with `@hasDecl` or `@hasField`) over version checks.
-pub const zig_version = std.SemanticVersion.parse("0.11.0-dev.1481+4c1168418") catch unreachable;
+pub const zig_version = std.SemanticVersion.parse("0.11.0-dev.1782+b52be973d") catch unreachable;
 pub const zig_backend = std.builtin.CompilerBackend.stage2_x86_64;
 
 pub const output_mode = std.builtin.OutputMode.Exe;
 pub const link_mode = std.builtin.LinkMode.Static;
 pub const is_test = false;
 pub const single_threaded = false;
-pub const abi = std.Target.Abi.musl;
+pub const abi = std.Target.Abi.gnu;
 pub const cpu: std.Target.Cpu = .{
     .arch = .x86_64,
     .model = &std.Target.x86.cpu.znver1,
@@ -74,18 +74,18 @@ pub const os = std.Target.Os{
         .range = .{
             .min = .{
                 .major = 6,
-                .minor = 1,
-                .patch = 7,
+                .minor = 2,
+                .patch = 1,
             },
             .max = .{
                 .major = 6,
-                .minor = 1,
-                .patch = 7,
+                .minor = 2,
+                .patch = 1,
             },
         },
         .glibc = .{
             .major = 2,
-            .minor = 19,
+            .minor = 36,
             .patch = 0,
         },
     }},

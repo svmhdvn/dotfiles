@@ -6,6 +6,7 @@ require('packer').startup(function(use)
     use {'neovimhaskell/haskell-vim', ft = {'haskell'}}
     use {'dracula/vim'}
     use {'mlochbaum/BQN', rtp = 'editors/vim'}
+    use {'elixir-editors/vim-elixir', ft = {'elixir'}}
 end)
 
 -- Mappings.
