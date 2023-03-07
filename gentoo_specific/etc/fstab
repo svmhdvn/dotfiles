@@ -35,4 +35,4 @@ tmpfs		/tmp			tmpfs		size=50%,rw,nosuid,noatime,nodev,mode=1777		0 0
 #####
 # Portage TMPDIR on tmpfs
 # https://wiki.gentoo.org/Portage_TMPDIR_on_tmpfs
-tmpfs		/var/tmp/portage	tmpfs		size=75%,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev	0 0
+tmpfs		/var/tmp/portage	tmpfs		size=90%,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev	0 0

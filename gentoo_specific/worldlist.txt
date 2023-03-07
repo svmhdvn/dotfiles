@@ -8,6 +8,7 @@ app-editors/neovim
 app-eselect/eselect-repository
 app-misc/tmux
 app-portage/cpuid2cpuflags
+app-portage/mirrorselect
 app-shells/fish
 app-shells/fzf
 app-text/sloccount
@@ -17,13 +18,17 @@ app-text/zathura-meta
 app-text/zathura-pdf-mupdf
 dev-lang/elixir
 dev-libs/light
+dev-libs/opensc
 dev-libs/tree-sitter-meta
 dev-util/cppcheck
 dev-util/ctags
+dev-util/lldb
 dev-util/meld
 dev-util/pahole
 dev-util/poke
 dev-util/samurai
+dev-util/shellcheck
+dev-util/valgrind
 dev-util/vbindiff
 dev-vcs/git
 gui-apps/foot
@@ -52,6 +57,8 @@ sys-auth/pam_u2f
 sys-auth/pam_yubico
 sys-auth/yubico-piv-tool
 sys-boot/efibootmgr
+sys-devel/clang
+sys-devel/lld
 sys-devel/llvm
 sys-devel/mold
 sys-kernel/gentoo-sources

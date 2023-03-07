@@ -22,3 +22,6 @@ app-text/zathura-meta pdf
 
 # TODO re-enable when ready to integrate with LDAP
 #sys-auth/pam_yubico ldap
+
+sys-devel/gcc -lto
+www-client/firefox -lto
