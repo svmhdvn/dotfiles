@@ -16,12 +16,14 @@ app-text/tree
 app-text/zathura
 app-text/zathura-meta
 app-text/zathura-pdf-mupdf
+dev-db/sqlitebrowser
 dev-lang/elixir
 dev-libs/light
 dev-libs/opensc
 dev-libs/tree-sitter-meta
 dev-util/cppcheck
 dev-util/ctags
+dev-util/debugedit
 dev-util/lldb
 dev-util/meld
 dev-util/pahole
@@ -41,6 +43,7 @@ media-fonts/iosevka
 media-fonts/noto
 media-fonts/noto-emoji
 media-video/mpv
+net-client/amfora
 net-misc/chrony
 net-misc/curl
 net-misc/dhcpcd

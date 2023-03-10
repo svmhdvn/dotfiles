@@ -1,0 +1,12 @@
+#!/bin/sh
+
+cd $HOME/src/zig/build
+git pull
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR=Ninja ..
+# replace with ninja if `samurai` (ninja alternative) isn't installed
+samu install
+
+cd $HOME/src/zls
+git pull
+git submodule update --remote
+zig build -Doptimize=ReleaseFast
