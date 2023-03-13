@@ -169,15 +169,15 @@ bar {
     pango_markup enabled
 }
 
-bindsym XF86MonBrightnessUp exec light -A 1%
-bindsym XF86MonBrightnessDown exec light -U 1%
+bindsym XF86MonBrightnessUp exec light -A 2%
+bindsym XF86MonBrightnessDown exec light -U 2%
 bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
-exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec mako
+exec --no-startup-id dbus-update-activation-environment --all
+#mako &
 
 exec gentoo-pipewire-launcher
 
