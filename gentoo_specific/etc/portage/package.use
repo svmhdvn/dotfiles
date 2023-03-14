@@ -9,7 +9,7 @@ sys-auth/seatd server
 media-video/ffmpeg libdrm mp3 opus vpx webp
 www-client/firefox hwaccel
 media-video/mpv -xv -pulseaudio
-media-video/pipewire extra ffmpeg gstreamer gsettings sound-server
+media-video/pipewire extra ffmpeg gstreamer gsettings sound-server dbus
 dev-qt/qtgui eglfs egl
 # required by dev-qt/qtgui-5.15.8-r3::gentoo[-gles2-only]
 # required by dev-qt/qtdeclarative-5.15.8-r2::gentoo
@@ -25,3 +25,5 @@ app-text/zathura-meta pdf
 
 sys-devel/gcc -lto
 www-client/firefox -lto
+dev-libs/openssl ktls
+net-nds/openldap minimal

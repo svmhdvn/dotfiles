@@ -20,7 +20,9 @@ dev-db/sqlitebrowser
 dev-lang/elixir
 dev-libs/light
 dev-libs/opensc
+dev-libs/openssl
 dev-libs/tree-sitter-meta
+dev-python/csvkit
 dev-util/cppcheck
 dev-util/ctags
 dev-util/debugedit
@@ -47,8 +49,10 @@ net-client/amfora
 net-misc/chrony
 net-misc/curl
 net-misc/dhcpcd
+net-misc/mosh
 net-misc/netifrc
 net-misc/yt-dlp
+net-nds/openldap
 net-p2p/syncthing
 net-wireless/iw
 net-wireless/iwd
