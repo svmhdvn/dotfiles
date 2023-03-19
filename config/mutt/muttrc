@@ -5,6 +5,7 @@ set delete            = yes            # don't ask, just do!
 set edit_headers      = yes            # show headers when composing
 set fast_reply        = yes            # skip to compose when replying
 set fcc_delimiter     = ","            # Allow `record` to multiple mailboxes
+set folder            = "$HOME/Mail"
 set from              = "me@svmhdvn.name"
 set header_cache      = $XDG_CACHE_HOME/mutt/headers 
 set include           = yes            # quote original message in replies

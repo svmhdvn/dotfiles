@@ -20,7 +20,7 @@ set $up e
 set $right i
 
 set $term foot --log-level=warning
-set $menu wofi --show drun
+set $menu tofi-drun --drun-launch=true
 
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
 default_border pixel 1

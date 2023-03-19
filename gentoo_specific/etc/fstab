@@ -30,7 +30,7 @@
 # Siva's config for thinkpad-e495 with 16GiB (2x8GiB) dual channel RAM
 #####
 # /tmp on tmpfs
-tmpfs		/tmp			tmpfs		size=50%,rw,nosuid,noatime,nodev,mode=1777		0 0
+tmpfs		/tmp			tmpfs		size=90%,rw,nosuid,noatime,nodev,mode=1777		0 0
 
 #####
 # Portage TMPDIR on tmpfs

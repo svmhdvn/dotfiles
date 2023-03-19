@@ -5,7 +5,7 @@ mkdir -p gentoo_specific/etc/portage/env
 
 cp /var/lib/portage/world gentoo_specific/worldlist.txt
 
-cp /etc/{fstab,doas.conf} gentoo_specific/etc/
+cp /etc/{fstab,doas.conf,genkernel.conf} gentoo_specific/etc/
 cp /etc/portage/{package.env,package.use,make.conf} gentoo_specific/etc/portage/
 cp /etc/portage/env/* gentoo_specific/etc/portage/env/
 
