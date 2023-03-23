@@ -4,8 +4,8 @@ require('packer').startup(function(use)
     use {'junegunn/fzf.vim', requires = 'junegunn/fzf'}
     use {'ziglang/zig.vim', ft = {'zig'}}
     use {'neovimhaskell/haskell-vim', ft = {'haskell'}}
-    use {'dracula/vim'}
-    use {'mlochbaum/BQN', rtp = 'editors/vim'}
+    --use {'dracula/vim'}
+    --use {'mlochbaum/BQN', rtp = 'editors/vim'}
     use {'elixir-editors/vim-elixir', ft = {'elixir'}}
 end)
 
@@ -53,7 +53,7 @@ vim.g.netrw_liststyle = 3
 vim.g.zig_fmt_autosave = 0
 
 -- default indentation settings (useful for most text editing needs)
-vim.cmd.colorscheme('dracula')
+--vim.cmd.colorscheme('dracula')
 vim.opt.colorcolumn = '80'
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4

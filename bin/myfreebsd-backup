@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# TODO move to ansible playbook
+
+cd $HOME/dotfiles
+mkdir -p freebsd_specific/etc
+mkdir -p freebsd_specific/usr/local/etc
+
+pkg prime-origins | sort > freebsd_specific/worldlist.txt
+
+cp /etc/hosts freebsd_specific/etc/
+cp /etc/make.conf freebsd_specific/etc/
+cp /etc/rc.conf freebsd_specific/etc/
+
+cp /usr/local/etc/doas.conf freebsd_specific/usr/local/etc/
+
+cp -r /usr/local/etc/pkg/ freebsd_specific/usr/local/etc/
+
+git add freebsd_specific
+git commit -m "(automated) freebsd system backup"
+git push
