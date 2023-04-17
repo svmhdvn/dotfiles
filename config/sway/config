@@ -163,7 +163,7 @@ bindsym $mod+Shift+r mode "resize"
 
 # TODO move to standard swaybar
 bar {
-    status_command while $XDG_CONFIG_HOME/sway/bar.sh; do sleep 10; done
+    status_command 'while :; do printf "battery: %s%% (%s) | %s\n" "$(cat /sys/class/power_supply/BAT0/capacity)" "$(cat /sys/class/power_supply/BAT0/status)" "$(date \"+%a %F %H:%M\")"; sleep 15; done'
     position top
     font pango:DejaVu Sans Mono 12
     pango_markup enabled
@@ -177,12 +177,14 @@ bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
 exec --no-startup-id dbus-update-activation-environment --all
-#mako &
 
-exec gentoo-pipewire-launcher
+# for alpine
+exec /usr/libexec/pipewire-launcher
 
-# for non-gentoo distros
-#exec /usr/libexec/pipewire-launcher
+exec mako
+
+# for gentoo
+#exec gentoo-pipewire-launcher
 
 #exec /usr/libexec/xdg-desktop-portal
 
