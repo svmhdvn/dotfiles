@@ -5,17 +5,16 @@ let g:netrw_sort_sequence = '[\/]$,*'
 let g:zig_fmt_autosave = 0
 
 " default indentation settings (useful for most text editing needs)
-set relativenumber
 set background=dark
 set hidden
 set ignorecase
 set lazyredraw
-set magic
 set mouse=a
 set nobackup
 set noswapfile
 set nowrap
 set nowritebackup
+set relativenumber
 set showmatch
 set smartcase
 set ttimeoutlen=0
