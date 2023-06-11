@@ -1,3 +1,12 @@
+[core]
+    pager = delta
+[diff]
+    colorMoved = default
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
@@ -7,18 +16,19 @@
 [pull]
     rebase = true
 [sendemail]
-    smtpserver = /usr/bin/msmtp
+    smtpserver = msmtp
     annotate = yes
 [commit]
     #gpgsign = true
 [init]
     defaultBranch = main
-[alias]
-    # Finds the merge commit that introduced a specific commit SHA to the current branch
-    find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2 | xargs git show'"
 [merge]
     tool = nvimdiff
+    conflictstyle = diff3
 [mergetool]
     keepBackup = false
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED
+[alias]
+    # Finds the merge commit that introduced a specific commit SHA to the current branch
+    find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2 | xargs git show'"
