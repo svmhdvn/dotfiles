@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -e
+
+KERNEL_EFISTUB=/boot/efi/EFI/boot/bootx64.efi
+KERNEL_SRC=$HOME/src/linux-stable
+CONFIGS_DIR=$HOME/dotfiles/kernel_configs
+JOBS=$(nproc)
+
+current_kernel=$(file "$KERNEL_EFISTUB" | grep -o '[[:digit:]]\.[[:digit:]]\(\.[[:digit:]]\)\?')
+latest_kernel=$(curl -s https://www.kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')
+
+latest_config="$CONFIGS_DIR/thinkpad-e495_v${latest_kernel}.config"
+current_config_symlink="$CONFIGS_DIR/thinkpad-e495_current.config"
+
+if [ $current_kernel == $latest_kernel ]; then
+	notify-send -t 7500 "$0" "Already running the latest kernel ($latest_kernel)"
+else
+	cd "$KERNEL_SRC"
+	git fetch --depth 1 origin tag "v$latest_kernel"
+	git checkout "v$latest_kernel"
+	make oldconfig
+	make -j$JOBS
+	doas make install
+	doas cp /boot/vmlinuz "$KERNEL_EFISTUB"
+	cp .config "$latest_config"
+	rm "$current_config_symlink"
+	ln -s "$latest_config" "$current_config_symlink"
+	notify-send -t 7500 "$0" "Success! Built and installed linux $latest_kernel"
+fi
