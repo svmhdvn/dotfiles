@@ -3,7 +3,7 @@ xwayland disable
 input "type:keyboard" {
     xkb_layout "us"
     xkb_variant "colemak"
-    xkb_options "ctrl:ralt_rctrl"
+    #xkb_options "ctrl:ralt_rctrl"
     repeat_delay 250
     repeat_rate 50
 }
