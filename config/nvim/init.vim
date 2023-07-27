@@ -26,6 +26,8 @@ set wildignorecase
 "autocmd Filetype mail set formatoptions=acjlpqtw
 "autocmd Filetype mail match ErrorMsg '\s\+$'
 
+autocmd Filetype forth set textwidth=63 colorcolumn=+0
+
 " vim colemak bindings
 inoremap <C-e> <C-p>
 nnoremap <C-h> :bprev<CR>

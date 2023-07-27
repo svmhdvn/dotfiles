@@ -7,8 +7,6 @@ KERNEL_SRC=$HOME/src/linux-stable
 CONFIGS_DIR=$HOME/dotfiles/kernel_configs
 JOBS=$(nproc)
 
-MY_MAKEOPTS=LLVM=1 KCFLAGS='-O2 -march=native -pipe'
-
 current_kernel=$(file "$KERNEL_EFISTUB" | grep -o '[[:digit:]]\.[[:digit:]]\(\.[[:digit:]]\)\?')
 latest_kernel=$(curl -s https://www.kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')
 
@@ -21,8 +19,8 @@ else
 	cd "$KERNEL_SRC"
 	git fetch --depth 1 origin tag "v$latest_kernel"
 	git checkout "v$latest_kernel"
-	make $MY_MAKEOPTS oldconfig
-	make $MY_MAKEOPTS -j$JOBS
+	make oldconfig
+	make KCFLAGS='-O2 -march=native -pipe' -j$JOBS
 	doas make install
 	doas cp /boot/vmlinuz "$KERNEL_EFISTUB"
 
