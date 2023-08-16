@@ -167,7 +167,23 @@ bar {
     position top
     font pango:DejaVu Sans Mono 12
     pango_markup enabled
+
+    # Don't let mousewheel scrolling change workspaces
+    # Diable vertical scrolling
+    bindsym button4 nop
+    bindsym button5 nop
+    # Diable horizontal scrolling
+    bindsym button6 nop
+    bindsym button7 nop
 }
+
+# Don't let mousewheel scrolling change tabs
+# Diable vertical scrolling
+bindsym button4 nop
+bindsym button5 nop
+# Diable horizontal scrolling
+bindsym button6 nop
+bindsym button7 nop
 
 bindsym XF86MonBrightnessUp exec light -A 2%
 bindsym XF86MonBrightnessDown exec light -U 2%
