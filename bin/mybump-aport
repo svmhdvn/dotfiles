@@ -4,7 +4,6 @@ repo="$1"
 name="$2"
 version="$3"
 
-curdir="$PWD"
 cd "$HOME/src/aports/$repo/$name" # TODO check error
 
 sed -i "s/^pkgver=.*\$/pkgver=$version/" APKBUILD
@@ -12,6 +11,8 @@ sed -i "s/^pkgver=.*\$/pkgver=$version/" APKBUILD
 abuild checksum # TODO check error
 git add APKBUILD # TODO do this in a clean git working area with no prev changes
 git commit -m "$repo/$name: upgrade to $version"
-git send-email HEAD^
 
-cd "$curdir"
+# TODO use with patch-based workflow
+#git send-email HEAD^
+
+git push origin
