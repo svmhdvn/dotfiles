@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set +x
+set -e
+
+OPENWRT_PEER='rmHAqPRiTZqqHFgkJvhKtWQim+PzQR8swGAF2fzMJVE='
+OPENWRT_PUBLIC_IP=$(dig +short A openwrt.empt.ca)
+
+case $1 in
+	"init")
+		doas ip link add dev wg0 type wireguard
+		doas ip address add dev wg0 10.29.222.2/24
+		doas ip address add dev wg0 fe80::2/64
+		doas wg set wg0 private-key "$HOME/secrets/wg0-privkey.txt" peer "$OPENWRT_PEER" allowed-ips '0.0.0.0/0,::/0' endpoint "$OPENWRT_PUBLIC_IP:38561"
+		;;
+	"up")
+		doas ip link set wg0 up
+		;;
+	"down")
+		doas ip link set wg0 down
+		;;
+	*)
+		echo "unknown command: '$1'" 1>&2
+		exit 1
+		;;
+esac
