@@ -6,4 +6,4 @@ QT_QPA_PLATFORM=wayland \
     MOZ_USE_XINPUT2=1 \
     SDL_VIDEODRIVER=wayland \
     BROWSER=firefox \
-    dbus-run-session sway
+    dbus-run-session $HOME/.local/bin/sway

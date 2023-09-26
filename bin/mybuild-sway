@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cd $HOME/src/sway
+rm -rf build
+mkdir -p sivabuild
+meson setup --prefix $HOME/src/sway/sivabuild --buildtype release --strip -Db_lto=true -Dc_args='-march=native' build/
+ninja -C build install
