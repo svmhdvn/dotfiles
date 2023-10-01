@@ -10,7 +10,7 @@
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
-    #signingKey = F1299E0B6ED2B95B
+    signingKey = F1299E0B6ED2B95B
 [push]
     default = simple
 [pull]
@@ -23,7 +23,7 @@
     #smtpserver = msmtp
     annotate = yes
 [commit]
-    #gpgsign = true
+    gpgsign = true
 [init]
     defaultBranch = main
 [merge]

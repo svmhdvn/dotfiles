@@ -1,3 +1,3 @@
 #!/bin/sh
 
-doas emaint -a sync && doas emerge --oneshot sys-apps/portage && doas emerge -vuDN @world
+doas emaint -a sync && doas emerge --oneshot sys-apps/portage && doas emerge -vuDN --keep-going @world
