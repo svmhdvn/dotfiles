@@ -1,11 +1,15 @@
-set-option global scrolloff 3,0
+add-highlighter global/ruler column 80 default,rgb:444444
 
-add-highlighter global/ column 80 default,rgb:444444
+# TODO Switch to https://github.com/mawww/kakoune/pull/2256 once ready
+add-highlighter global/trailing-whitespace regex '\h+$' 0:Error
 
-#hook global WinSetOption filetype=mail %{
-#    set window autowrap_column 72
-#    autowrap-enable
-#}
+add-highlighter global/highlight-todos regex \b(TODO|HACK|FIXME|XXX|NOTE)\b 0:+rb
+
+hook global WinSetOption filetype=mail %{
+    set window autowrap_column 72
+    add-highlighter -override global/ruler column %opt{autowrap_column} default,rgb:444444
+    autowrap-enable
+}
 
 # colemak bindings
 
@@ -56,3 +60,9 @@ map global view e k
 map global view i l
 
 map global insert <c-e> <c-p>
+
+# easy way to save file
+map global user w :write<ret>
+
+# reformat selection for format=flowed (`fold` is a POSIX tool)
+map global user q '|fold -s -w $kak_opt_autowrap_column<ret>'
