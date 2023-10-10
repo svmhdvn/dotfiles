@@ -1,0 +1,15 @@
+# TODO remove once these build successfully with llvm17
+media-libs/libva llvm17-symbols-fix
+media-libs/mesa llvm17-symbols-fix
+media-libs/alsa-lib llvm17-symbols-fix
+media-libs/libpulse llvm17-symbols-fix
+dev-qt/qtdbus llvm17-symbols-fix
+dev-qt/qtnetwork llvm17-symbols-fix
+dev-qt/qttest llvm17-symbols-fix
+dev-qt/qtconcurrent llvm17-symbols-fix
+dev-qt/qtxml llvm17-symbols-fix
+dev-qt/qtgui llvm17-symbols-fix
+dev-qt/qtwidgets llvm17-symbols-fix
+dev-qt/qtsvg llvm17-symbols-fix
+dev-qt/qtdeclarative llvm17-symbols-fix
+dev-qt/qtwayland llvm17-symbols-fix

@@ -1,0 +1,26 @@
+# required by app-shells/fish-3.6.1::gentoo
+# required by fish (argument)
+>=dev-libs/libpcre2-10.42-r1 pcre32
+app-text/zathura-meta pdf
+dev-lang/rust system-llvm
+dev-libs/openssl ktls weak-ssl-ciphers
+dev-qt/qtgui eglfs egl
+dev-vcs/git -perl -webdav
+mail-mta/msmtp sasl
+media-libs/libglvnd X
+media-libs/libsndfile minimal
+media-libs/libvpx postproc
+media-sound/pulseaudio -daemon
+media-video/ffmpeg libdrm mp3 opus vpx webp
+media-video/mpv -xv -pulseaudio
+media-video/pipewire extra ffmpeg gstreamer gsettings sound-server dbus
+net-wireless/iwd standalone
+sys-auth/seatd server
+sys-process/htop lm-sensors
+www-client/firefox hwaccel
+# required by x11-misc/xdg-utils-1.1.3_p20210805-r1::gentoo
+# required by app-portage/mgorny-dev-scripts-41::gentoo
+# required by mgorny-dev-scripts (argument)
+>=app-text/xmlto-0.0.28-r11 text
+app-admin/keepassxc -network
+sys-kernel/gentoo-sources symlink

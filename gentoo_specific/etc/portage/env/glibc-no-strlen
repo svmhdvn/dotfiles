@@ -1,2 +1,0 @@
-# Needed for Valgrind
-CFLAGS="${CFLAGS} -fno-builtin-strlen"
