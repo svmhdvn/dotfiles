@@ -1,20 +1,21 @@
 #!/bin/sh
 set -ex
 
-host_specific_prefix="$HOME/dotfiles/host_specific/$(hostname)"
+common_config_prefix="$HOME/dotfiles/common_config"
+host_specific_prefix="$HOME/dotfiles/host_specific/$(hostname)/config"
 
 mkdir -p "$HOME"/{.config,.local/bin,src}
 
-for f in $(ls -1 "$HOME/dotfiles/config"); do
-	if [ -e "$host_specific_prefix/config/$f" ]; then
-		ln -s "$host_specific_prefix/config/$f" "$HOME/.config/$f"
+for f in $(ls -1 "$common_config_prefix"); do
+	if [ -e "$host_specific_prefix/$f" ]; then
+		ln -sf "$host_specific_prefix/$f" "$HOME/.config/$f"
 	else
-		ln -s "$HOME/dotfiles/config/$f" "$HOME/.config/$f"
+		ln -sf "$common_config_prefix/$f" "$HOME/.config/$f"
 	fi
 done
 
-ln -s "$HOME/dotfiles/bin" "$HOME/bin"
-ln -s "$host_specific_prefix/profile" "$HOME/.profile"
+ln -sf "$HOME/dotfiles/bin" "$HOME/bin"
+ln -sf "$host_specific_prefix/profile" "$HOME/.profile"
 
 # TODO move mbsyncrc to XDG_CONFIG_HOME once supported upstream
-ln -s "$HOME/dotfiles/mbsyncrc" "$HOME/.mbsyncrc"
+ln -sf "$common_config_prefix/mbsyncrc" "$HOME/.mbsyncrc"
