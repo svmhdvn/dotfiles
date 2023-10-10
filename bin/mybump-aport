@@ -1,18 +1,27 @@
 #!/bin/sh
 
+set -ex
+
 repo="$1"
 name="$2"
 version="$3"
 
-cd "$HOME/src/aports/$repo/$name" # TODO check error
+cd "$HOME/src/aports/$repo/$name"
+
+old_branch=$(git branch --show-current)
+git stash
+git checkout master
+git pull upstream master
+git checkout -B bump-$name master
 
 sed -i "s/^pkgver=.*\$/pkgver=$version/" APKBUILD
+abuild checksum
 
-abuild checksum # TODO check error
-git add APKBUILD # TODO do this in a clean git working area with no prev changes
+git add APKBUILD
 git commit -m "$repo/$name: upgrade to $version"
-
+git push origin bump-$name
 # TODO use with patch-based workflow
 #git send-email HEAD^
-
-git push origin
+# TODO automatically create MR on gitlab
+git checkout "$old_branch"
+git stash apply

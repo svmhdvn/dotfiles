@@ -1,4 +1,5 @@
 add-highlighter global/ruler column 80 default,rgb:444444
+add-highlighter global/relative-linenums number-lines -relative
 
 # TODO Switch to https://github.com/mawww/kakoune/pull/2256 once ready
 add-highlighter global/trailing-whitespace regex '\h+$' 0:Error
@@ -49,10 +50,15 @@ map global normal <a-r> <a-i>
 
 ## goto-mode movement
 map global goto h i
+map global goto H I
 map global goto n j
+map global goto N J
 map global goto e k
+map global goto E K
 map global goto i l
+map global goto I L
 map global goto l h
+map global goto L H
 
 ## view-mode movement
 map global view n j
@@ -66,3 +72,9 @@ map global user w :write<ret>
 
 # reformat selection for format=flowed (`fold` is a POSIX tool)
 map global user q '|fold -s -w $kak_opt_autowrap_column<ret>'
+
+define-command find -docstring "fuzzy find files" -params 1 %{ edit %arg{1} }
+complete-command find shell-script-candidates %{ fd -t f }
+map global user f :find<space>
+
+map global user b :buffer<space>

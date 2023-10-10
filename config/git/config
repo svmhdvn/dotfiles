@@ -27,7 +27,7 @@
 [init]
     defaultBranch = main
 [merge]
-    tool = nvimdiff
+    tool = meld
     conflictstyle = diff3
 [mergetool]
     keepBackup = false
