@@ -4,7 +4,7 @@ set -ex
 common_config_prefix="$HOME/dotfiles/common_config"
 host_specific_prefix="$HOME/dotfiles/host_specific/$(hostname)/config"
 
-mkdir -p "$HOME"/{.config,.local/bin,src}
+mkdir -p "$HOME/.config" "$HOME/.local/bin" "$HOME/src"
 
 for f in $(ls -1 "$common_config_prefix"); do
 	if [ -e "$host_specific_prefix/$f" ]; then
