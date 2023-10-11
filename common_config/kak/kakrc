@@ -12,7 +12,7 @@ hook global WinSetOption filetype=mail %{
     autowrap-enable
 }
 
-# colemak bindings
+### colemak bindings ###
 
 ## hjkl movement
 map global normal n j
@@ -66,6 +66,11 @@ map global view e k
 map global view i l
 
 map global insert <c-e> <c-p>
+
+### Siva's convenience mappings ###
+
+# case insensitive search by default
+map global normal "/" "/(?i)"
 
 # easy way to save file
 map global user w :write<ret>
