@@ -6,7 +6,8 @@ host_specific_prefix="$HOME/dotfiles/host_specific/$(hostname)/config"
 
 mkdir -p "$HOME/.config" "$HOME/.local/bin" "$HOME/src"
 
-for f in $(ls -1 "$common_config_prefix"); do
+cd $common_config_prefix
+for f in *; do
 	if [ -e "$host_specific_prefix/$f" ]; then
 		ln -sf "$host_specific_prefix/$f" "$HOME/.config/$f"
 	else
