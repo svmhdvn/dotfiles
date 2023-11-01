@@ -24,7 +24,7 @@
     #smtpserver = msmtp
     annotate = yes
 [commit]
-    gpgsign = true
+    #gpgsign = true
 [init]
     defaultBranch = main
 [merge]
