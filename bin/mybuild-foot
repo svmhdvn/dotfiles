@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -xe
+
+build_dir=$HOME/src/foot/sivabuild
+rm -rf $build_dir
+mkdir -p $build_dir
+cd $build_dir
+
+CC=clang meson setup --prefix $build_dir --buildtype release --strip -Dc_args='-march=native' -Db_lto=true ../
+
+meson configure -Db_pgo=generate
+ninja
+ninja test
+
+# Populate PGO data by stress testing everything
+./utils/xtgettcap
+./footclient --version
+./foot --version
+foot_tmp_file=$(mktemp)
+./foot \
+    --config=/dev/null \
+    --override tweak.grapheme-shaping=no \
+    --term=xterm \
+    sh -c "../scripts/generate-alt-random-writes.py --scroll --scroll-region --colors-regular --colors-bright --colors-256 --colors-rgb --attr-bold --attr-italic --attr-underline --sixel ${foot_tmp_file} && cat ${foot_tmp_file}"
+
+# Only needed for clang
+llvm-profdata merge default_*profraw --output=default.profdata
+
+meson configure -Db_pgo=use
+ninja
+ninja test
+
+ninja install
