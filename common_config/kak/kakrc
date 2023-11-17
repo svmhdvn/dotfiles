@@ -49,16 +49,16 @@ map global normal <a-K> <a-N>
 map global normal <a-r> <a-i>
 
 ## goto-mode movement
-map global goto h i
-map global goto H I
+#map global goto h i
+#map global goto H I
 map global goto n j
 map global goto N J
 map global goto e k
 map global goto E K
 map global goto i l
 map global goto I L
-map global goto l h
-map global goto L H
+map global goto l i
+map global goto L I
 
 ## view-mode movement
 map global view n j
