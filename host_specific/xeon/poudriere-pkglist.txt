@@ -1,6 +1,5 @@
 devel/ccache
 devel/git
-editors/neovim
 editors/kakoune
 ports-mgmt/pkg
 ports-mgmt/poudriere
@@ -9,6 +8,7 @@ shells/fish
 sysutils/duf
 sysutils/fd
 sysutils/htop
+sysutils/btop
 sysutils/tmux
 textproc/bat
 textproc/fzf
