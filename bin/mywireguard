@@ -5,8 +5,6 @@ case $1 in
 	"init")
 		doas ip link add dev wg0 type wireguard
 		doas ip address add dev wg0 10.29.222.2/24
-		doas ip address add dev wg0 fe80::2/64
-
                 OPENWRT_PEER='rmHAqPRiTZqqHFgkJvhKtWQim+PzQR8swGAF2fzMJVE='
                 # TODO add support for IPv6, currently hardcoding
                 # as IPv4 since that's what most public networks only support
@@ -16,6 +14,7 @@ case $1 in
 		;;
 	"up")
 		doas ip link set wg0 up
+		doas ip address add dev wg0 fe80::2/64
 		;;
 	"down")
 		doas ip link set wg0 down

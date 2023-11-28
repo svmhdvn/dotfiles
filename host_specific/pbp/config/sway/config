@@ -163,9 +163,9 @@ bindsym $mod+Shift+r mode "resize"
 
 # TODO move to standard swaybar
 bar {
-    status_command 'while :; do printf "battery: %s%% (%s) | %s\n" "$(cat /sys/class/power_supply/cw2015-battery/capacity)" "$(cat /sys/class/power_supply/cw2015-battery/status)" "$(date \"+%a %F %H:%M\")"; sleep 15; done'
+    status_command 'while :; do printf "battery: %s%% (%s) | %s\n" "$(cat /sys/class/power_supply/cw2015-battery/capacity)" "$(cat /sys/class/power_supply/cw2015-battery/status)" "$(date \"+%a %F | %H:%M\")"; sleep 15; done'
     position top
-    font pango:DejaVu Sans Mono 12
+    font pango:Comic Code 10
     pango_markup enabled
 
     # Don't let mousewheel scrolling change workspaces
