@@ -1,10 +1,10 @@
 [core]
-    #pager = delta
+    pager = delta
 [diff]
     colorMoved = default
     algorithm = histogram
 [interactive]
-    #diffFilter = delta --color-only
+    diffFilter = delta --color-only
 [delta]
     navigate = true    # use n and N to move between diff sections
     light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
