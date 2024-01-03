@@ -8,9 +8,11 @@ shells/fish
 sysutils/duf
 sysutils/fd
 sysutils/htop
-sysutils/btop
 sysutils/tmux
 textproc/bat
 textproc/fzf
 textproc/ripgrep
-graphics/graphviz
+ftp/curl
+ftp/wget
+archivers/zstd
+
