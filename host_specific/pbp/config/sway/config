@@ -195,5 +195,5 @@ bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway GPG_TTY=$(tty)
 exec mako
 # TODO don't need it currently on pbp since I don't listen to audio much
-#exec /usr/libexec/pipewire-launcher
+exec /usr/libexec/pipewire-launcher
 exec gammastep
