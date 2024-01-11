@@ -5,14 +5,14 @@ case $1 in
 	"init")
 		doas ip link add dev wg0 type wireguard
 		doas ip address add dev wg0 10.29.222.2/24
-                OPENWRT_PEER='rmHAqPRiTZqqHFgkJvhKtWQim+PzQR8swGAF2fzMJVE='
-                # TODO add support for IPv6, currently hardcoding
-                # as IPv4 since that's what most public networks only support
-                OPENWRT_PUBLIC_IP=$(dig +short A openwrt.empt.ca)
-                OPENWRT_PORT=38561
-		doas wg set wg0 private-key "$HOME/secrets/wg0-privkey.txt" peer "$OPENWRT_PEER" allowed-ips '0.0.0.0/0,::/0' endpoint "$OPENWRT_PUBLIC_IP:$OPENWRT_PORT"
 		;;
 	"up")
+                OPENWRT_PEER='9TMsfDx2LYZRk5y+iRfVJCnxXadDdscy9jOQyoaRBi8='
+                # TODO add support for IPv6, currently hardcoding
+                # as IPv4 since that's what most public networks only support
+                OPENWRT_PUBLIC_IP="$(dig +short A openwrt.empt.ca)"
+                OPENWRT_PORT=45036
+		doas wg set wg0 private-key "$HOME/secrets/wg0-privkey.txt" peer "$OPENWRT_PEER" allowed-ips '0.0.0.0/0,::/0' endpoint "$OPENWRT_PUBLIC_IP:$OPENWRT_PORT"
 		doas ip link set wg0 up
 		doas ip address add dev wg0 fe80::2/64
 		;;
@@ -22,5 +22,4 @@ case $1 in
 	*)
 		echo "unknown command: '$1'" 1>&2
 		exit 1
-		;;
 esac
