@@ -1,39 +1,38 @@
 #!/bin/sh
-set -e
-
-# TODO find a cleaner way to assign numbers to every host I own
-host="$(hostname)"
-case $host in
-	"pbp")		hostnum=2 ;;
-	"think")	hostnum=3 ;;
-	"cl100")	hostnum=4 ;;
-	"wyse1")	hostnum=5 ;;
-	*)
-    		echo "unsupported host: '$1'" >&2
-    		exit 1
-esac
+set -ex
 
 case $1 in
-	"init")
-		doas ip link add dev wg0 type wireguard
-		doas ip address add dev wg0 "10.29.222.$hostnum/24"
-		;;
 	"up")
-                OPENWRT_PEER='9TMsfDx2LYZRk5y+iRfVJCnxXadDdscy9jOQyoaRBi8='
-                # TODO switch to IPv6; currently hardcoding as IPv4 since that's
-                # what most public networks only support
-                OPENWRT_PUBLIC_IP=$(dig +short A openwrt.empt.ca)
-                OPENWRT_PORT=45036
+		doas ip link add dev wg0 type wireguard
+		doas ip link set wg0 up
+
+		# TODO find a cleaner way to assign numbers to every host I own
+		case $(hostname) in
+			"pbp")		hostnum=2 ;;
+			"think")	hostnum=3 ;;
+			*)
+				echo "unsupported host: '$1'" >&2
+				exit 1
+		esac
+
+		doas ip address add dev wg0 "10.29.222.$hostnum/24"
+		doas ip address add dev wg0 "fe80::$hostnum/64"
+		doas ip route add 10.66.199.0/24 via 10.29.222.1 metric 1000 dev wg0
+
+		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
+		# what most public networks only support
+		OPENWRT_PUBLIC_IP=$(dig +short A openwrt.empt.ca)
+		OPENWRT_PEER='9TMsfDx2LYZRk5y+iRfVJCnxXadDdscy9jOQyoaRBi8='
+		OPENWRT_PORT=45036
+
 		doas wg set wg0 \
 			private-key "$HOME/secrets/wg0-privkey.txt" \
 			peer "$OPENWRT_PEER" \
 			allowed-ips '0.0.0.0/0,::/0' \
 			endpoint "$OPENWRT_PUBLIC_IP:$OPENWRT_PORT"
-		doas ip link set wg0 up
-		doas ip address add dev wg0 "fe80::$hostnum/64"
 		;;
 	"down")
-		doas ip link set wg0 down
+		doas ip link del wg0
 		;;
 	*)
 		echo "unknown command: '$1'" >&2
