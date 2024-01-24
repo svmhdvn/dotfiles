@@ -28,11 +28,14 @@ case $2 in
     doas poudriere $2 -j "$jail" -p local -f "$pkgfile" -z "$1"
     ;;
   backup)
-    cp -RP /usr/local/etc/poudriere.d/*-xeon-options "$sivadir/"
-    cp -RP \
-      /usr/local/etc/poudriere.d/*-cl100-options \
-      /usr/local/etc/poudriere.d/*-wyse-options \
-      "$emptdir/"
+    cp -RP "/usr/local/etc/poudriere.d/$jail-local-xeon-options" "$sivadir/"
+#    cp -RP "/usr/local/etc/poudriere.d/$jail-local-cl100-options" "$emptdir/"
+    cp -RP "/usr/local/etc/poudriere.d/$jail-local-wyse-options" "$emptdir/"
+    ;;
+  tarball)
+    tar --zstd --strip-components 7 -cvf "$HOME/poudriere-$1.tar.zst" \
+      "/usr/local/poudriere/data/packages/$jail-local-$1"
+    ;;
   *)
     >&2 echo "unsupported command: $2"
     exit 1
