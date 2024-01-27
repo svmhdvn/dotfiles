@@ -9,7 +9,7 @@
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
-#    signingKey = F1299E0B6ED2B95B
+    signingKey = CFD2068047F44D74
 [push]
     default = simple
     followTags = true
@@ -44,6 +44,9 @@
 
     # push to all my mirrors
     mypushall = push --all !git remote | xargs -n1 git push --all
-
 [credential]
     helper = store
+[tag]
+    gpgSign = true
+[advice]
+    skippedCherryPicks = false
