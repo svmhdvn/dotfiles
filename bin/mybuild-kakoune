@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -ex
+
+cd "$HOME/src/kakoune"
+make CXX='clang++' CXXFLAGS='-std=c++2a -O3 -march=native -pipe -flto' -j"$(nproc)"
+ln -sf $PWD/src/kak $HOME/.local/bin/kak

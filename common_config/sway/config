@@ -20,9 +20,7 @@ set $up e
 set $right i
 
 set $term foot --log-level=warning
-# TODO once gentoo has a tofi ebuild
-#set $menu tofi-drun --drun-launch=true
-set $menu bemenu-run | xargs swaymsg exec --
+set $menu tofi-drun --drun-launch=true
 
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
 default_border pixel 1
@@ -165,9 +163,9 @@ bindsym $mod+Shift+r mode "resize"
 
 # TODO move to standard swaybar
 bar {
-    status_command 'while :; do printf "battery: %s%% (%s) | %s\n" "$(cat /sys/class/power_supply/BAT0/capacity)" "$(cat /sys/class/power_supply/BAT0/status)" "$(date \"+%a %F %H:%M\")"; sleep 15; done'
+    status_command 'while :; do printf "battery: %s%% (%s) | %s\n" "$(cat /sys/class/power_supply/BAT0/capacity)" "$(cat /sys/class/power_supply/BAT0/status)" "$(date \"+%a %F | %H:%M\")"; sleep 15; done'
     position top
-    font pango:DejaVu Sans Mono 12
+    font pango:Comic Code 10
     pango_markup enabled
 
     # Don't let mousewheel scrolling change workspaces
@@ -194,16 +192,12 @@ bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
-exec --no-startup-id dbus-update-activation-environment --all
-
+exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec mako
+exec gammastep
 
 # for alpine
-#exec /usr/libexec/pipewire-launcher
+exec /usr/libexec/pipewire-launcher
 
 # for gentoo
-exec gentoo-pipewire-launcher
-
-#exec /usr/libexec/xdg-desktop-portal
-
-exec gammastep
+#exec gentoo-pipewire-launcher

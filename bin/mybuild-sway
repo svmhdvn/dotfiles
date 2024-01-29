@@ -1,7 +1,8 @@
 #!/bin/sh
 
-cd $HOME/src/sway
+cd "$HOME/src/sway"
 rm -rf build
 mkdir -p sivabuild
-CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf meson setup --prefix $HOME/src/sway/sivabuild --buildtype release --strip -Db_lto=true -Dc_args='-march=native' build/
+CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf meson setup --prefix "$HOME/src/sway/sivabuild" --buildtype release --strip -Db_lto=true -Dc_args='-march=native' build/
 ninja -C build install
+ln -sf "$PWD/sivabuild/bin/sway" "$HOME/.local/bin/sway"
