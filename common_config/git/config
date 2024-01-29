@@ -31,10 +31,12 @@
     coverletter = auto
 [merge]
     # Gives you meld with three comparison tabs
-    tool = meld "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED" --diff "$BASE" "$LOCAL" --diff "$BASE" "$REMOTE" --auto-merge
+    tool = mymeld
     conflictstyle = diff3
 [mergetool]
     keepBackup = false
+[mergetool "mymeld"]
+    cmd = meld --auto-merge $LOCAL $BASE $REMOTE --output $MERGED --diff $BASE $LOCAL --diff $BASE $REMOTE
 [alias]
     # pretty log
     mylog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
