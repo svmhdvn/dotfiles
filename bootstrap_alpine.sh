@@ -8,10 +8,6 @@ host_config="$PWD/host_specific/$(hostname)"
 doas ln -sf "$host_config"/etc/apk/repositories /etc/apk/repositories
 doas ln -sf "$host_config"/etc/apk/world /etc/apk/world
 
-doas rm -rf /etc/iwd /etc/acpi/LID
-doas ln -sf "$host_config"/etc/acpi/LID /etc/acpi/LID
-doas ln -sf "$host_config"/etc/iwd /etc/iwd
-
 mkdir -p \
 	"$HOME/secrets" \
 	"$HOME/Mail" \
@@ -22,6 +18,10 @@ mkdir -p \
 doas apk update
 doas apk upgrade
 doas apk add
+
+doas rm -rf /etc/iwd /etc/acpi/LID
+doas ln -sf "$host_config"/etc/acpi/LID /etc/acpi/LID
+doas ln -sf "$host_config"/etc/iwd /etc/iwd
 
 ssh-keygen -t ed25519
 eval "$(ssh-agent -s)"
@@ -49,13 +49,13 @@ LATEST_LINUX_KERNEL=$(sed -n -e '4q' -e 's/.* \([0-9]*\.[0-9]*\.[0-9]*\) .*/\1/p
 git clone --depth 1 --branch "v$LATEST_LINUX_KERNEL" "$HOME/src/linux-stable"
 cp "$KERNEL_CONFIG" "$HOME/src/linux-stable"
 
-mbsync -a
-
 git clone https://github.com/swaywm/sway "$HOME/src/sway"
 ./bin/mybuild-sway
 
 git clone https://github.com/mawwww/kakoune "$HOME/src/kakoune"
 ./bin/mybuild-kakoune
+
+mbsync -a
 
 cat <<EOF
 ==================
