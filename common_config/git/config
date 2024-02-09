@@ -9,7 +9,7 @@
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
-    signingKey = CFD2068047F44D74
+    signingKey = A1C8128FE65D33F3627003F9E06B00B572D5EF69
 [push]
     default = simple
     followTags = true
