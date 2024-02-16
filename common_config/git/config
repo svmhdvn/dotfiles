@@ -1,3 +1,5 @@
+[branch]
+    sort = -committerdate
 [core]
     mode = progress
 [diff]
@@ -31,12 +33,14 @@
     coverletter = auto
 [merge]
     # Gives you meld with three comparison tabs
-    tool = mymeld
-    conflictstyle = diff3
-[mergetool]
+    # TODO enable once meld works without crashing on swaywm
+    #tool = mymeld
+    conflictstyle = zdiff3
     keepBackup = false
 [mergetool "mymeld"]
     cmd = meld --auto-merge $LOCAL $BASE $REMOTE --output $MERGED --diff $BASE $LOCAL --diff $BASE $REMOTE
+[rebase]
+    autostash = true
 [alias]
     # pretty log
     mylog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
@@ -50,5 +54,6 @@
     helper = store
 [tag]
     gpgSign = true
+    sort = -taggerdate
 [advice]
     skippedCherryPicks = false
