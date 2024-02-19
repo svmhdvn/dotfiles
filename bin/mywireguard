@@ -21,7 +21,7 @@ case $1 in
 
 		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
 		# what most public networks only support
-		OPENWRT_PUBLIC_IP=$(dig +short A openwrt.empt.ca)
+		OPENWRT_PUBLIC_IP=$(dig @1.1.1.1 +short A openwrt.empt.ca)
 		OPENWRT_PEER='9TMsfDx2LYZRk5y+iRfVJCnxXadDdscy9jOQyoaRBi8='
 		OPENWRT_PORT=45036
 
