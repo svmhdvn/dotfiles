@@ -196,7 +196,7 @@ exec mako
 exec gammastep
 
 # for alpine
-exec /usr/libexec/pipewire-launcher
+#exec /usr/libexec/pipewire-launcher
 
 # for gentoo
 #exec gentoo-pipewire-launcher

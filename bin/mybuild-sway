@@ -1,8 +1,8 @@
 #!/bin/sh
 
 cd "$HOME/src/sway"
-rm -rf build
+rm -rf build sivabuild
 mkdir -p sivabuild
-CC=clang CC_LD=lld meson setup --prefix "$HOME/src/sway/sivabuild" --buildtype release --strip -Db_lto=true -Dc_args='-march=native' build/
+CC=clang CC_LD=lld meson setup --prefix "$HOME/src/sway/sivabuild" --buildtype release --strip -Db_lto=true -Dc_args='-O3 -march=native' build/
 ninja -C build install
 ln -sf "$PWD/sivabuild/bin/sway" "$HOME/.local/bin/sway"
