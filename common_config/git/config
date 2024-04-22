@@ -57,3 +57,5 @@
     sort = -taggerdate
 [advice]
     skippedCherryPicks = false
+[rerere]
+	enabled = true
