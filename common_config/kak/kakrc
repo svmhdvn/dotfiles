@@ -69,6 +69,8 @@ map global insert <c-e> <c-p>
 
 ### Siva's convenience mappings ###
 
+map global normal <c-]> :ctags-search<ret>
+
 # case insensitive search by default
 map global normal "/" "/(?i)"
 
