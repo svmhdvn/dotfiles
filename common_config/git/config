@@ -31,13 +31,17 @@
     defaultBranch = main
 [format]
     coverletter = auto
-    pretty = reference
+    pretty = oneline
+[log]
+    abbrevCommit = true
 [merge]
     # Gives you meld with three comparison tabs
     # TODO enable once meld works without crashing on swaywm
     #tool = mymeld
     conflictstyle = zdiff3
     keepBackup = false
+[am]
+    threeWay = yes
 [mergetool "mymeld"]
     cmd = meld --auto-merge $LOCAL $BASE $REMOTE --output $MERGED --diff $BASE $LOCAL --diff $BASE $REMOTE
 [rebase]
@@ -48,9 +52,6 @@
 
     # Finds the merge commit that introduced a specific commit SHA to the current branch
     myfind-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2 | xargs git show'"
-
-    # push to all my mirrors
-    mypushall = push --all !git remote | xargs -n1 git push --all
 [credential]
     helper = store
 [tag]
