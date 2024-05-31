@@ -1,3 +1,5 @@
+set global completers word=all
+
 add-highlighter global/ruler column 80 default,rgb:444444
 add-highlighter global/relative-linenums number-lines -relative
 

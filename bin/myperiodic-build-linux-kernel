@@ -5,13 +5,14 @@ set -e
 KERNEL_EFISTUB=/boot/efi/EFI/alpine-siva/bootx64.efi
 KERNEL_SRC=$HOME/src/linux-stable
 CONFIGS_DIR=$HOME/dotfiles/kernel_configs
-JOBS=$(nproc)
 
 current_kernel=$(file "$KERNEL_EFISTUB" | grep -o '[[:digit:]]\.[[:digit:]]\(\.[[:digit:]]\)\?')
 latest_kernel=$(curl -s https://www.kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')
 
 latest_config="thinkpad-e495_v${latest_kernel}.config"
 current_config_symlink="thinkpad-e495_current.config"
+
+# LLVM=1 KCFLAGS='-O3 -march=native -pipe'
 
 if [ "$current_kernel" = "$latest_kernel" ]; then
 	notify-send -t 7500 "$0" "Already running the latest kernel ($latest_kernel)"
@@ -20,9 +21,9 @@ else
 	git fetch --depth 1 origin tag "v$latest_kernel"
 	git checkout "v$latest_kernel"
 
-	# CHANGE IF YOU WANT DEFAULT GCC BUILD
-	make LLVM=1 KCFLAGS='-O3 -march=native -pipe' oldconfig
-	make LLVM=1 KCFLAGS='-O3 -march=native -pipe' -j"$JOBS"
+	# CHANGE IF YOU DON'T WANT DEFAULT GCC BUILD
+	make oldconfig
+	nice make -j$(nproc)
 
 	doas cp arch/x86/boot/bzImage "$KERNEL_EFISTUB"
 
