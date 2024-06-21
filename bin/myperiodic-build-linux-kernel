@@ -4,6 +4,41 @@ set -eux
 # use these if you want to try out LLVM
 # LLVM=1 KCFLAGS='-O3 -march=native'
 
+uncompress_firmware() {
+    (
+        . ${HOME}/src/linux-stable/.config
+        for fz in ${CONFIG_EXTRA_FIRMWARE}; do
+            mkdir -p "${HOME}/src/linux-stable/siva-uncompressed-firmware/$(dirname ${fz})"
+            if test -e "/lib/firmware/${fz}.zst"; then
+                zstd -df "/lib/firmware/${fz}.zst" -o "${HOME}/src/linux-stable/siva-uncompressed-firmware/${fz}"
+            else
+                cp "/lib/firmware/${fz}" "${HOME}/src/linux-stable/siva-uncompressed-firmware/${fz}"
+            fi
+        done
+    )
+}
+
+fetch_latest() {
+    git fetch --depth 1 origin tag "v${latest_kernel}"
+    git checkout "v${latest_kernel}"
+}
+
+build_kernel() {
+    make KBUILD_BUILD_TIMESTAMP='' oldconfig
+    uncompress_firmware
+    nice make KBUILD_BUILD_TIMESTAMP='' -j"$(nproc)"
+}
+
+install_kernel() {
+    latest_config="${configs_dir}/${config_name}_${latest_kernel}.config"
+    symlink="${configs_dir}/${config_name}_current.config"
+
+    doas cp ${image_srcs} "${image_dst}"
+    cp .config "${latest_config}"
+    rm "${symlink}"
+    ln -s "${latest_config}" "${symlink}"
+}
+
 cd "${HOME}/src/linux-stable"
 
 configs_dir="${HOME}/dotfiles/kernel_configs"
@@ -31,21 +66,10 @@ esac
 if test "${current_kernel}" = "${latest_kernel}"; then
 	notification="Already running the latest kernel (${latest_kernel})"
 else
-	git fetch --depth 1 origin tag "v${latest_kernel}"
-	git checkout "v${latest_kernel}"
-
-	make LLVM=1 KCFLAGS='-O3 -march=native -pipe' KBUILD_BUILD_TIMESTAMP='' CC='ccache clang' oldconfig
-	nice make LLVM=1 KCFLAGS='-O3 -march=native -pipe' KBUILD_BUILD_TIMESTAMP='' CC='ccache clang' -j"$(nproc)"
-
-	doas cp ${image_srcs} "${image_dst}"
-
-	latest_config="${configs_dir}/${config_name}_${latest_kernel}.config"
-	symlink="${configs_dir}/${config_name}_current.config"
-	cp .config "${latest_config}"
-	rm "${symlink}"
-	ln -s "${latest_config}" "${symlink}"
-
-	notification="Success! Built and installed linux ${latest_kernel}"
+    #fetch_latest
+    build_kernel
+    install_kernel
+    notification="Success! Built and installed linux ${latest_kernel}"
 fi
 
-notify-send -t 7500 "$0" "${notification}"
+#notify-send -t 7500 "$0" "${notification}"

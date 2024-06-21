@@ -20,10 +20,9 @@
 [sendemail]
     assume8bitencoding = utf-8
     smtpserver = smtp.migadu.com
-    smtpuser = mbsync-msmtp@svmhdvn.name
+    smtpuser = thinkpad-e495@svmhdvn.name
     smtpencryption = ssl
     smtpserverport = 465
-    #smtpserver = msmtp
     annotate = yes
 [commit]
     #gpgsign = true
@@ -31,7 +30,7 @@
     defaultBranch = main
 [format]
     coverletter = auto
-    pretty = reference
+    pretty = oneline
 [log]
     abbrevCommit = true
 [merge]

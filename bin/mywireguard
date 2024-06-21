@@ -1,13 +1,15 @@
 #!/bin/sh
-set -ex
+set -eux
 
-case $1 in
+case "$1" in
 	"up")
 		doas ip link add dev wg0 type wireguard
 		doas ip link set wg0 up
 
+		hostname="$(hostname)"
+
 		# TODO find a cleaner way to assign numbers to every host I own
-		case $(hostname) in
+		case "${hostname}" in
 			"pbp")		hostnum=2 ;;
 			"think")	hostnum=3 ;;
 			*)
@@ -21,8 +23,8 @@ case $1 in
 
 		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
 		# what most public networks only support
-		OPENWRT_PUBLIC_IP=$(dig @1.1.1.1 +short A openwrt.empt.ca)
-		OPENWRT_PEER='9TMsfDx2LYZRk5y+iRfVJCnxXadDdscy9jOQyoaRBi8='
+		OPENWRT_PUBLIC_IP=$(dig +short A openwrt.svmhdvn.name)
+		OPENWRT_PEER='JTi2TCG3yPQmbI5Bbxv40nGgu3NU1Px71eMpQC86QW8='
 		OPENWRT_PORT=45036
 
 		doas wg set wg0 \

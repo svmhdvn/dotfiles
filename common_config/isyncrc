@@ -1,10 +1,9 @@
 IMAPAccount personal
 Host imap.migadu.com
 Port 993
-User mbsync-msmtp@svmhdvn.name
+User thinkpad-e495@svmhdvn.name
 PassCmd "cat $HOME/secrets/email-app-password.txt"
-SSLType IMAPS
-SSLVersions TLSv1.3
+TLSType IMAPS
 
 IMAPStore personal-remote
 Account personal
