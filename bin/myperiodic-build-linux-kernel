@@ -1,36 +1,51 @@
 #!/bin/sh
+set -eux
 
-set -e
+# use these if you want to try out LLVM
+# LLVM=1 KCFLAGS='-O3 -march=native'
 
-KERNEL_EFISTUB=/boot/efi/EFI/alpine-siva/bootx64.efi
-KERNEL_SRC=$HOME/src/linux-stable
-CONFIGS_DIR=$HOME/dotfiles/kernel_configs
+cd "${HOME}/src/linux-stable"
 
-current_kernel=$(file "$KERNEL_EFISTUB" | grep -o '[[:digit:]]\.[[:digit:]]\(\.[[:digit:]]\)\?')
-latest_kernel=$(curl -s https://www.kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')
+configs_dir="${HOME}/dotfiles/kernel_configs"
+current_kernel="$(uname -r)"
+latest_kernel="$(curl -s https://www.kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')"
 
-latest_config="thinkpad-e495_v${latest_kernel}.config"
-current_config_symlink="thinkpad-e495_current.config"
+host="$(hostname)"
 
-# LLVM=1 KCFLAGS='-O3 -march=native -pipe'
+case "${host}" in
+    pbp)
+        image_srcs='arch/arm64/boot/Image.gz arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dtb'
+        image_dst=/boot/siva
+        config_name=pbp
+        ;;
+    think)
+        image_srcs=arch/x86/boot/bzImage
+        image_dst=/boot/efi/EFI/alpine-siva/bootx64.efi
+	config_name=thinkpad-e495
+        ;;
+    *)
+        echo "$0: ERROR: unsupported hostname '$host'" >&2
+        exit 1
+esac
 
-if [ "$current_kernel" = "$latest_kernel" ]; then
-	notify-send -t 7500 "$0" "Already running the latest kernel ($latest_kernel)"
+if test "${current_kernel}" = "${latest_kernel}"; then
+	notification="Already running the latest kernel (${latest_kernel})"
 else
-	cd "$KERNEL_SRC"
-	git fetch --depth 1 origin tag "v$latest_kernel"
-	git checkout "v$latest_kernel"
+	git fetch --depth 1 origin tag "v${latest_kernel}"
+	git checkout "v${latest_kernel}"
 
-	# CHANGE IF YOU DON'T WANT DEFAULT GCC BUILD
-	make oldconfig
-	nice make -j$(nproc)
+	make LLVM=1 KCFLAGS='-O3 -march=native -pipe' KBUILD_BUILD_TIMESTAMP='' CC='ccache clang' oldconfig
+	nice make LLVM=1 KCFLAGS='-O3 -march=native -pipe' KBUILD_BUILD_TIMESTAMP='' CC='ccache clang' -j"$(nproc)"
 
-	doas cp arch/x86/boot/bzImage "$KERNEL_EFISTUB"
+	doas cp ${image_srcs} "${image_dst}"
 
-	cd "$CONFIGS_DIR"
-	cp "$KERNEL_SRC/.config" "$latest_config"
-	rm "$current_config_symlink"
-	ln -s "$latest_config" "$current_config_symlink"
+	latest_config="${configs_dir}/${config_name}_${latest_kernel}.config"
+	symlink="${configs_dir}/${config_name}_current.config"
+	cp .config "${latest_config}"
+	rm "${symlink}"
+	ln -s "${latest_config}" "${symlink}"
 
-	notify-send -t 7500 "$0" "Success! Built and installed linux $latest_kernel"
+	notification="Success! Built and installed linux ${latest_kernel}"
 fi
+
+notify-send -t 7500 "$0" "${notification}"

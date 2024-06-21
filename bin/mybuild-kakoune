@@ -1,7 +1,6 @@
 #!/bin/sh
-
-set -ex
+set -eux
 
 cd "$HOME/src/kakoune"
-make CXXFLAGS='-O3 -g0 -march=native -pipe -flto' -j"$(nproc)"
+make CXX='clang++' CXXFLAGS='-O3 -g0 -march=native -pipe -flto' -j"$(nproc)"
 ln -sf $PWD/src/kak $HOME/.local/bin/kak
