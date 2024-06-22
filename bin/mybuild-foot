@@ -8,8 +8,8 @@ mkdir -p "$build_dir"
 cd "$build_dir"
 
 #meson setup --prefix $build_dir --buildtype release --strip -Dc_args='-march=native' -Db_lto=true ../
-CC=clang meson setup --prefix "$build_dir" --buildtype release --strip -Dc_args='-march=native' -Db_lto=true ../
-#CC=clang CC_LD=lld meson setup --prefix $build_dir --buildtype release --strip -Dc_args='-march=native' -Db_lto=true ../
+#CC=clang meson setup --prefix "$build_dir" --buildtype release --strip -Dc_args='-march=native' -Db_lto=true ../
+CC=clang CC_LD=lld meson setup --prefix "${build_dir}" --buildtype release --strip -Dc_args='-march=native' -Db_lto=true ../
 
 meson configure -Db_pgo=generate
 ninja

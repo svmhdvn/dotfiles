@@ -31,6 +31,7 @@
     defaultBranch = main
 [format]
     coverletter = auto
+    pretty = reference
 [merge]
     # Gives you meld with three comparison tabs
     # TODO enable once meld works without crashing on swaywm
@@ -58,4 +59,4 @@
 [advice]
     skippedCherryPicks = false
 [rerere]
-	enabled = true
+    enabled = true
