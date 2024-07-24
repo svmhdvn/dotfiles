@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -eux
+
+usage() {
+    cat <<EOF
+usage:
+  mygit mirrors
+EOF
+}
+
+setup_mymirrors() {
+    origin="$(git remote get-url origin)"
+    repo_with_ext="${origin##*/}"
+    repo="${repo_with_ext%%.git}"
+    sourcehut="git@git.sr.ht:~svmhdvn/${repo}"
+    github="git@github.com:svmhdvn/${repo}.git"
+    codeberg="git@codeberg.org:svmhdvn/${repo}.git"
+
+    git remote remove mymirrors || true
+    git remote add mymirrors "${sourcehut}"
+    git remote set-url --add --push mymirrors "${github}"
+    git remote set-url --add --push mymirrors "${sourcehut}"
+    git remote set-url --add --push mymirrors "${codeberg}"
+    git push -u mymirrors main
+    git remote remove origin
+}
+
+if ! test -d .git; then
+    echo "ERROR: PWD='${PWD}' not a git repository!" >&2
+    exit 64 # EX_USAGE
+fi
+
+case "$1" in
+    mirrors) setup_mymirrors ;;
+    *)
+        echo "ERROR: unrecognized command '$1'" >&2
+        exit 64 # EX_USAGE
+esac
