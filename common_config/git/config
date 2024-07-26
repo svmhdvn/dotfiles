@@ -31,7 +31,7 @@
     defaultBranch = main
 [format]
     coverletter = auto
-    pretty = oneline
+    pretty = reference
 [log]
     abbrevCommit = true
 [merge]
