@@ -63,13 +63,14 @@ case "${host}" in
         exit 1
 esac
 
-if test "${current_kernel}" = "${latest_kernel}"; then
-	notification="Already running the latest kernel (${latest_kernel})"
-else
-    #fetch_latest
-    build_kernel
-    install_kernel
-    notification="Success! Built and installed linux ${latest_kernel}"
-fi
+#if test "${current_kernel}" = "${latest_kernel}"; then
+#    notification="Already running the latest kernel (${latest_kernel})"
+#    exit 0
+#fi
+
+#fetch_latest
+build_kernel
+install_kernel
+notification="Success! Built and installed linux ${latest_kernel}"
 
 #notify-send -t 7500 "$0" "${notification}"
