@@ -1,8 +1,8 @@
 IMAPAccount personal
-Host imap.migadu.com
+Host diary.svmhdvn.name
 Port 993
-User thinkpad-e495@svmhdvn.name
-PassCmd "cat $HOME/secrets/email-app-password.txt"
+User me@svmhdvn.name
+PassCmd "cat $HOME/secrets/imap.txt"
 TLSType IMAPS
 
 IMAPStore personal-remote
