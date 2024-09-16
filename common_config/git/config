@@ -51,6 +51,9 @@
 
     # Finds the merge commit that introduced a specific commit SHA to the current branch
     myfind-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2 | xargs git show'"
+
+    # print list of all merge conflicts
+    conflicts = "diff --name-only --diff-filter=U --relative"
 [credential]
     helper = store
 [tag]

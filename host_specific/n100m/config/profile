@@ -1,0 +1,4 @@
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export EDITOR=kak
+export FZF_DEFAULT_COMMAND='fd --type file'
+export LEDGER_FILE="$HOME/finances/current.journal"
