@@ -1,0 +1,1 @@
+/home/siva/src/BQN/editors/kak/autoload/filetype/bqn.kak
