@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -eux
+
+# TODO figure out how to set the ABI here
+host_pkgbase_upgrade() {
+    # NOTE We need to maintain root for the entirety of this command to avoid
+    # obliterating the /etc/passwd file and locking out the current user
+    doas sh -c '
+env IGNORE_OSVERSION=yes pkg install -y -r host_pkgbase -g "FreeBSD-*"
+test -r /etc/master.passwd.pkgsave && \
+    cp /etc/master.passwd.pkgsave /etc/master.passwd && \
+    pwd_mkdb -p /etc/master.passwd
+test -r /etc/group.pkgsave && cp /etc/group.pkgsave /etc/group
+test -r /etc/sysctl.conf.pkgsave && cp /etc/sysctl.conf.pkgsave /etc/sysctl.conf
+'
+
+    doas find / -name '*.pkgsave' | \
+        sort | \
+        awk 'BEGIN {print "Leftover .pkgsave files (delete after double checking):"} {print}' | \
+        less
+    doas rm -f /boot/kernel/linker.hints
+}
+
+_upgrade1() {
+    doas service jail onestop
+    for d in /jails/*; do
+        doas pkg -r "$d" install -y -r jail_pkgbase -g 'FreeBSD-*'
+    done
+    host_pkgbase_upgrade
+    reboot
+}
+
+_upgrade2() {
+    doas service jail onestop
+    for d in / /jails/*; do
+        doas pkg -r "$d" upgrade -y
+        doas pkg -r "$d" autoremove -y
+    done
+    reboot
+}
+
+_hostname="$(hostname)"
+
+case "$1" in
+    upgrade1) _upgrade1 ;;
+    upgrade2) _upgrade2 ;;
+    *)
+        echo "ERROR: invalid argument '$1'" >&2
+        exit 64 # EX_USAGE
+        ;;
+esac
