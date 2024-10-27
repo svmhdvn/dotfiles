@@ -52,16 +52,16 @@ setup_mymirrors() {
     codeberg="git@codeberg.org:svmhdvn/${repo}.git"
 
     git remote remove mymirrors || true
-    git remote add mymirrors "${sourcehut}"
+    git remote add mymirrors "${codeberg}"
     git remote set-url --add --push mymirrors "${github}"
-    git remote set-url --add --push mymirrors "${sourcehut}"
     git remote set-url --add --push mymirrors "${codeberg}"
+    git remote set-url --add --push mymirrors "${sourcehut}"
     git push -u mymirrors main
     git remote remove origin
 }
 
 case "$1" in
-    clone) syncthing_clone "$2" "$3" ;;
+    stclone) syncthing_clone "$2" "$3" ;;
     mirrors) setup_mymirrors ;;
     *)
         echo "ERROR: unrecognized command '$1'" >&2
