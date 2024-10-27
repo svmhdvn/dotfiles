@@ -1,11 +1,10 @@
 set global completers word=all
 
+# show trailing whitespaces of any kind
+add-highlighter global/ show-whitespaces -only-trailing
+
 add-highlighter global/ruler column 80 default,rgb:444444
 add-highlighter global/relative-linenums number-lines -relative
-
-# TODO Switch to https://github.com/mawww/kakoune/pull/2256 once ready
-add-highlighter global/trailing-whitespace regex '\h+$' 0:Error
-
 add-highlighter global/highlight-todos regex \b(TODO|HACK|FIXME|XXX|NOTE)\b 0:+rb
 
 hook global WinSetOption filetype=mail %{

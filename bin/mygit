@@ -5,11 +5,45 @@ set -eux
 usage() {
     cat <<EOF
 usage:
+  mygit clone <url> <name>
   mygit mirrors
 EOF
 }
 
+# $1: url
+# $2: name
+syncthing_clone() {
+    g="${HOME}/g/$2"
+    s="${HOME}/s/$2"
+    if test -r "${g}/HEAD"; then
+        echo "'$1' is already bare cloned to '${g}'." >&2
+        exit 0
+    fi
+
+    mkdir -p "${HOME}/g"
+    git clone --bare "$1" "${g}"
+
+    # TODO once git supports setting an existing directory AS a worktree,
+    # remove this workaround
+    # ===================================================================
+    if test -f "${s}/.git"; then
+        git -C "${g}" worktree add --no-checkout /tmp/siva-tmp-worktree main
+        mv "${g}/worktrees/siva-tmp-worktree" "${g}/worktrees/main"
+    else
+        git -C "${g}" worktree add "${s}" main
+        mv "${g}/worktrees/$2" "${g}/worktrees/main"
+    fi
+    echo "gitdir: ../../g/$2/worktrees/main" > "${s}/.git"
+    echo "../../s/$2/.git" > "${g}/worktrees/main/gitdir"
+    # ===================================================================
+}
+
 setup_mymirrors() {
+    if ! test -d .git; then
+        echo "ERROR: PWD='${PWD}' not a git repository!" >&2
+        exit 64 # EX_USAGE
+    fi
+
     origin="$(git remote get-url origin)"
     repo_with_ext="${origin##*/}"
     repo="${repo_with_ext%%.git}"
@@ -26,12 +60,8 @@ setup_mymirrors() {
     git remote remove origin
 }
 
-if ! test -d .git; then
-    echo "ERROR: PWD='${PWD}' not a git repository!" >&2
-    exit 64 # EX_USAGE
-fi
-
 case "$1" in
+    clone) syncthing_clone "$2" "$3" ;;
     mirrors) setup_mymirrors ;;
     *)
         echo "ERROR: unrecognized command '$1'" >&2
