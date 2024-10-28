@@ -2,5 +2,8 @@
 
 QT_QPA_PLATFORM=wayland \
     SDL_VIDEODRIVER=wayland \
+    XDG_SESSION_TYPE=wayland \
+    XDG_CURRENT_DESKTOP=sway \
+    LIBSEAT_BACKEND=seatd \
     BROWSER=firefox \
-    dbus-run-session -- sway
+    exec dbus-run-session sway

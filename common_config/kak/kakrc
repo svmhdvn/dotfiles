@@ -1,7 +1,7 @@
 set global completers word=all
 
 # show trailing whitespaces of any kind
-add-highlighter global/ show-whitespaces -only-trailing
+add-highlighter global/ show-whitespaces -only-trailing -lf ' '
 
 add-highlighter global/ruler column 80 default,rgb:444444
 add-highlighter global/relative-linenums number-lines -relative
