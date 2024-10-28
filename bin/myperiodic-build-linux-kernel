@@ -30,13 +30,8 @@ build_kernel() {
 }
 
 install_kernel() {
-    latest_config="${configs_dir}/${config_name}_${latest_kernel}.config"
-    symlink="${configs_dir}/${config_name}_current.config"
-
     doas cp ${image_srcs} "${image_dst}"
-    cp .config "${latest_config}"
-    rm "${symlink}"
-    ln -s "${latest_config}" "${symlink}"
+    cp .config "${configs_dir}/${config_name}_${latest_kernel}.config"
 }
 
 cd "${HOME}/src/linux-stable"

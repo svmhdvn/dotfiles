@@ -28,6 +28,7 @@ syncthing_clone() {
     # ===================================================================
     if test -f "${s}/.git"; then
         git -C "${g}" worktree add --no-checkout /tmp/siva-tmp-worktree main
+        rm -rf /tmp/siva-tmp-worktree
         mv "${g}/worktrees/siva-tmp-worktree" "${g}/worktrees/main"
     else
         git -C "${g}" worktree add "${s}" main
@@ -36,10 +37,13 @@ syncthing_clone() {
     echo "gitdir: ../../g/$2/worktrees/main" > "${s}/.git"
     echo "../../s/$2/.git" > "${g}/worktrees/main/gitdir"
     # ===================================================================
+
+    cd "${s}"
+    setup_mymirrors
 }
 
 setup_mymirrors() {
-    if ! test -d .git; then
+    if ! test -e .git; then
         echo "ERROR: PWD='${PWD}' not a git repository!" >&2
         exit 64 # EX_USAGE
     fi
@@ -53,8 +57,8 @@ setup_mymirrors() {
 
     git remote remove mymirrors || true
     git remote add mymirrors "${codeberg}"
-    git remote set-url --add --push mymirrors "${github}"
     git remote set-url --add --push mymirrors "${codeberg}"
+    git remote set-url --add --push mymirrors "${github}"
     git remote set-url --add --push mymirrors "${sourcehut}"
     git push -u mymirrors main
     git remote remove origin
