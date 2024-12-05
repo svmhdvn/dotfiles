@@ -3,7 +3,7 @@ set global completers word=all
 # show trailing whitespaces of any kind
 add-highlighter global/ show-whitespaces -only-trailing -lf ' '
 
-add-highlighter global/ruler column 80 default,rgb:444444
+add-highlighter global/ruler column 80 default,rgb:222222
 add-highlighter global/relative-linenums number-lines -relative
 add-highlighter global/highlight-todos regex \b(TODO|HACK|FIXME|XXX|NOTE)\b 0:+rb
 
@@ -11,6 +11,12 @@ hook global WinSetOption filetype=mail %{
     set window autowrap_column 72
     add-highlighter -override global/ruler column %opt{autowrap_column} default,rgb:444444
     autowrap-enable
+}
+
+hook global WinSetOption filetype=bqn %{
+    remove-highlighter global/ruler
+    remove-highlighter global/relative-linenums
+    set window modelinefmt ''
 }
 
 ### colemak bindings ###

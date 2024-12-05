@@ -1,4 +1,4 @@
-xwayland disable
+#xwayland disable
 
 input "type:keyboard" {
     xkb_layout "us"
@@ -31,6 +31,9 @@ default_border pixel 1
 #
     # Start a terminal
     bindsym $mod+Return exec $term
+
+    # SIVA: screenshot
+    bindsym $mod+Shift+s exec slurp | grim -cg - - | wl-copy
 
     # Kill focused window
     bindsym $mod+Shift+q kill
@@ -192,7 +195,7 @@ bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
-exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway DISPLAY
 exec mako
 exec gammastep
 

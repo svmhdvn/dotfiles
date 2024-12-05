@@ -1,0 +1,6 @@
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export EDITOR=kak
+export PAGER='less -i'
+export FZF_DEFAULT_COMMAND='fd --type file'
+export LEDGER_FILE="$HOME/finances/current.journal"
+export CCACHE_DIR="$HOME/.cache/ccache"

@@ -5,14 +5,32 @@ set -eux
 # LLVM=1 KCFLAGS='-O3 -march=native'
 
 uncompress_firmware() {
+    fw_dest="${HOME}/src/linux-stable/siva-uncompressed-firmware"
+
+    # TODO file ticket for upstream aports to split intel-ucode
+    if test "${intel_ucode}" -eq 1; then
+        mkdir -p "${fw_dest}/intel-ucode"
+        iucode_tool \
+            --scan-system \
+            --list \
+            --write-firmware="${fw_dest}/intel-ucode" \
+            --overwrite \
+            -tr /boot/intel-ucode.img
+    fi
+
     (
         . ${HOME}/src/linux-stable/.config
         for fz in ${CONFIG_EXTRA_FIRMWARE}; do
-            mkdir -p "${HOME}/src/linux-stable/siva-uncompressed-firmware/$(dirname ${fz})"
+            mkdir -p "${fw_dest}/$(dirname ${fz})"
             if test -e "/lib/firmware/${fz}.zst"; then
-                zstd -df "/lib/firmware/${fz}.zst" -o "${HOME}/src/linux-stable/siva-uncompressed-firmware/${fz}"
+                zstd -df "/lib/firmware/${fz}.zst" -o "${fw_dest}/${fz}"
+            elif test -e "/lib/firmware/${fz}"; then
+                cp "/lib/firmware/${fz}" "${fw_dest}/${fz}"
+            elif test -e "${fw_dest}/${fz}"; then
+                echo "Found pre-existing firmware '${fw_dest}/${fz}', skipping." >&2
             else
-                cp "/lib/firmware/${fz}" "${HOME}/src/linux-stable/siva-uncompressed-firmware/${fz}"
+                echo "ERROR: could not find source for '${fz}', please locate!" >&2
+                exit 1
             fi
         done
     )
@@ -26,19 +44,18 @@ fetch_latest() {
 build_kernel() {
     make KBUILD_BUILD_TIMESTAMP='' oldconfig
     uncompress_firmware
-    nice make KBUILD_BUILD_TIMESTAMP='' -j"$(nproc)"
+    make KBUILD_BUILD_TIMESTAMP='' -j"$(nproc)"
 }
 
 install_kernel() {
     doas cp ${image_srcs} "${image_dst}"
-    cp .config "${configs_dir}/${config_name}_${latest_kernel}.config"
+    cp .config "${HOME}/s/dotfiles/kernel_configs/${config_name}_${latest_kernel}.config"
 }
 
 cd "${HOME}/src/linux-stable"
 
-configs_dir="${HOME}/dotfiles/kernel_configs"
 current_kernel="$(uname -r)"
-latest_kernel="$(curl -s https://www.kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')"
+latest_kernel="$(curl -s https://kernel.org | grep -A1 latest_link | grep -o '>.*<' | tr -d '><')"
 
 host="$(hostname)"
 
@@ -47,11 +64,19 @@ case "${host}" in
         image_srcs='arch/arm64/boot/Image.gz arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dtb'
         image_dst=/boot/siva
         config_name=pbp
+	intel_ucode=0
         ;;
     think)
         image_srcs=arch/x86/boot/bzImage
         image_dst=/boot/efi/EFI/alpine-siva/bootx64.efi
 	config_name=thinkpad-e495
+	intel_ucode=0
+        ;;
+    n100m)
+        image_srcs=arch/x86/boot/bzImage
+        image_dst=/boot/efi/EFI/alpine-siva/bootx64.efi
+	config_name=n100m
+	intel_ucode=1
         ;;
     *)
         echo "$0: ERROR: unsupported hostname '$host'" >&2

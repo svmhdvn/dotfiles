@@ -6,6 +6,9 @@ if [ ! -e /sys/bus/cpu/devices/cpu0/cpufreq/scaling_governor ]; then
 fi
 
 case $1 in
+    "")
+        cat /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
+        ;;
     powersave|schedutil|performance)
         echo $1 | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
         ;;

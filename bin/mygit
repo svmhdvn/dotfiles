@@ -10,18 +10,18 @@ usage:
 EOF
 }
 
-# $1: url
-# $2: name
+# $1: name
 syncthing_clone() {
-    g="${HOME}/g/$2"
-    s="${HOME}/s/$2"
+    g="${HOME}/g/$1"
+    s="${HOME}/s/$1"
+    url="git@codeberg.org:svmhdvn/$1.git"
     if test -r "${g}/HEAD"; then
-        echo "'$1' is already bare cloned to '${g}'." >&2
+        echo "'${url}' is already bare cloned to '${g}'." >&2
         exit 0
     fi
 
     mkdir -p "${HOME}/g"
-    git clone --bare "$1" "${g}"
+    git clone --bare "${url}" "${g}"
 
     # TODO once git supports setting an existing directory AS a worktree,
     # remove this workaround
@@ -32,10 +32,10 @@ syncthing_clone() {
         mv "${g}/worktrees/siva-tmp-worktree" "${g}/worktrees/main"
     else
         git -C "${g}" worktree add "${s}" main
-        mv "${g}/worktrees/$2" "${g}/worktrees/main"
+        mv "${g}/worktrees/$1" "${g}/worktrees/main"
     fi
-    echo "gitdir: ../../g/$2/worktrees/main" > "${s}/.git"
-    echo "../../s/$2/.git" > "${g}/worktrees/main/gitdir"
+    echo "gitdir: ../../g/$1/worktrees/main" > "${s}/.git"
+    echo "../../s/$1/.git" > "${g}/worktrees/main/gitdir"
     # ===================================================================
 
     cd "${s}"
@@ -65,7 +65,7 @@ setup_mymirrors() {
 }
 
 case "$1" in
-    stclone) syncthing_clone "$2" "$3" ;;
+    stclone) syncthing_clone "$2" ;;
     mirrors) setup_mymirrors ;;
     *)
         echo "ERROR: unrecognized command '$1'" >&2
