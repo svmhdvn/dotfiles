@@ -22,29 +22,26 @@ test -r /etc/sysctl.conf.pkgsave && cp /etc/sysctl.conf.pkgsave /etc/sysctl.conf
     doas rm -f /boot/kernel/linker.hints
 }
 
-_upgrade1() {
+_upgrade() {
     doas service jail onestop
+
     for d in /jails/*; do
-        doas pkg -r "$d" install -y -r jail_pkgbase -g 'FreeBSD-*'
+        doas sh -c "
+pkg -r '${d}' install -y -r jail_pkgbase -g 'FreeBSD-*'
+pkg -r '${d}' upgrade -y
+pkg -r '${d}' autoremove -y
+" &
     done
+    wait
+
     host_pkgbase_upgrade
+    doas pkg upgrade -y
+    doas pkg autoremove -y
     reboot
 }
-
-_upgrade2() {
-    doas service jail onestop
-    for d in / /jails/*; do
-        doas pkg -r "$d" upgrade -y
-        doas pkg -r "$d" autoremove -y
-    done
-    reboot
-}
-
-_hostname="$(hostname)"
 
 case "$1" in
-    upgrade1) _upgrade1 ;;
-    upgrade2) _upgrade2 ;;
+    upgrade) _upgrade ;;
     *)
         echo "ERROR: invalid argument '$1'" >&2
         exit 64 # EX_USAGE
