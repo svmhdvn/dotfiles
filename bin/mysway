@@ -6,4 +6,5 @@ QT_QPA_PLATFORM=wayland \
     XDG_CURRENT_DESKTOP=sway \
     LIBSEAT_BACKEND=seatd \
     BROWSER=firefox \
+    WLR_RENDERER=vulkan \
     exec dbus-run-session sway
