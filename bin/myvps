@@ -8,17 +8,19 @@ host_pkgbase_upgrade() {
     # obliterating the /etc/passwd file and locking out the current user
     doas sh -c '
 env IGNORE_OSVERSION=yes pkg install -y -r host_pkgbase -g "FreeBSD-*"
-test -r /etc/master.passwd.pkgsave && \
-    cp /etc/master.passwd.pkgsave /etc/master.passwd && \
-    pwd_mkdb -p /etc/master.passwd
-test -r /etc/group.pkgsave && cp /etc/group.pkgsave /etc/group
-test -r /etc/sysctl.conf.pkgsave && cp /etc/sysctl.conf.pkgsave /etc/sysctl.conf
+if test -r /etc/master.passwd.pkgsave; then
+  cp /etc/master.passwd.pkgsave /etc/master.passwd && pwd_mkdb -p /etc/master.passwd
+fi
+if test -r /etc/group.pkgsave; then
+  cp /etc/group.pkgsave /etc/group
+fi
+if test -r /etc/sysctl.conf.pkgsave; then
+  cp /etc/sysctl.conf.pkgsave /etc/sysctl.conf
+fi
 '
-
     doas find / -name '*.pkgsave' | \
         sort | \
-        awk 'BEGIN {print "Leftover .pkgsave files (delete after double checking):"} {print}' | \
-        less
+        awk 'BEGIN {print "Leftover .pkgsave files (delete after double checking):"} {print}'
     doas rm -f /boot/kernel/linker.hints
 }
 
