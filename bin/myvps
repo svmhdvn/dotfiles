@@ -18,10 +18,10 @@ if test -r /etc/sysctl.conf.pkgsave; then
   cp /etc/sysctl.conf.pkgsave /etc/sysctl.conf
 fi
 '
+    doas rm -f /boot/kernel/linker.hints
     doas find / -name '*.pkgsave' | \
         sort | \
         awk 'BEGIN {print "Leftover .pkgsave files (delete after double checking):"} {print}'
-    doas rm -f /boot/kernel/linker.hints
 }
 
 _upgrade() {
