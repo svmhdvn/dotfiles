@@ -1,4 +1,4 @@
-#xwayland disable
+xwayland disable
 
 input "type:keyboard" {
     xkb_layout "us"
@@ -201,6 +201,3 @@ exec gammastep
 
 # for alpine
 exec /usr/libexec/pipewire-launcher
-
-# for gentoo
-#exec gentoo-pipewire-launcher
