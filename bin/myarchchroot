@@ -8,6 +8,9 @@ doas mkdir -p "${chroot}/xdg_runtime_dir"
 # NOTE this is weird, but see `man arch-chroot` for details
 doas mount --bind "${chroot}" "${chroot}"
 doas mount --bind "${XDG_RUNTIME_DIR:?}" "${chroot}/xdg_runtime_dir"
-doas arch-chroot "${chroot}" sudo -u builder env XDG_RUNTIME_DIR=/xdg_runtime_dir WAYLAND_DISPLAY="${WAYLAND_DISPLAY:?}" sh
+doas arch-chroot "${chroot}" sudo -u builder env \
+    XDG_RUNTIME_DIR=/xdg_runtime_dir \
+    WAYLAND_DISPLAY="${WAYLAND_DISPLAY:?}" \
+    sh
 doas umount "${chroot}/xdg_runtime_dir"
 doas umount "${chroot}"

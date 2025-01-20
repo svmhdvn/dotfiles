@@ -1,0 +1,93 @@
+CONFIG_TARGET_ramips=y
+CONFIG_TARGET_ramips_mt76x8=y
+CONFIG_TARGET_ramips_mt76x8_DEVICE_tplink_archer-c50-v6=y
+CONFIG_DEVEL=y
+CONFIG_TOOLCHAINOPTS=y
+# CONFIG_BINUTILS_USE_VERSION_2_42 is not set
+CONFIG_BINUTILS_USE_VERSION_2_43=y
+CONFIG_BINUTILS_VERSION="2.43.1"
+CONFIG_BINUTILS_VERSION_2_43=y
+# CONFIG_GCC_USE_VERSION_13 is not set
+CONFIG_GCC_USE_VERSION_14=y
+CONFIG_GCC_VERSION="14.2.0"
+CONFIG_GCC_VERSION_14=y
+# CONFIG_GDB is not set
+CONFIG_KERNEL_CC_OPTIMIZE_FOR_PERFORMANCE=y
+# CONFIG_KERNEL_CC_OPTIMIZE_FOR_SIZE is not set
+CONFIG_KERNEL_CC_STACKPROTECTOR_NONE=y
+# CONFIG_KERNEL_CC_STACKPROTECTOR_REGULAR is not set
+# CONFIG_KERNEL_DEBUG_FS is not set
+# CONFIG_KERNEL_MAGIC_SYSRQ is not set
+# CONFIG_KERNEL_PRINTK_TIME is not set
+# CONFIG_KERNEL_STACKPROTECTOR is not set
+CONFIG_LUCI_SRCDIET=y
+# CONFIG_PACKAGE_MAC80211_DEBUGFS is not set
+# CONFIG_PACKAGE_MAC80211_MESH is not set
+CONFIG_PACKAGE_cgi-io=y
+CONFIG_PACKAGE_ip-tiny=y
+CONFIG_PACKAGE_iptables-mod-ipopt=y
+CONFIG_PACKAGE_iptables-nft=y
+CONFIG_PACKAGE_kmod-crypto-kpp=y
+CONFIG_PACKAGE_kmod-crypto-lib-chacha20=y
+CONFIG_PACKAGE_kmod-crypto-lib-chacha20poly1305=y
+CONFIG_PACKAGE_kmod-crypto-lib-curve25519=y
+CONFIG_PACKAGE_kmod-crypto-lib-poly1305=y
+CONFIG_PACKAGE_kmod-ifb=y
+CONFIG_PACKAGE_kmod-ipt-core=y
+CONFIG_PACKAGE_kmod-ipt-ipopt=y
+CONFIG_PACKAGE_kmod-nf-ipt=y
+CONFIG_PACKAGE_kmod-nft-compat=y
+CONFIG_PACKAGE_kmod-sched-cake=y
+CONFIG_PACKAGE_kmod-sched-core=y
+CONFIG_PACKAGE_kmod-udptunnel4=y
+CONFIG_PACKAGE_kmod-udptunnel6=y
+CONFIG_PACKAGE_kmod-wireguard=y
+CONFIG_PACKAGE_libiptext=y
+CONFIG_PACKAGE_libiptext-nft=y
+CONFIG_PACKAGE_libiptext6=y
+CONFIG_PACKAGE_liblucihttp=y
+CONFIG_PACKAGE_liblucihttp-ucode=y
+CONFIG_PACKAGE_libxtables=y
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-app-firewall=y
+CONFIG_PACKAGE_luci-app-package-manager=y
+CONFIG_PACKAGE_luci-app-sqm=y
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_luci-lib-uqr=y
+CONFIG_PACKAGE_luci-light=y
+CONFIG_PACKAGE_luci-mod-admin-full=y
+CONFIG_PACKAGE_luci-mod-network=y
+CONFIG_PACKAGE_luci-mod-status=y
+CONFIG_PACKAGE_luci-mod-system=y
+CONFIG_PACKAGE_luci-proto-ipv6=y
+CONFIG_PACKAGE_luci-proto-ppp=y
+CONFIG_PACKAGE_luci-proto-wireguard=y
+CONFIG_PACKAGE_luci-theme-bootstrap=y
+# CONFIG_PACKAGE_opkg is not set
+CONFIG_PACKAGE_resolveip=y
+CONFIG_PACKAGE_rpcd=y
+CONFIG_PACKAGE_rpcd-mod-file=y
+CONFIG_PACKAGE_rpcd-mod-iwinfo=y
+CONFIG_PACKAGE_rpcd-mod-luci=y
+CONFIG_PACKAGE_rpcd-mod-rrdns=y
+CONFIG_PACKAGE_rpcd-mod-ucode=y
+CONFIG_PACKAGE_sqm-scripts=y
+CONFIG_PACKAGE_tc-tiny=y
+CONFIG_PACKAGE_ucode-mod-html=y
+CONFIG_PACKAGE_ucode-mod-math=y
+CONFIG_PACKAGE_uhttpd=y
+CONFIG_PACKAGE_uhttpd-mod-ubus=y
+CONFIG_PACKAGE_wireguard-tools=y
+CONFIG_PACKAGE_xtables-nft=y
+CONFIG_PKG_CC_STACKPROTECTOR_NONE=y
+# CONFIG_PKG_CC_STACKPROTECTOR_REGULAR is not set
+# CONFIG_PKG_FORTIFY_SOURCE_1 is not set
+CONFIG_PKG_FORTIFY_SOURCE_NONE=y
+# CONFIG_PKG_RELRO_FULL is not set
+CONFIG_PKG_RELRO_NONE=y
+CONFIG_TARGET_OPTIMIZATION="-O2 -pipe -mno-branch-likely -march=24kec -mtune=24kec"
+CONFIG_TARGET_OPTIONS=y
+CONFIG_USE_GC_SECTIONS=y
+CONFIG_USE_MKLIBS=y
+CONFIG_KERNEL_WERROR=y
+CONFIG_PACKAGE_libpthread=y
