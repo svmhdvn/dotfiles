@@ -19,6 +19,10 @@ hook global WinSetOption filetype=bqn %{
     set window modelinefmt ''
 }
 
+hook global BufCreate .+\.(tbf1|skf) %{
+    set-option buffer filetype forth
+}
+
 ### colemak bindings ###
 
 ## hjkl movement

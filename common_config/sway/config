@@ -35,6 +35,9 @@ default_border pixel 1
     # SIVA: screenshot
     bindsym $mod+Shift+s exec slurp | grim -cg - - | wl-copy
 
+    # SIVA: use espeak for text-to-speech from the clipboard
+    bindsym $mod+Shift+p exec wl-paste --primary | myespeak
+
     # Kill focused window
     bindsym $mod+Shift+q kill
 
