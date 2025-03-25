@@ -1,4 +1,5 @@
 set global completers word=all
+set global indentwidth 2
 
 # show trailing whitespaces of any kind
 add-highlighter global/ show-whitespaces -only-trailing -lf ' '

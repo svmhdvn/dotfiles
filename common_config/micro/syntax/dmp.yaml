@@ -1,0 +1,10 @@
+filetype: dmp
+detect:
+    filename: "\\.dmp$"
+rules:
+    - constant.number: "\\b[A-Fa-f0-9][A-Fa-f0-9]\\b"
+    - comment:
+        start: "#"
+        end: "$"
+        rules:
+            - todo: "(TODO|NOTE|XXX|FIXME):?"

@@ -1,13 +1,18 @@
 [branch]
     sort = -committerdate
+[column]
+    ui = auto
 [core]
     mode = progress
 [diff]
-    colorMoved = default
+    colorMoved = plain
     algorithm = histogram
     mnemonicPrefix = true
+    renames = true
 [fetch]
     prune = true
+    pruneTags = true
+    all = true
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
@@ -25,6 +30,7 @@
     smtpserverport = 465
     annotate = yes
 [commit]
+    verbose = true
     #gpgsign = true
 [init]
     defaultBranch = main
@@ -59,8 +65,9 @@
     helper = store
 [tag]
     gpgSign = true
-    sort = -taggerdate
+    sort = version:refname
 [advice]
     skippedCherryPicks = false
 [rerere]
     enabled = true
+    autoupdate = true

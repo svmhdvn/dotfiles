@@ -24,7 +24,7 @@ case "$1" in
 		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
 		# what most public networks only support
 		OPENWRT_PUBLIC_IP=$(dig +short A openwrt.svmhdvn.name)
-		OPENWRT_PEER='8IsO9lNZO+oBqOxVwDrdi/afv8J0/M+gV7ZjW8+e1mI='
+		OPENWRT_PEER='4TD5znEgqynxxW913nMpDzk4xGKsNK5vlxUBRtdbWks='
 		OPENWRT_PORT=45036
 
 		# TODO enable ipv6 when more people support it
