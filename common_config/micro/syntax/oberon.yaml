@@ -1,0 +1,19 @@
+filetype: oberon
+detect:
+    filename: "\\.(obn|Mod)$"
+rules:
+    - type: "\\b(BOOLEAN|CHAR|INTEGER|REAL|BYTE|SET|ARRAY|RECORD|POINTER|OF|MODULE)\\b"
+    - special: "\\b(ABS|ASR|ASSERT|CHR|DEC|DIV|EXCL|FLOOR|FLT|INC|INCL|LEN|LSL|MOD|NEW|ODD|ORD|PACK|ROR|UNPK)\\b"
+    - statement: "\\b(BEGIN|BY|CASE|DO|ELSE|ELSIF|END|FOR|IF|IMPORT|IN|IS|MODULE|OF|OR|REPEAT|RETURN|THEN|TO|UNTIL|WHILE)\\b"
+    - constant: "\\bNIL\\b"
+    - constant.number: "\\b[0-9][0-9A-F]*H?\\b" # integer TODO handle real numbers
+    - constant.bool.true: "\\bTRUE\\b"
+    - constant.bool.false: "\\bFALSE\\b"
+    - type.keyword: "\\b(CONST|VAR|TYPE|PROCEDURE)\\b" # DeclarationSequence
+    - comment:
+        start: "\\(\\*"
+        end: "\\*\\)"
+        rules:
+            - todo: "(TODO|XXX|FIXME):?"
+    - constant.string: "\"[^\"]*\""
+    - constant.string: "\\b[0-9][0-9A-F]*X\\b"

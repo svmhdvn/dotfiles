@@ -1,0 +1,76 @@
+#!/bin/sh
+
+set -eux
+
+_usage() {
+  cat >&2 <<EOF
+usage:
+  myjj clone_mine <project name>
+  myjj clone_fork <upstream https:// url>
+  myjj setup
+EOF
+  exit 64 # EX_USAGE
+}
+
+# $1: name
+clone_mine() {
+  repo="${HOME}/src/$1"
+  if test -e "${repo}/.git" -o -e "${repo}/.jj"; then
+    echo "ERROR: '${repo}' already exists!" >&2
+    echo "Please backup and remove the directory before retrying." >&2
+    _usage
+  fi
+
+  codeberg="git@codeberg.org:svmhdvn/$1.git"
+  github="git@github.com:svmhdvn/$1.git"
+  sourcehut="git@git.sr.ht:~svmhdvn/$1"
+
+  jj git clone --remote codeberg "${codeberg}" "${repo}"
+  cd "${repo}"
+
+  jj git remote add github "${github}"
+  jj git remote add sourcehut "${sourcehut}"
+  jj git fetch --all-remotes --branch main
+
+  jj bookmark track main@github
+  jj bookmark track main@sourcehut
+}
+
+# $1: upstream https:// RO url
+clone_fork() {
+  upstream="$1"
+
+  if test "${upstream#*svmhdvn}" != "${upstream}"; then
+    echo "ERROR: '${upstream}' seems to be a project of mine!" >&2
+    echo "Please run '$0 clone_mine' instead." >&2
+    _usage
+  fi
+
+  fork="$(echo "${upstream}" | sed -e 's,https://,git@,' -e 's,/\([^/]*\),:svmhdvn,')"
+  repo_name="$(basename "${fork%%.git}")"
+  repo="${HOME}/src/${repo_name}"
+
+  if test -e "${repo}"/.git -o -e "${repo}"/.jj; then
+    echo "ERROR: '${repo}' already exists!" >&2
+    echo "Please backup and remove the directory before retrying." >&2
+    _usage
+  fi
+
+  jj git clone "${fork}" "${repo}"
+  cd "${repo}"
+
+  jj git remote add upstream "${upstream}"
+  _trunk_with_remote="$(jj config get 'revset-aliases."trunk()"')"
+  local_trunk="${_trunk_with_remote%%@*}"
+  jj git fetch --remote upstream --branch "${local_trunk}"
+  jj bookmark track "${local_trunk}@upstream"
+  jj git push --tracked
+}
+
+case "$1" in
+  clone_mine) clone_mine "$2" ;;
+  clone_fork) clone_fork "$2" ;;
+  *)
+      echo "ERROR: unrecognized command '$1'" >&2
+      _usage
+esac

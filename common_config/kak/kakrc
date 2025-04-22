@@ -4,7 +4,10 @@ set global indentwidth 2
 # show trailing whitespaces of any kind
 add-highlighter global/ show-whitespaces -only-trailing -lf ' '
 
-add-highlighter global/ruler column 80 default,rgb:222222
+# enable back if needed
+# TODO file a bug upstream for syntax highlighting issues on macos terminal.app
+#add-highlighter global/ruler column 80 default,rgb:222222
+
 add-highlighter global/relative-linenums number-lines -relative
 add-highlighter global/highlight-todos regex \b(TODO|HACK|FIXME|XXX|NOTE)\b 0:+rb
 
@@ -78,6 +81,8 @@ map global view e k
 map global view i l
 
 map global insert <c-e> <c-p>
+# NOTE needed on FreeBSD where backspace doesn't work in the console
+map global insert <c-h> <backspace>
 
 ### Siva's convenience mappings ###
 

@@ -1,27 +1,27 @@
 #!/bin/sh
 
-set -ex
+set -eux
 
 repo="$1"
 name="$2"
 version="$3"
 
-cd "$HOME/src/aports/$repo/$name"
+cd "${HOME}/src/aports/${repo}/${name}"
 
-old_branch=$(git branch --show-current)
+old_branch="$(git branch --show-current)"
 git stash
-git checkout master
+git switch master
 git pull upstream master
-git checkout -B bump-$name master
+git switch -c "bump-${name}" master
 
-sed -i "s/^pkgver=.*\$/pkgver=$version/" APKBUILD
+sed -i "s/^pkgver=.*\$/pkgver=${version}/" APKBUILD
 abuild checksum
 
 git add APKBUILD
-git commit -m "$repo/$name: upgrade to $version"
-git push origin bump-$name
+git commit -m "${repo}/${name}: upgrade to ${version}"
+git push -u origin "bump-${name}"
 # TODO use with patch-based workflow
 #git send-email HEAD^
 # TODO automatically create MR on gitlab
-git checkout "$old_branch"
+git switch -c "${old_branch}"
 git stash apply

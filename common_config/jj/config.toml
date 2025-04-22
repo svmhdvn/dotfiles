@@ -1,0 +1,14 @@
+[ui]
+#paginate = "never"
+default-command = "log"
+
+[user]
+name = "Siva Mahadevan"
+email = "me@svmhdvn.name"
+
+[git]
+push = "origin"
+fetch = "upstream"
+
+[revset-aliases]
+my_unbookmarked = "children(main) ~ ancestors(bookmarks())"
