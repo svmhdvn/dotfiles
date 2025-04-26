@@ -1,15 +1,29 @@
 #!/bin/sh
 
-set -eux
+set -eu
 
 _usage() {
   cat >&2 <<EOF
 usage:
+  myjj bak
   myjj clone_mine <project name>
   myjj clone_fork <upstream https:// url>
   myjj setup
 EOF
   exit 64 # EX_USAGE
+}
+
+backup_and_push() {
+  _diff="$(jj --quiet --no-pager diff --name-only)"
+  if test -z "${_diff}"; then
+    echo "SIVA: no changes to backup, all good."
+  else
+    jj desc -m bak
+    jj bookmark move --from main --to @
+    jj git push --bookmark main --remote codeberg
+    jj git push --bookmark main --remote github
+    jj git push --bookmark main --remote sourcehut
+  fi
 }
 
 # $1: name
@@ -68,6 +82,7 @@ clone_fork() {
 }
 
 case "$1" in
+  bak)        backup_and_push ;;
   clone_mine) clone_mine "$2" ;;
   clone_fork) clone_fork "$2" ;;
   *)
