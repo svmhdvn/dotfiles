@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eux
 
-dotfiles="${HOME}/s/dotfiles"
+dotfiles="${HOME}/src/dotfiles"
 ln -sf "${dotfiles}/bin" "${HOME}/bin"
 
 common_config_prefix="${dotfiles}/common_config"
