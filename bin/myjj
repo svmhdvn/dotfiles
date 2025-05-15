@@ -79,6 +79,7 @@ clone_fork() {
   jj git fetch --remote upstream --branch "${local_trunk}"
   jj bookmark track "${local_trunk}@upstream"
   jj git push --tracked
+  jj new "${local_trunk}"
 }
 
 case "$1" in
