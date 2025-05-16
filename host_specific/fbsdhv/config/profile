@@ -1,0 +1,8 @@
+export CCACHE_DIR="$HOME/.cache/ccache"
+export EDITOR=kak
+export FZF_DEFAULT_COMMAND='fd --type file'
+export LEDGER_FILE="$HOME/finances/current.journal"
+export PAGER='less -Ri'
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PORT_DBDIR="$HOME/.cache/port_dbdir"
+export PORTSDIR="$HOME/src/freebsd-ports"
