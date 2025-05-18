@@ -1,0 +1,19 @@
+filetype: t3x
+detect:
+    filename: "\\.(t|t3x)$"
+rules:
+    - type: "(?i)\\b(const|module|var|struct|inline)\\b"
+    - type.keyword: "(?i)\\b(public|extern|decl)\\b"
+    - statement: "(?i)\\b(do|call|end|if|ie|else|while|for|leave|loop|return|halt|use)\\b"
+    - special: "(?i)\\b(mod)\\b"
+    - constant: "(?i)\\b(packed)\\b"
+    - constant.number: "\\b%?0x[0-9A-Fa-f]+\\b"
+    - constant.number: "\\b%?[0-9]+\\b"
+    - constant.string: "\"(\\\\?.)*\""
+    - constant.string: "'.'"
+    - constant.string: "'\\\\.'"
+    - comment:
+        start: "!"
+        end: "$"
+        rules:
+            - todo: "(TODO|NOTE|XXX|FIXME):?"
