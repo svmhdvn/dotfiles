@@ -1,21 +1,21 @@
-IMAPAccount personal
-Host diary.svmhdvn.name
+IMAPAccount migadu
+Host imap.migadu.com
 Port 993
-User me@svmhdvn.name
-PassCmd "cat $HOME/secrets/imap.txt"
+User think-mbsync@svmhdvn.name
+PassCmd "cat $HOME/secrets/migadu.txt"
 TLSType IMAPS
 
-IMAPStore personal-remote
-Account personal
+IMAPStore migadu-remote
+Account migadu
 
-MaildirStore personal-local
+MaildirStore migadu-local
 Path ~/Mail/
 Inbox ~/Mail/INBOX
 Subfolders Verbatim
 
-Channel personal
-Far :personal-remote:
-Near :personal-local:
+Channel migadu
+Far :migadu-remote:
+Near :migadu-local:
 Patterns *
 # Create missing folders on both local and remote
 Create Both
