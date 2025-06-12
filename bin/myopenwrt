@@ -1,0 +1,123 @@
+#!/bin/sh
+
+set -eux
+
+# TODO:
+#overlay="${artifacts}/overlay"
+
+update_archchroot() {
+  if ! test -d "${chrootdir}"; then
+    mkdir -p "${myarchchroot}"
+    curl "${archbootstrap_url}" | doas tar -C "${myarchchroot}" --zstd -xf -
+    doas arch-chroot "${chrootdir}" sh <<EOF
+sed -i "/geo.mirror.pkgbuild.com/s/^#//" /etc/pacman.d/mirrorlist
+sed -i "/CheckSpace/s/^/#/" /etc/pacman.conf
+pacman-key --init
+pacman-key --populate archlinux
+pacman --noconfirm -Syu base-devel git nano
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/00-wheel-nopasswd
+useradd -m -G wheel builder
+EOF
+  fi
+
+  aur_openwrt_devel=/home/builder/aur-openwrt-devel
+  ${MYOPENWRT_SH} <<EOF
+sudo pacman --noconfirm -Syu
+install -d -o builder -g builder "${aur_openwrt_devel}"
+curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=openwrt-devel' > "${aur_openwrt_devel}/PKGBUILD"
+makepkg --noconfirm -D "${aur_openwrt_devel}" -sirc
+EOF
+}
+
+fetch() {
+  openwrt_config="${openwrt_src}/.config"
+  ${MYOPENWRT_SH} <<EOF
+if ! test -d "${openwrt_src}"; then
+  mkdir -p "${openwrt_src}"
+  git clone --depth=1 --branch="${version}" "${openwrt_upstream}" "${openwrt_src}"
+  touch "${openwrt_config}"
+  mkdir -p "${out}"
+fi
+
+cd "${openwrt_src}"
+git fetch --depth=1 origin tag "${version}"
+git switch --detach "${version}"
+./scripts/feeds update -a
+./scripts/feeds install -a
+EOF
+  doas cp "${my_diffconfig}" "${chrootdir}${openwrt_config}"
+}
+
+build() {
+  ${MYOPENWRT_SH} <<EOF
+cd "${openwrt_src}"
+make -j"$(nproc)" defconfig download world
+./scripts/diffconfig.sh > "${out_diffconfig}"
+EOF
+
+cp "${chrootdir}${out_diffconfig}" "${my_diffconfig}"
+cp \
+  "${chrootdir}${openwrt_src}"/bin/targets/**/**/*-sysupgrade.bin \
+  "${chrootdir}${openwrt_src}"/bin/targets/**/**/sha256sums \
+  "${chrootdir}${out}"
+
+cat "${chrootdir}${out}/sha256sums"
+}
+
+menuconfig() {
+  ${MYOPENWRT_SH} -c "cd ${openwrt_src} && make menuconfig && ./scripts/diffconfig.sh > ${out_diffconfig}"
+  cp "${chrootdir}${out_diffconfig}" "${my_diffconfig}"
+}
+
+query_latest_version() {
+  git ls-remote --tags --refs --sort='v:refname' "${openwrt_upstream}" | tail -n1 | sed 's/.*\///'
+}
+
+usage() {
+    cat >&2 <<EOF
+Usage: $0: -d <device> -v <version> command
+
+Commands:
+  build: build openwrt image
+  config: run openwrt menuconfig
+  latest: query latest upstream version of openwrt
+EOF
+}
+
+archbootstrap_url=https://mirrors.edge.kernel.org/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst
+openwrt_upstream=git://git.openwrt.org/openwrt/openwrt.git
+diffconfigs="${HOME}/s/dotfiles/openwrt_diffconfigs"
+
+while getopts d:v: flag
+do
+  case "${flag}" in
+    d) device="${OPTARG}" ;;
+    v) version="${OPTARG}" ;;
+    ?) usage; exit 1 ;;
+    *) ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+my_diffconfig="${diffconfigs}/${device}_${version}.diffconfig"
+if test -e /etc/alpine-release; then
+  myarchchroot="${HOME}/.cache/myarchchroot"
+  chrootdir="${myarchchroot}/root.x86_64"
+  MYOPENWRT_SH="doas arch-chroot ${chrootdir} sudo -u builder sh"
+  artifacts="/home/builder/myopenwrt/${device}"
+else
+  chrootdir=
+  MYOPENWRT_SH='sh'
+  artifacts="${HOME}/.cache/myopenwrt/${device}"
+fi
+openwrt_src="${artifacts}/openwrt"
+out="${artifacts}/out"
+out_diffconfig="${out}/${device}_${version}.diffconfig"
+
+case "$1" in
+  build) fetch; build ;;
+  latest) query_latest_version ;;
+  config) menuconfig ;;
+  update_chroot) update_archchroot ;;
+  *) usage; exit 1 ;;
+esac

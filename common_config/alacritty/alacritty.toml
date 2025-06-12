@@ -1,9 +1,0 @@
-[window]
-option_as_alt = "OnlyLeft"
-
-[terminal]
-shell = { program = "/usr/local/bin/fish", args = ["-l"] }
-
-[font]
-normal = { family = "Comic Code" }
-size = 23 # perfect for macbook pro 2017 13 inch

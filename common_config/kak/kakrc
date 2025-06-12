@@ -11,7 +11,7 @@ add-highlighter global/ show-whitespaces -only-trailing -lf ' '
 # TODO file a bug upstream for syntax highlighting issues on macos terminal.app
 #add-highlighter global/ruler column 80 default,rgb:222222
 
-add-highlighter global/relative-linenums number-lines -relative
+#add-highlighter global/relative-linenums number-lines -relative
 add-highlighter global/highlight-todos regex \b(TODO|HACK|FIXME|XXX|NOTE)\b 0:+rb
 
 hook global WinSetOption filetype=mail %{

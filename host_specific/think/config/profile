@@ -1,6 +1,6 @@
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
-export EDITOR=kak
+export EDITOR=nano
 export PAGER='less -Ri'
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
@@ -10,6 +10,7 @@ export XDG_DATA_DIRS=/usr/local/share:/usr/share
 export XDG_CONFIG_DIRS=/etc/xdg
 export FZF_DEFAULT_COMMAND='fd --type file'
 export LEDGER_FILE="$HOME/s/finances/current.journal"
+export TIMEWARRIORDB="$HOME/b/timewarrior"
 # from the blog post titled "No more blurry fonts in linux"
 #export FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 
