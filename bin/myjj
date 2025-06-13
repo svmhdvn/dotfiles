@@ -7,7 +7,9 @@ _usage() {
 usage:
   myjj bak
   myjj clone_mine <project name>
+  myjj sync_mine
   myjj clone_fork <upstream https:// url>
+  myjj sync_fork
   myjj setup
 EOF
   exit 64 # EX_USAGE
@@ -82,10 +84,23 @@ clone_fork() {
   jj new "${local_trunk}"
 }
 
+sync_mine() {
+  jj git fetch --all-remotes -b main
+  jj rebase -b @ -d main
+}
+
+sync_fork() {
+  jj git fetch -b main
+  jj rebase -b 'all:main@origin+' -d main --skip-emptied
+  jj git push -b main
+}
+
 case "$1" in
   bak)        backup_and_push ;;
   clone_mine) clone_mine "$2" ;;
+  sync_mine)  sync_mine       ;;
   clone_fork) clone_fork "$2" ;;
+  sync_fork)  sync_fork       ;;
   *)
       echo "ERROR: unrecognized command '$1'" >&2
       _usage
