@@ -90,9 +90,11 @@ sync_mine() {
 }
 
 sync_fork() {
-  jj git fetch -b main
-  jj rebase -b 'all:main@origin+' -d main --skip-emptied
-  jj git push -b main
+  _trunk_with_remote="$(jj config get 'revset-aliases."trunk()"')"
+  local_trunk="${_trunk_with_remote%%@*}"
+  jj git fetch -b "${local_trunk}"
+  jj rebase -b "all:${local_trunk}@origin+" -d "${local_trunk}" --skip-emptied
+  jj git push -b "${local_trunk}"
 }
 
 case "$1" in

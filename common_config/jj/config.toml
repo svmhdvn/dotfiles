@@ -11,4 +11,4 @@ push = "origin"
 fetch = "upstream"
 
 [revset-aliases]
-my_unbookmarked = "children(main) ~ ancestors(bookmarks())"
+my_unbookmarked = "children(main) ~ ancestors(bookmarks()) ~ empty()"
