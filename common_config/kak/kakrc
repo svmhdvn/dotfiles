@@ -6,6 +6,7 @@ set global readtagscmd 'ureadtags'
 
 # show trailing whitespaces of any kind
 add-highlighter global/ show-whitespaces -only-trailing -lf ' '
+add-highlighter global/ show-matching
 
 # enable back if needed
 # TODO file a bug upstream for syntax highlighting issues on macos terminal.app
