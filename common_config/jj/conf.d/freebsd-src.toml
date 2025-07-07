@@ -1,0 +1,9 @@
+--when.repositories = ["~/src/freebsd-src"]
+
+[template-aliases]
+default_commit_description = '''
+"
+
+Signed-off-by: Siva Mahadevan <me@svmhdvn.name>
+"
+'''
