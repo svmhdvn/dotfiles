@@ -23,7 +23,7 @@ case "$1" in
 
 		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
 		# what most public networks only support
-		OPENWRT_PUBLIC_IP=$(dig +short A openwrt.svmhdvn.name)
+		OPENWRT_PUBLIC_IP=$(dig +short A svmhdvn-openwrt.boxathome.net)
 		OPENWRT_PEER='4TD5znEgqynxxW913nMpDzk4xGKsNK5vlxUBRtdbWks='
 		OPENWRT_PORT=45036
 
