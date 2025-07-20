@@ -1,8 +1,8 @@
-xwayland disable
+#xwayland disable
 
 input "type:keyboard" {
-    xkb_layout "us"
-    xkb_variant "colemak"
+    xkb_layout us,ca
+    xkb_variant colemak,eng
     #xkb_options "ctrl:ralt_rctrl"
     repeat_delay 250
     repeat_rate 50
@@ -40,6 +40,10 @@ default_border pixel 1
 
     # SIVA: run mpv from clipboard
     bindsym $mod+Shift+m exec wl-paste | xargs mpv
+
+    # SIVA: change keyboard layout back to QWERTY
+    bindsym $mod+l input "type:keyboard" xkb_switch_layout 0
+    bindsym $mod+Shift+l input "type:keyboard" xkb_switch_layout 1
 
     # Kill focused window
     bindsym $mod+Shift+q kill
@@ -203,8 +207,8 @@ bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
 exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway DISPLAY
 exec mako
-exec gammastep
 exec foot --server
 
-# for alpine
-exec /usr/libexec/pipewire-launcher
+# for alpine only
+exec openrc --user gui
+#exec /usr/libexec/pipewire-launcher
