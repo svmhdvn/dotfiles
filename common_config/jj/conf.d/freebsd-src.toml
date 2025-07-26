@@ -3,7 +3,18 @@
 [template-aliases]
 default_commit_description = '''
 "
-
 Signed-off-by: Siva Mahadevan <me@svmhdvn.name>
+Sponsored by: The FreeBSD Foundation
 "
+'''
+
+[templates]
+draft_commit_description = '''
+concat(
+  coalesce(description, default_commit_description, "\n"),
+  surround(
+    "\nJJ: This commit contains the following changes:\n", "",
+    indent("JJ:    ", diff.stat(72)),
+  ),
+)
 '''

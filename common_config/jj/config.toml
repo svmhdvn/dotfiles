@@ -1,5 +1,4 @@
 [ui]
-#paginate = "never"
 default-command = "log"
 
 [user]
