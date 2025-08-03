@@ -12,11 +12,14 @@ if test -e "${host_specific_prefix}/profile"; then
 fi
 
 mkdir -p "${HOME}/.config"
+
 cd "${common_config_prefix}"
 for f in *; do
-  if test -e "${host_specific_prefix}/${f}" ; then
-    ln -sf "${host_specific_prefix}/${f}" "${HOME}/.config/${f}"
-  else
-    ln -sf "${common_config_prefix}/${f}" "${HOME}/.config/${f}"
-  fi
+  ln -sf "${common_config_prefix}/${f}" "${HOME}/.config/${f}"
+done
+
+# override with host-specific config after
+cd "${host_specific_prefix}"
+for f in *; do
+  ln -sf "${host_specific_prefix}/${f}" "${HOME}/.config/${f}"
 done

@@ -1,4 +1,4 @@
-#xwayland disable
+xwayland disable
 
 input "type:keyboard" {
     xkb_layout us,ca
