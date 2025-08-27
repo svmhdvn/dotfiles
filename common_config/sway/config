@@ -207,7 +207,6 @@ bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
 exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway DISPLAY
 exec mako
-exec foot --server
 
 # for alpine only
 exec openrc --user gui
