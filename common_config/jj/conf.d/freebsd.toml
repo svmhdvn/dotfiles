@@ -1,4 +1,4 @@
---when.repositories = ["~/src/freebsd-src"]
+--when.repositories = ["~/src/freebsd-src", "~/src/freebsd-doc", "~/src/freebsd-ci"]
 
 [template-aliases]
 default_commit_description = '''

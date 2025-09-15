@@ -95,7 +95,7 @@ sync_fork() {
   _trunk_with_remote="$(jj config get 'revset-aliases."trunk()"')"
   local_trunk="${_trunk_with_remote%%@*}"
   jj git fetch -b "${local_trunk}"
-  jj rebase -b "all:${local_trunk}@origin+" -d "${local_trunk}" --skip-emptied
+  jj rebase -b "${local_trunk}@origin+" -d "${local_trunk}" --skip-emptied
   jj git push -b "${local_trunk}"
 }
 
