@@ -6,6 +6,3 @@ export PAGER='less -Ri'
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 export PORTSDIR="$HOME/src/freebsd-ports"
 export PORT_DBDIR="$HOME/.cache/port_dbdir"
-
-# TODO tmp until alacritty termcap merged
-export TERMPATH="$HOME/.termcap:/usr/local/etc/termcap:/etc/termcap"
