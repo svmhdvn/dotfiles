@@ -8,7 +8,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_DIRS=/usr/local/share:/usr/share
 export XDG_CONFIG_DIRS=/etc/xdg
-export FZF_DEFAULT_COMMAND='fd --type file'
+export FZF_DEFAULT_COMMAND='fd -t f'
 export LEDGER_FILE="$HOME/s/finances/current.journal"
 export TIMEWARRIORDB="$HOME/b/timewarrior"
 # from the blog post titled "No more blurry fonts in linux"
