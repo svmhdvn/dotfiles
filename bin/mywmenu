@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eu
+
+_wmenu() {
+  wmenu -i -f 'Comic Code 16' -l 3 $@
+}
+
+_notes() {
+  _f="$(cd ${HOME}/b/notes && fd -t f | _wmenu -p 'Notes: ')"
+  test -n "${_f}" && footclient kak "${HOME}/b/notes/${_f}"
+}
+
+_apk_upgrade() {
+  footclient sh -c 'doas apk upgrade && echo "SIVA: system upgraded, press enter to exit..." && read'
+}
+
+case "$(printf 'notes\napk upgrade' | _wmenu)" in
+  notes) _notes ;;
+  apk\ upgrade) _apk_upgrade ;;
+  *) exit 1 ;;
+esac
