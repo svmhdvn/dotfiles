@@ -9,6 +9,7 @@ email = "me@svmhdvn.name"
 push = "origin"
 fetch = "upstream"
 colocate = false
+write-change-id-header = true
 
 [revset-aliases]
 my_unbookmarked = "children(main) ~ ancestors(bookmarks()) ~ empty()"

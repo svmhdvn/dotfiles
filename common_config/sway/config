@@ -17,8 +17,8 @@ set $right i
 set $term footclient
 # Your preferred application launcher
 # TODO SIVA change to custom wmenu launcher
-#set $menu mywmenu
-set $menu tofi-drun --drun-launch=true
+set $menu mywmenu
+#set $menu tofi-drun --drun-launch=true
 
 ### Output configuration
 #

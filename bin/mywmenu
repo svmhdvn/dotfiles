@@ -21,17 +21,27 @@ _notes() {
   test -n "${_f}" && _terminal "kak ${HOME}/b/notes/${_f}"
 }
 
-_apk_upgrade() {
-  _terminal 'doas apk upgrade && echo "SIVA: system upgraded, press enter to exit..." && read'
-}
+_choices="
+notes
+apk_upgrade
+mridangam_attendance
+firefox
+keepassxc
+signal
+thunderbird
+"
 
-_mridangam_attendance() {
-  _terminal "kak ${HOME}/b/notes/mridangam/mridangam_class_2025.txt"
-}
-
-case "$(echo notes apk_upgrade mridangam_attendance | xargs -n1 | _wmenu 'SIVA > ')" in
+case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
   notes) _notes ;;
-  apk_upgrade) _apk_upgrade ;;
-  mridangam_attendance) _mridangam_attendance ;;
+  apk_upgrade)
+    _terminal 'doas apk upgrade && echo "SIVA: system upgraded, press enter to exit..." && read'
+    ;;
+  mridangam_attendance)
+    _terminal "kak ${HOME}/b/notes/mridangam/mridangam_class_2025.txt"
+    ;;
+  firefox) firefox & ;;
+  keepassxc) keepassxc & ;;
+  signal) signal-desktop & ;;
+  thunderbird) thunderbird & ;;
   *) exit 1 ;;
 esac
