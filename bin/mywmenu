@@ -1,22 +1,37 @@
 #!/bin/sh
 
-set -eu
+set -eux
+
+mkfifo /tmp/mywmenu_in /tmp/mywmenu_out
+trap 'rm -rf /tmp/mywmenu_in /tmp/mywmenu_out; trap - EXIT; exit' EXIT INT HUP
+
+_terminal() {
+  footclient -a mywmenu sh -c "$@" &
+}
 
 _wmenu() {
-  wmenu -i -f 'Comic Code 16' -l 3 $@
+  _prompt="$1"
+  eval "_terminal 'fzf --prompt \"${_prompt}\" < /tmp/mywmenu_in > /tmp/mywmenu_out'"
+  cat > /tmp/mywmenu_in
+  cat /tmp/mywmenu_out
 }
 
 _notes() {
-  _f="$(cd ${HOME}/b/notes && fd -t f | _wmenu -p 'Notes: ')"
-  test -n "${_f}" && footclient kak "${HOME}/b/notes/${_f}"
+  _f="$(cd "${HOME}/b/notes" && fd -t f | _wmenu 'Notes > ')"
+  test -n "${_f}" && _terminal "kak ${HOME}/b/notes/${_f}"
 }
 
 _apk_upgrade() {
-  footclient sh -c 'doas apk upgrade && echo "SIVA: system upgraded, press enter to exit..." && read'
+  _terminal 'doas apk upgrade && echo "SIVA: system upgraded, press enter to exit..." && read'
 }
 
-case "$(printf 'notes\napk upgrade' | _wmenu)" in
+_mridangam_attendance() {
+  _terminal "kak ${HOME}/b/notes/mridangam/mridangam_class_2025.txt"
+}
+
+case "$(echo notes apk_upgrade mridangam_attendance | xargs -n1 | _wmenu 'SIVA > ')" in
   notes) _notes ;;
-  apk\ upgrade) _apk_upgrade ;;
+  apk_upgrade) _apk_upgrade ;;
+  mridangam_attendance) _mridangam_attendance ;;
   *) exit 1 ;;
 esac
