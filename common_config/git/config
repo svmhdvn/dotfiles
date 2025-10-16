@@ -71,3 +71,5 @@
 [rerere]
     enabled = true
     autoupdate = true
+[safe]
+	directory = /usr/src
