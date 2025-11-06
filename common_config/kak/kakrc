@@ -29,10 +29,10 @@ hook global WinSetOption filetype=bqn %{
     set window modelinefmt ''
 }
 
-hook global BufCreate .+\.(tbf1|skf) %{
+hook global BufCreate .+\.(tbf1|skf|FORTH) %{
     set-option buffer filetype forth
 }
-hook global BufCreate .+\.(conf) %{
+hook global BufCreate .+\.(dmp|conf) %{
     set-option buffer filetype conf
 }
 
