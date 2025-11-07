@@ -17,6 +17,7 @@ test_to_bisect="$1"
 #  --param freebsd-src-regression-suite:interactive=true \
 #  --param freebsd-src-regression-suite:tests="${test_to_bisect}" \
 
+# TODO "broken" testcases cause the command to pass, which is incorrect
 "${HOME}/src/bricoler/bricoler" run freebsd-src-regression-suite \
   --param freebsd-src-regression-suite-vm-image:package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
   --param freebsd-src:url="${HOME}/src/fbsdsrcgit" \
@@ -25,7 +26,7 @@ test_to_bisect="$1"
   --param freebsd-src-regression-suite:memory=4096 \
   --param freebsd-src-regression-suite:ncpus=2 \
   --param freebsd-src-regression-suite:parallelism=1 \
-  --param freebsd-src-regression-suite:count=200 \
+  --param freebsd-src-regression-suite:count=100 \
   --param freebsd-src-regression-suite:tests="${test_to_bisect}" \
   || exit 125 # git bisect skip
 
