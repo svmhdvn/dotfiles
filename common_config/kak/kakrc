@@ -1,4 +1,4 @@
-colorscheme palenight
+colorscheme red-phoenix
 
 set global completers word=all
 set global indentwidth 2
