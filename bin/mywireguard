@@ -3,20 +3,17 @@ set -eux
 
 case "$1" in
 	"up")
-		doas ip link add dev wg0 type wireguard
-		doas ip link set wg0 up
-
 		hostname="$(hostname)"
-
 		# TODO find a cleaner way to assign numbers to every host I own
 		case "${hostname}" in
-			"pbp")		hostnum=2 ;;
-			"think")	hostnum=3 ;;
+			"tiger")	hostnum=3 ;;
 			*)
 				echo "unsupported host: '$1'" >&2
 				exit 1
 		esac
 
+		doas ip link add dev wg0 type wireguard
+		doas ip link set wg0 up
 		doas ip address add dev wg0 "10.29.222.$hostnum/24"
 		doas ip address add dev wg0 "fe80::$hostnum/64"
 		doas ip route add 10.66.199.0/24 via 10.29.222.1 metric 1000 dev wg0

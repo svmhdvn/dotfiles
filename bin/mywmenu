@@ -28,7 +28,6 @@ mridangam_attendance
 firefox
 keepassxc
 signal
-thunderbird
 "
 
 case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
@@ -42,6 +41,5 @@ case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
   firefox) firefox & ;;
   keepassxc) keepassxc & ;;
   signal) signal-desktop & ;;
-  thunderbird) thunderbird & ;;
   *) exit 1 ;;
 esac
