@@ -1,9 +1,15 @@
---when.repositories = ["~/src/freebsd-src", "~/src/freebsd-doc", "~/src/freebsd-ci"]
+--when.repositories = ["~/f"]
+
+[user]
+name = "Siva Mahadevan"
+email = "siva@FreeBSD.org"
 
 [template-aliases]
 default_commit_description = '''
 "
-Signed-off-by:	Siva Mahadevan <me@svmhdvn.name>
+Reviewed by:
+Approved by:
+Signed-off-by:	Siva Mahadevan <siva@FreeBSD.org>
 Sponsored by:	The FreeBSD Foundation
 "
 '''
@@ -14,7 +20,12 @@ concat(
   coalesce(description, default_commit_description, "\n"),
   surround(
     "\nJJ: This commit contains the following changes:\n", "",
-    indent("JJ:    ", diff.stat(72)),
-  ),
+    indent("JJ:    ", diff.stat(72))))
+'''
+
+duplicate_description = '''
+concat(
+  description,
+  "\n(cherry picked from commit ", commit_id, ")"
 )
 '''

@@ -15,20 +15,27 @@ test_to_bisect="$1"
 #  --param freebsd-src-regression-suite-vm-image:packages= \
 #  --param freebsd-src-regression-suite:p9fs_shares="sivashare:/mnt" \
 #  --param freebsd-src-regression-suite:interactive=true \
+#  --param freebsd-src-regression-suite-vm-image:loader_tunables="boot_ddb=yes" \
+#  --param freebsd-src-regression-suite-vm-image:sysctls="net.inet.ipf.jail_allowed=1 kern.ipc.tls.enable=1 vfs.aio.enable_unsafe=1 kern.crypto.allow_soft=1 vm.panic_on_oom=1 security.mac.bsdextended.enabled=0 security.mac.ipacl.ipv4=0 security.mac.ipacl.ipv6=0 security.mac.portacl.enabled=0" \
 #  --param freebsd-src-regression-suite:tests="${test_to_bisect}" \
+#  --param freebsd-src-regression-suite-vm-image:package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
+#  --param freebsd-src:url="${HOME}/src/srcFBSDCOMMIT" \
+#  --param freebsd-src:url="${HOME}/src/fbsd_stable_15" \
+#  --freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
+#  --freebsd-vm-image/packages= \
 
 # TODO "broken" testcases cause the command to pass, which is incorrect
-"${HOME}/src/bricoler/bricoler" run freebsd-src-regression-suite \
-  --param freebsd-src-regression-suite-vm-image:package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
-  --param freebsd-src:url="${HOME}/src/fbsdsrcgit" \
-  --param freebsd-src:branch= \
-  --param freebsd-src-regression-suite:hypervisor=bhyve \
-  --param freebsd-src-regression-suite:memory=4096 \
-  --param freebsd-src-regression-suite:ncpus=2 \
-  --param freebsd-src-regression-suite:parallelism=1 \
-  --param freebsd-src-regression-suite:count=100 \
-  --param freebsd-src-regression-suite:tests="${test_to_bisect}" \
+"${HOME}/src/bricoler/python/bricoler" freebsd-regression-test-suite \
+  --freebsd-src-git-checkout/url="${HOME}/f/s" \
+  --freebsd-src-git-checkout/branch= \
+  --freebsd-regression-test-suite/hypervisor=bhyve \
+  --freebsd-regression-test-suite/memory=4096 \
+  --freebsd-regression-test-suite/ncpus=2 \
+  --freebsd-regression-test-suite/parallelism=1 \
+  --freebsd-regression-test-suite/count=1 \
+  --freebsd-regression-test-suite/interactive=False \
+  --freebsd-regression-test-suite/tests="${test_to_bisect}" \
   || exit 125 # git bisect skip
 
-"${HOME}/src/bricoler/bricoler" run freebsd-src-regression-suite report | \
-  { ! grep -q "${test_to_bisect}  ->  "; }
+#"${HOME}/src/bricoler/bricoler" run freebsd-src-regression-suite report | \
+#  { ! grep -q "${test_to_bisect}  ->  "; }

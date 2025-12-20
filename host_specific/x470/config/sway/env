@@ -1,0 +1,10 @@
+BROWSER=firefox
+LIBSEAT_BACKEND=seatd
+QT_QPA_PLATFORM=wayland
+SDL_VIDEODRIVER=wayland
+XDG_CURRENT_DESKTOP=sway
+XDG_SESSION_DESKTOP=sway
+XDG_SESSION_TYPE=wayland
+
+# needs support for some old vk ext
+#WLR_RENDERER=vulkan
