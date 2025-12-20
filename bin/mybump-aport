@@ -8,20 +8,11 @@ version="$3"
 
 cd "${HOME}/src/aports/${repo}/${name}"
 
-old_branch="$(git branch --show-current)"
-git stash
-git switch master
-git pull upstream master
-git switch -c "bump-${name}" master
+myjj sync_fork
+jj new -m "${repo}/${name}: upgrade to ${version}" master
 
 sed -i "s/^pkgver=.*\$/pkgver=${version}/" APKBUILD
 abuild checksum
+abuild -r
 
-git add APKBUILD
-git commit -m "${repo}/${name}: upgrade to ${version}"
-git push -u origin "bump-${name}"
-# TODO use with patch-based workflow
-#git send-email HEAD^
-# TODO automatically create MR on gitlab
-git switch -c "${old_branch}"
-git stash apply
+jj git push -c @

@@ -1,4 +1,8 @@
 function fish_prompt
-    set_color $fish_color_user
+    if set -q ZMX_SESSION
+        set_color $fish_color_host_remote
+        echo -n "[$hostname.$ZMX_SESSION] "
+    end
+    set_color $fish_color_cwd
     echo -n (basename $PWD)') '
 end
