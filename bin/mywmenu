@@ -36,7 +36,7 @@ case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
     _terminal 'doas apk upgrade && echo "SIVA: system upgraded, press enter to exit..." && read'
     ;;
   mridangam_attendance)
-    _terminal "cd ${HOME}/b/notes/mridangam && kak mridangam_class_2025.txt"
+    _terminal "cd ${HOME}/b/notes/mridangam && kak mridangam_class_2026.txt"
     ;;
   firefox) firefox & ;;
   keepassxc) keepassxc & ;;
