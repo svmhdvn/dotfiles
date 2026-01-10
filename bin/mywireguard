@@ -1,6 +1,9 @@
 #!/bin/sh
 set -eux
 
+_openwrt_peer='5G7qWt1LfBVBWlaZYrtghYFnXDnyx9m/PpFDLLUYLhA='
+_openwrt_port=52319
+
 case "$1" in
 	"up")
 		hostname="$(hostname)"
@@ -15,26 +18,24 @@ case "$1" in
 		doas ip link add dev wg0 type wireguard
 		doas ip link set wg0 up
 		doas ip address add dev wg0 "10.29.222.$hostnum/24"
-		doas ip address add dev wg0 "fe80::$hostnum/64"
+		# TODO enable ipv6 when more people support it
+		#doas ip address add dev wg0 "fe80::$hostnum/64"
 		doas ip route add 10.66.199.0/24 via 10.29.222.1 metric 1000 dev wg0
 
 		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
 		# what most public networks only support
-		OPENWRT_PUBLIC_IP=$(dig +short A svmhdvn-openwrt.boxathome.net)
-		OPENWRT_PEER='4TD5znEgqynxxW913nMpDzk4xGKsNK5vlxUBRtdbWks='
-		OPENWRT_PORT=45036
+		_openwrt_public_ip=$(dig +short A svmhdvn-openwrt.boxathome.net)
 
 		# TODO enable ipv6 when more people support it
 		doas wg set wg0 \
 			private-key "$HOME/secrets/wg0-privkey.txt" \
-			peer "$OPENWRT_PEER" \
+			peer "$_openwrt_peer" \
 			allowed-ips '0.0.0.0/0,::/0' \
-			endpoint "$OPENWRT_PUBLIC_IP:$OPENWRT_PORT"
+			endpoint "$_openwrt_public_ip:$_openwrt_port"
 		;;
-	"down")
-		doas ip link del wg0
-		;;
+	"down") doas ip link del wg0 ;;
 	*)
 		echo "unknown command: '$1'" >&2
 		exit 1
+		;;
 esac

@@ -1,16 +1,31 @@
-[ui]
-default-command = "log"
-pager = "less -Ri"
-
 [user]
 name = "Siva Mahadevan"
 email = "me@svmhdvn.name"
+
+[ui]
+default-command = "log"
+pager = "less -Ri"
+bookmark-list-sort-keys = ["-author-date"]
+tag-list-sort-keys = ["-author-date"]
+diff-editor = "meld-3"
+
+[signing]
+behavior = "drop"
+backend = "ssh"
+key = "~/.ssh/id_ed25519.pub"
 
 [git]
 push = "origin"
 fetch = "upstream"
 colocate = false
 write-change-id-header = true
+sign-on-push = true
 
 [revset-aliases]
 my_unbookmarked = "children(main) ~ ancestors(bookmarks()) ~ empty()"
+
+[remotes.origin]
+auto-track-bookmarks = "*"
+
+[remotes.upstream]
+auto-track-bookmarks = "main"
