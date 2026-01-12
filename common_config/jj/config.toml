@@ -7,7 +7,7 @@ default-command = "log"
 pager = "less -Ri"
 bookmark-list-sort-keys = ["-author-date"]
 tag-list-sort-keys = ["-author-date"]
-diff-editor = "meld-3"
+#diff-editor = "meld-3"
 
 [signing]
 behavior = "drop"
