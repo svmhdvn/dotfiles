@@ -1,41 +1,48 @@
 #!/bin/sh
 set -eux
 
-_openwrt_peer='5G7qWt1LfBVBWlaZYrtghYFnXDnyx9m/PpFDLLUYLhA='
-_openwrt_port=52319
+_client_home_ip='10.29.222.3/24'
+_client_home_route_via='10.29.222.1'
+_server_home_peer='5G7qWt1LfBVBWlaZYrtghYFnXDnyx9m/PpFDLLUYLhA='
+_server_home_port=52319
+_server_home_subnet='10.66.199.0/24'
+_server_home_endpoint='svmhdvn-openwrt.boxathome.net'
+
+_client_office_ip='10.2.59.5/24'
+_client_office_route_via='10.2.59.1'
+_server_office_peer='wHPXQpYdUBApCgzvvbBaiKUC3dIvA/0AdFwJEdkoUyU='
+_server_office_port=25901
+_server_office_subnet='10.96.0.0/24'
+_server_office_endpoint='router.kitchener.freebsdfoundation.org'
 
 case "$1" in
-	"up")
-		hostname="$(hostname)"
-		# TODO find a cleaner way to assign numbers to every host I own
-		case "${hostname}" in
-			"tiger")	hostnum=3 ;;
-			*)
-				echo "unsupported host: '$1'" >&2
-				exit 1
-		esac
+  "up")
+    _network="$2"
+    doas ip link del wg0 || true
+    doas ip link add dev wg0 type wireguard
+    doas ip link set wg0 up
+    doas ip address add dev wg0 "$(eval echo \${_client_${_network}_ip})"
+    # TODO enable ipv6 when more people support it
+    #doas ip address add dev wg0 "fe80::$hostnum/64"
+    doas ip route \
+      add "$(eval echo \${_server_${_network}_subnet})" \
+      via "$(eval echo \${_client_${_network}_route_via})" \
+      metric 1000 dev wg0
 
-		doas ip link add dev wg0 type wireguard
-		doas ip link set wg0 up
-		doas ip address add dev wg0 "10.29.222.$hostnum/24"
-		# TODO enable ipv6 when more people support it
-		#doas ip address add dev wg0 "fe80::$hostnum/64"
-		doas ip route add 10.66.199.0/24 via 10.29.222.1 metric 1000 dev wg0
+    # TODO switch to IPv6; currently hardcoding as IPv4 since that's
+    # what most public networks only support
+    _public_ip="$(eval dig +short A \${_server_${_network}_endpoint})"
 
-		# TODO switch to IPv6; currently hardcoding as IPv4 since that's
-		# what most public networks only support
-		_openwrt_public_ip=$(dig +short A svmhdvn-openwrt.boxathome.net)
-
-		# TODO enable ipv6 when more people support it
-		doas wg set wg0 \
-			private-key "$HOME/secrets/wg0-privkey.txt" \
-			peer "$_openwrt_peer" \
-			allowed-ips '0.0.0.0/0,::/0' \
-			endpoint "$_openwrt_public_ip:$_openwrt_port"
-		;;
-	"down") doas ip link del wg0 ;;
-	*)
-		echo "unknown command: '$1'" >&2
-		exit 1
-		;;
+    # TODO enable ipv6 when more people support it
+    doas wg set wg0 \
+      private-key "$HOME/secrets/wg0-privkey.txt" \
+      peer "$(eval echo \${_server_${_network}_peer})" \
+      allowed-ips '0.0.0.0/0' \
+      endpoint "$_public_ip:$(eval echo \${_server_${_network}_port})"
+    ;;
+  "down") doas ip link del wg0 ;;
+  *)
+    echo "unknown command: '$1'" >&2
+    exit 1
+    ;;
 esac
