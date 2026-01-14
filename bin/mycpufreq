@@ -1,18 +1,29 @@
 #!/bin/sh
 
+set -eu
+
 if [ ! -e /sys/bus/cpu/devices/cpu0/cpufreq/scaling_governor ]; then
     >&2 echo "ERROR: cpufreq driver file doesn't exist!"
     exit 1
 fi
 
+# specifically for tigerlake intel:
 case $1 in
-    "")
-        cat /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
-        ;;
-    powersave|schedutil|performance)
-        echo $1 | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
-        ;;
+  "") cat /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor ;;
+    powersave)
+      echo powersave | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
+      echo power | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/energy_performance_preference
+      ;;
+    schedutil)
+      echo schedutil | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
+      echo default | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/energy_performance_preference
+      ;;
+    performance)
+      echo performance | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
+      echo performance | doas tee /sys/bus/cpu/devices/cpu*/cpufreq/energy_performance_preference
+      ;;
     *)
-        >&2 echo "ERROR: invalid argument '$1'"
-        ;;
+      >&2 echo "ERROR: invalid argument '$1'"
+      exit 1
+      ;;
 esac

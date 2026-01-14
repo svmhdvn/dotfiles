@@ -1,14 +1,23 @@
 defaults
 auth           plain
 tls            on
-tls_starttls   off
+from_full_name "Siva Mahadevan"
 
 account        personal
-host           smtp.migadu.com
+host           securemail.webnames.ca
 port           465
+tls_starttls   off
 from           me@svmhdvn.name
-user           mbsync-msmtp@svmhdvn.name
-passwordeval   "cat $HOME/secrets/email-app-password.txt"
+user           me@svmhdvn.name
+passwordeval   "cat $HOME/secrets/webnames_email.txt"
+
+account        freebsd
+host           smtp.FreeBSD.org
+port           587
+tls_starttls   on
+from           *@[Ff][Rr][Ee][Ee][Bb][Ss][Dd].[Oo][Rr][Gg]
+user           siva/mail
+passwordeval   "cat $HOME/secrets/freebsd-kerberos-mail.txt"
 
 # Set a default account
 account default : personal

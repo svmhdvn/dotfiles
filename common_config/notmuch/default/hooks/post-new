@@ -1,0 +1,2 @@
+#!/bin/sh
+notmuch tag --batch --input="${XDG_CONFIG_HOME:-$HOME/.config}/notmuch/default/hooks/initial-tags.conf"

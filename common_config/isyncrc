@@ -1,24 +1,26 @@
-IMAPAccount migadu
-Host imap.migadu.com
+FSync no
+
+IMAPAccount webnames
+Host securemail.webnames.ca
 Port 993
-User think-mbsync@svmhdvn.name
-PassCmd "cat $HOME/secrets/migadu.txt"
+User me@svmhdvn.name
+PassCmd "cat $HOME/secrets/webnames_email.txt"
 TLSType IMAPS
 
-IMAPStore migadu-remote
-Account migadu
+IMAPStore webnames-remote
+Account webnames
 
-MaildirStore migadu-local
-Path ~/Mail/
-Inbox ~/Mail/INBOX
+MaildirStore webnames-local
+Path ~/e
+Inbox ~/e/INBOX
 Subfolders Verbatim
 
-Channel migadu
-Far :migadu-remote:
-Near :migadu-local:
-Patterns *
-# Create missing folders on both local and remote
-Create Both
-# Make sure to propagate the correct mail arrival date
-SyncState *
+Channel webnames
+Far :webnames-remote:
+Near :webnames-local:
+Patterns INBOX
+# Create missing local folders
+Create Near
+# Purge messages on the remote that are deleted from the local disk
 Expunge Both
+SyncState *
