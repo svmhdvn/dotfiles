@@ -3,7 +3,7 @@ set -eux
 
 _client_home_ip='10.29.222.3/24'
 _client_home_route_via='10.29.222.1'
-_server_home_peer='5G7qWt1LfBVBWlaZYrtghYFnXDnyx9m/PpFDLLUYLhA='
+_server_home_peer='bjRxJiy/ytB8Que2bOKC5oUrHH8IohOnTD9QMkEQmQE='
 _server_home_port=52319
 _server_home_subnet='10.66.199.0/24'
 _server_home_endpoint='svmhdvn-openwrt.boxathome.net'
@@ -37,7 +37,7 @@ case "$1" in
     doas wg set wg0 \
       private-key "$HOME/secrets/wg0-privkey.txt" \
       peer "$(eval echo \${_server_${_network}_peer})" \
-      allowed-ips '0.0.0.0/0' \
+      allowed-ips 0.0.0.0/0 \
       endpoint "$_public_ip:$(eval echo \${_server_${_network}_port})"
     ;;
   "down") doas ip link del wg0 ;;
