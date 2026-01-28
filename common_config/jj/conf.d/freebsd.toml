@@ -9,8 +9,9 @@ default_commit_description = '''
 "
 Reviewed by:
 Approved by:
-Signed-off-by:	Siva Mahadevan <siva@FreeBSD.org>
-Sponsored by:	The FreeBSD Foundation
+Signed-off-by:		Siva Mahadevan <siva@FreeBSD.org>
+Sponsored by:		The FreeBSD Foundation
+Differential Revision:
 "
 '''
 

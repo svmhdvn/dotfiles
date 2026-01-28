@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#_bricoler="${HOME}/src/bricoler/python/bricoler"
+_bricoler="/home/siva/src/playground/venv/bin/bricoler"
 test_to_bisect="$1"
 
 # NOTE use or remove the following as necessary
@@ -25,10 +27,12 @@ test_to_bisect="$1"
 #  --freebsd-vm-image/packages= \
 
 # TODO "broken" testcases cause the command to pass, which is incorrect
-"${HOME}/src/bricoler/python/bricoler" freebsd-regression-test-suite \
-  --freebsd-src-git-checkout/url="${HOME}/f/s" \
+${_bricoler} freebsd-regression-test-suite \
+  --freebsd-vm-image/package_repo_file=/home/siva/rv64c16.repo.conf \
+  --freebsd-src-build/machine=riscv/riscv64 \
+  --freebsd-regression-test-suite/hypervisor=qemu \
+  --freebsd-src-git-checkout/url=/usr/src \
   --freebsd-src-git-checkout/branch= \
-  --freebsd-regression-test-suite/hypervisor=bhyve \
   --freebsd-regression-test-suite/memory=4096 \
   --freebsd-regression-test-suite/ncpus=2 \
   --freebsd-regression-test-suite/parallelism=1 \

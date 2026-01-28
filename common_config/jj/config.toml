@@ -21,3 +21,6 @@ auto-track-bookmarks = "*"
 
 [remotes.upstream]
 auto-track-bookmarks = "main"
+
+[template-aliases]
+'format_short_change_id(id)' = 'id.shortest()'
