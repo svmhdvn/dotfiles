@@ -1,0 +1,4 @@
+queue=tag:inbox
+sent=tag:sent
+old=tag:old
+trash=tag:trash
