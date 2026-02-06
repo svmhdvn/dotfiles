@@ -79,9 +79,7 @@ clone_fork() {
   _trunk_with_remote="$(jj config get 'revset-aliases."trunk()"')"
   local_trunk="${_trunk_with_remote%%@*}"
   jj git fetch --remote upstream --branch "${local_trunk}"
-  jj bookmark track "${local_trunk}@upstream"
   jj git push --tracked
-  jj bookmark track 'glob:*@origin'
   jj rebase -d 'trunk()' -r 'tracked_remote_bookmarks() ~ trunk()'
   jj new 'trunk()'
 }

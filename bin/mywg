@@ -8,9 +8,9 @@ _server_home_port=52319
 _server_home_subnet='10.66.199.0/24'
 _server_home_endpoint='svmhdvn-openwrt.boxathome.net'
 
-_client_office_ip='10.2.59.5/24'
+_client_office_ip='10.2.59.7/24'
 _client_office_route_via='10.2.59.1'
-_server_office_peer='wHPXQpYdUBApCgzvvbBaiKUC3dIvA/0AdFwJEdkoUyU='
+_server_office_peer='uixMK/g6RS76QFX3HZizb5y4y2vK54LR9oqsDDadnlc='
 _server_office_port=25901
 _server_office_subnet='10.96.0.0/24'
 _server_office_endpoint='router.kitchener.freebsdfoundation.org'
@@ -34,6 +34,7 @@ case "$1" in
     _public_ip="$(eval dig +short A \${_server_${_network}_endpoint})"
 
     # TODO enable ipv6 when more people support it
+    #allowed-ips "$(eval echo \${_server_${_network}_subnet})" \
     doas wg set wg0 \
       private-key "$HOME/secrets/wg0-privkey.txt" \
       peer "$(eval echo \${_server_${_network}_peer})" \
