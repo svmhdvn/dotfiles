@@ -250,6 +250,8 @@ input "type:keyboard" {
 }
 input "type:touchpad" {
     natural_scroll enabled
+    pointer_accel 1
+    accel_profile "flat" # disable mouse acceleration
 }
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
 default_border pixel 1
