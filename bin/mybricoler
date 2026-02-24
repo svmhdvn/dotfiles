@@ -1,8 +1,8 @@
 #!/bin/sh
 
-#_bricoler="${HOME}/src/bricoler/python/bricoler"
-_bricoler="/home/siva/src/playground/venv/bin/bricoler"
-test_to_bisect="$1"
+set -e
+
+_host_arch="$(uname -p)"
 
 # NOTE use or remove the following as necessary
 #  --param freebsd-src-build:clean=true \
@@ -25,20 +25,71 @@ test_to_bisect="$1"
 #  --param freebsd-src:url="${HOME}/src/fbsd_stable_15" \
 #  --freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
 #  --freebsd-vm-image/packages= \
+#
+#  --freebsd-vm-image/package_repo_file=/home/siva/rv64c16.repo.conf \
+#  --freebsd-src-build/machine=riscv/riscv64 \
+#  --freebsd-regression-test-suite/hypervisor=rvvm \
+#
+#  --freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/FreeBSD.conf \
+#  --freebsd-regression-test-suite/hypervisor=bhyve \
+
+while getopts cib:n:p:t: name
+do
+  case "${name}" in
+    c) _clean='--freebsd-src-build/clean=True' ;;
+    i) _interactive='--freebsd-regression-test-suite/interactive=True' ;;
+    b) _branch="${OPTARG}" ;;
+    n) _count="--freebsd-regression-test-suite/count=${OPTARG}" ;;
+    p) _packages="--freebsd-vm-image/packages=${OPTARG}" ;;
+    t) _target_arch="${OPTARG}" ;;
+    ?)
+      echo "Usage: $0: RTFM" >&2
+      exit 64 # EX_USAGE
+      ;;
+    *) ;;
+  esac
+done
+shift $((OPTIND - 1))
+: ${_branch:=main}
+: ${_target_arch:=${_host_arch}}
+
+case "${_target_arch}" in
+  aarch64)
+    _machine='--freebsd-src-build/machine=arm64/aarch64'
+    _hypervisor='--freebsd-regression-test-suite/hypervisor=qemu'
+    ;;
+  amd64)
+    _machine='--freebsd-src-build/machine=amd64/amd64'
+    _hypervisor='--freebsd-regression-test-suite/hypervisor=bhyve'
+    ;;
+  riscv64)
+    _machine='--freebsd-src-build/machine=riscv/riscv64'
+    _hypervisor='--freebsd-regression-test-suite/hypervisor=rvvm'
+    ;;
+  *) ;;
+esac
+
+if test "${_host_arch}" = "${_target_arch}" -a "${_branch}" = main; then
+  _repo="--freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/FreeBSD.conf"
+else
+  _repo="--freebsd-vm-image/package_repo_file=${HOME}/freebsd-ports.repo.conf"
+fi
 
 # TODO "broken" testcases cause the command to pass, which is incorrect
-${_bricoler} freebsd-regression-test-suite \
-  --freebsd-vm-image/package_repo_file=/home/siva/rv64c16.repo.conf \
-  --freebsd-src-build/machine=riscv/riscv64 \
-  --freebsd-regression-test-suite/hypervisor=qemu \
-  --freebsd-src-git-checkout/url=/usr/src \
+echo /home/siva/src/playground/venv/bin/bricoler freebsd-regression-test-suite \
+  --freebsd-src-git-checkout/url="${HOME}/f/${_branch}" \
   --freebsd-src-git-checkout/branch= \
   --freebsd-regression-test-suite/memory=4096 \
   --freebsd-regression-test-suite/ncpus=2 \
   --freebsd-regression-test-suite/parallelism=1 \
-  --freebsd-regression-test-suite/count=1 \
-  --freebsd-regression-test-suite/interactive=False \
-  --freebsd-regression-test-suite/tests="${test_to_bisect}" \
+  ${_machine} \
+  ${_hypervisor} \
+  ${_clean} \
+  ${_interactive} \
+  ${_count} \
+  ${_packages} \
+  ${_repo} \
+  --freebsd-regression-test-suite/tests="$@" \
   || exit 125 # git bisect skip
 
 #"${HOME}/src/bricoler/bricoler" run freebsd-src-regression-suite report | \

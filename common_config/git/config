@@ -36,7 +36,7 @@
     defaultBranch = main
 [format]
     coverletter = auto
-    pretty = oneline
+    #pretty = oneline
     #pretty = reference
 [log]
     abbrevCommit = true
