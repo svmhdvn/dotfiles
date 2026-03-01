@@ -4,3 +4,4 @@ sent=tag:sent
 trash=tag:trash
 fbsdcommits=tag:fbsdcommits
 fbsdbugs=tag:fbsdbugs
+jenkins=tag:jenkins

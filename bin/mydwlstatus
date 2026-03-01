@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+_status() {
+  printf '%s | battery %s%% (%s)\n' \
+    "$(date '+%a %F | %H:%M')" \
+    "$(cat /sys/class/power_supply/BAT0/capacity)" \
+    "$(cat /sys/class/power_supply/BAT0/status)"
+}
+
+notify-send -t 5000 STATUS "$(_status)"

@@ -1,3 +1,4 @@
 #!/bin/sh
 
-. ~/.config/sway/env && exec dbus-run-session sway "$@"
+# TODO put mako config into config file
+. ~/.config/sway/env && exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui & mako --font 'Comic Code 24' --width 1200 --background-color '#FF0000' & foot -D $HOME --server &"

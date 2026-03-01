@@ -22,3 +22,8 @@ if test -z "${XDG_RUNTIME_DIR}"; then
 		chmod 0700 "${XDG_RUNTIME_DIR}"
 	fi
 fi
+
+if [ "$(tty)" = "/dev/tty1" ]; then
+	echo 5000 | doas tee /sys/class/backlight/intel_backlight/brightness
+	mysway
+fi

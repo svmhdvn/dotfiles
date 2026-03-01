@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eux
+set -eu
 
 mkfifo /tmp/mywmenu_in /tmp/mywmenu_out
 trap 'rm -rf /tmp/mywmenu_in /tmp/mywmenu_out; trap - EXIT; exit' EXIT INT HUP
