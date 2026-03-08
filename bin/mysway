@@ -1,4 +1,11 @@
 #!/bin/sh
 
-# TODO put mako config into config file
-. ~/.config/sway/env && exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui & mako --font 'Comic Code 24' --width 1200 --background-color '#FF0000' & foot -D $HOME --server &"
+BROWSER=firefox \
+  LIBSEAT_BACKEND=seatd \
+  QT_QPA_PLATFORM=wayland \
+  SDL_VIDEODRIVER=wayland \
+  XDG_CURRENT_DESKTOP=dwl \
+  XDG_SESSION_DESKTOP=dwl \
+  XDG_SESSION_TYPE=wayland \
+  WLR_RENDERER=vulkan \
+  exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui"

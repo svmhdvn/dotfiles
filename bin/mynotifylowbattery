@@ -1,0 +1,7 @@
+#!/bin/sh
+
+_threshold=25
+
+grep -qx Discharging /sys/class/power_supply/BAT0/status || exit 0
+cat /sys/class/power_supply/BAT0/capacity | xargs test ${_threshold} -gt && \
+  notify-send -u critical -t 0 CRITICAL 'BATTERY LOW, RECHARGE NOW'

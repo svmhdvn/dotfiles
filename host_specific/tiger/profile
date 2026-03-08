@@ -12,9 +12,6 @@ export FZF_DEFAULT_COMMAND='fd -t f'
 export LEDGER_FILE="$HOME/s/finances/current.journal"
 export TIMEWARRIORDB="$HOME/b/timewarrior"
 
-# from the blog post titled "No more blurry fonts in linux"
-export FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
-
 if test -z "${XDG_RUNTIME_DIR}"; then
 	export XDG_RUNTIME_DIR="/tmp/$(id -u)-runtime-dir"
 	if ! test -d "${XDG_RUNTIME_DIR}"; then
@@ -23,7 +20,16 @@ if test -z "${XDG_RUNTIME_DIR}"; then
 	fi
 fi
 
-if [ "$(tty)" = "/dev/tty1" ]; then
-	echo 5000 | doas tee /sys/class/backlight/intel_backlight/brightness
-	mysway
+if [ -z "$WAYLAND_DISPLAY" ] && [ $(tty) = "/dev/tty1" ]; then
+  echo 5000 | doas tee /sys/class/backlight/intel_backlight/brightness
+
+  BROWSER=firefox \
+    LIBSEAT_BACKEND=seatd \
+    QT_QPA_PLATFORM=wayland \
+    SDL_VIDEODRIVER=wayland \
+    XDG_CURRENT_DESKTOP=dwl \
+    XDG_SESSION_DESKTOP=dwl \
+    XDG_SESSION_TYPE=wayland \
+    WLR_RENDERER=vulkan \
+    exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui"
 fi
