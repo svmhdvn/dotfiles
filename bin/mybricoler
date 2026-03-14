@@ -3,43 +3,18 @@
 set -e
 
 _host_arch="$(uname -p)"
+#_bricoler_test_task=freebsd-regression-test-suite-ci
+_bricoler_test_task=freebsd-regression-test-suite
 
-# NOTE use or remove the following as necessary
-#  --param freebsd-src-build:clean=true \
-#  --param freebsd-src-build:machine=riscv/riscv64 \
-#  --param freebsd-src-regression-suite:hypervisor=bhyve \
-#  --param freebsd-src-regression-suite:count=15 \
-#  --param freebsd-src-regression-suite:memory=4096 \
-#  --param freebsd-src-regression-suite:ncpus=2 \
-#  --param freebsd-src-regression-suite:parallelism=1 \
-#  --param freebsd-src:url="${HOME}/src/freebsd-src" \
-#  --param freebsd-src:branch=HEAD \
-#  --param freebsd-src-regression-suite-vm-image:packages= \
-#  --param freebsd-src-regression-suite:p9fs_shares="sivashare:/mnt" \
-#  --param freebsd-src-regression-suite:interactive=true \
-#  --param freebsd-src-regression-suite-vm-image:loader_tunables="boot_ddb=yes" \
-#  --param freebsd-src-regression-suite-vm-image:sysctls="net.inet.ipf.jail_allowed=1 kern.ipc.tls.enable=1 vfs.aio.enable_unsafe=1 kern.crypto.allow_soft=1 vm.panic_on_oom=1 security.mac.bsdextended.enabled=0 security.mac.ipacl.ipv4=0 security.mac.ipacl.ipv6=0 security.mac.portacl.enabled=0" \
-#  --param freebsd-src-regression-suite:tests="${test_to_bisect}" \
-#  --param freebsd-src-regression-suite-vm-image:package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
-#  --param freebsd-src:url="${HOME}/src/srcFBSDCOMMIT" \
-#  --param freebsd-src:url="${HOME}/src/fbsd_stable_15" \
-#  --freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/siva.conf \
-#  --freebsd-vm-image/packages= \
-#
-#  --freebsd-vm-image/package_repo_file=/home/siva/rv64c16.repo.conf \
-#  --freebsd-src-build/machine=riscv/riscv64 \
-#  --freebsd-regression-test-suite/hypervisor=rvvm \
-#
-#  --freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/FreeBSD.conf \
-#  --freebsd-regression-test-suite/hypervisor=bhyve \
-
-while getopts cib:n:p:t: name
+while getopts cib:k:m:n:p:t: name
 do
   case "${name}" in
     c) _clean='--freebsd-src-build/clean=True' ;;
-    i) _interactive='--freebsd-regression-test-suite/interactive=True' ;;
+    i) _interactive="--${_bricoler_test_task}/interactive=True" ;;
     b) _branch="${OPTARG}" ;;
-    n) _count="--freebsd-regression-test-suite/count=${OPTARG}" ;;
+    k) _kernconf="${OPTARG}" ;;
+    m) _klds="--freebsd-vm-image/rc_kld_list=${OPTARG}" ;;
+    n) _count="--${_bricoler_test_task}/count=${OPTARG}" ;;
     p) _packages="--freebsd-vm-image/packages=${OPTARG}" ;;
     t) _target_arch="${OPTARG}" ;;
     ?)
@@ -52,45 +27,68 @@ done
 shift $((OPTIND - 1))
 : ${_branch:=main}
 : ${_target_arch:=${_host_arch}}
+: ${_kernconf:=GENERIC}
 
 case "${_target_arch}" in
+  armv7)
+    _machine='--freebsd-src-build/machine=arm/armv7'
+    _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    ;;
   aarch64)
     _machine='--freebsd-src-build/machine=arm64/aarch64'
-    _hypervisor='--freebsd-regression-test-suite/hypervisor=qemu'
+    _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
     ;;
   amd64)
     _machine='--freebsd-src-build/machine=amd64/amd64'
-    _hypervisor='--freebsd-regression-test-suite/hypervisor=bhyve'
+    _hypervisor="--${_bricoler_test_task}/hypervisor=bhyve"
+    ;;
+  powerpc64)
+    _machine='--freebsd-src-build/machine=powerpc/powerpc64'
+    _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    ;;
+  powerpc64le)
+    _machine='--freebsd-src-build/machine=powerpc/powerpc64le'
+    _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
     ;;
   riscv64)
     _machine='--freebsd-src-build/machine=riscv/riscv64'
-    _hypervisor='--freebsd-regression-test-suite/hypervisor=rvvm'
+    #_hypervisor="--${_bricoler_test_task}/hypervisor=rvvm"
+    _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
     ;;
   *) ;;
 esac
 
-if test "${_host_arch}" = "${_target_arch}" -a "${_branch}" = main; then
-  _repo="--freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/FreeBSD.conf"
-else
-  _repo="--freebsd-vm-image/package_repo_file=${HOME}/freebsd-ports.repo.conf"
-fi
+#if test "${_host_arch}" = "${_target_arch}" -a "${_branch}" = main; then
+#  _repo="--freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/siva-ports.conf"
+#else
+#  _repo="--freebsd-vm-image/package_repo_file=${HOME}/freebsd-ports.repo.conf"
+#fi
 
 # TODO "broken" testcases cause the command to pass, which is incorrect
-echo /home/siva/src/playground/venv/bin/bricoler freebsd-regression-test-suite \
-  --freebsd-src-git-checkout/url="${HOME}/f/${_branch}" \
-  --freebsd-src-git-checkout/branch= \
-  --freebsd-regression-test-suite/memory=4096 \
-  --freebsd-regression-test-suite/ncpus=2 \
-  --freebsd-regression-test-suite/parallelism=1 \
-  ${_machine} \
-  ${_hypervisor} \
-  ${_clean} \
-  ${_interactive} \
-  ${_count} \
-  ${_packages} \
-  ${_repo} \
-  --freebsd-regression-test-suite/tests="$@" \
-  || exit 125 # git bisect skip
+# TODO set option for choosing toolchain, currently hardcoding to llvm21
+#--freebsd-src-build/make_options='WITHOUT_LLDB= WITHOUT_LIB32= WITHOUT_ZFS_TESTS=' \
+#
+/home/siva/src/playground/venv/bin/bricoler \
+${_bricoler_test_task} \
+--freebsd-src-git-checkout/url=${HOME}/f/${_branch} \
+--freebsd-src-git-checkout/branch= \
+--freebsd-src-build/kernel_config=${_kernconf} \
+--freebsd-src-build/toolchain=llvm21 \
+--${_bricoler_test_task}/memory=3072 \
+--${_bricoler_test_task}/ncpus=2 \
+--${_bricoler_test_task}/parallelism=1 \
+${_machine} \
+${_hypervisor} \
+${_clean} \
+${_interactive} \
+${_count} \
+${_klds} \
+${_packages} \
+${_repo} \
+--${_bricoler_test_task}/tests=$1
 
-#"${HOME}/src/bricoler/bricoler" run freebsd-src-regression-suite report | \
+#printf '========== SIVA BRICOLER ==========\n%s\n===================================\n' "${_cmd}"
+#${_cmd} || exit 125 # git bisect skip
+
+#/home/siva/src/playground/venv/bin/bricoler ${_bricoler_test_task} report | \
 #  { ! grep -q "${test_to_bisect}  ->  "; }

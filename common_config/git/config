@@ -16,7 +16,7 @@
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
-    signingKey = A1C8128FE65D33F3627003F9E06B00B572D5EF69
+    signingKey = 52169DDFF7200DAC0B3BEF2C413D816C3B6A949A
 [push]
     default = simple
     followTags = true
@@ -71,6 +71,3 @@
 [rerere]
     enabled = true
     autoupdate = true
-[safe]
-	directory = /usr/src
-	directory = /home/siva/f/s

@@ -35,6 +35,9 @@ hook global BufCreate .+\.(tbf1|skf|FORTH) %{
 hook global BufCreate .+\.(dmp|conf) %{
     set-option buffer filetype conf
 }
+hook global BufCreate .+/patch-.+ %{
+    set-option buffer filetype diff
+}
 
 ### colemak bindings ###
 
