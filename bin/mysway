@@ -4,8 +4,8 @@ BROWSER=firefox \
   LIBSEAT_BACKEND=seatd \
   QT_QPA_PLATFORM=wayland \
   SDL_VIDEODRIVER=wayland \
-  XDG_CURRENT_DESKTOP=dwl \
-  XDG_SESSION_DESKTOP=dwl \
-  XDG_SESSION_TYPE=wayland \
   WLR_RENDERER=vulkan \
+  XDG_CURRENT_DESKTOP=sway \
+  XDG_SESSION_DESKTOP=sway \
+  XDG_SESSION_TYPE=wayland \
   exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui"

@@ -1,15 +1,12 @@
 #!/bin/sh
 
-export XDG_SESSION_TYPE=wayland
-export XDG_CURRENT_DESKTOP=river
+export BROWSER=firefox
 export QT_QPA_PLATFORM=wayland
+export SDL_VIDEODRIVER=wayland
 export WLR_RENDERER=vulkan
-
+export XDG_CURRENT_DESKTOP=river
+export XDG_SESSION_TYPE=wayland
 export XKB_DEFAULT_LAYOUT=us
 export XKB_DEFAULT_VARIANT=colemak
 
-export BROWSER=firefox
-export SDL_VIDEODRIVER=wayland
-
-timestamp=$(date +%F-%R)
-exec river > /tmp/river-${timestamp}.log 2>&1
+exec dbus-run-session river

@@ -23,13 +23,6 @@ fi
 if [ -z "$WAYLAND_DISPLAY" ] && [ $(tty) = "/dev/tty1" ]; then
   echo 5000 | doas tee /sys/class/backlight/intel_backlight/brightness
 
-  BROWSER=firefox \
-    LIBSEAT_BACKEND=seatd \
-    QT_QPA_PLATFORM=wayland \
-    SDL_VIDEODRIVER=wayland \
-    XDG_CURRENT_DESKTOP=dwl \
-    XDG_SESSION_DESKTOP=dwl \
-    XDG_SESSION_TYPE=wayland \
-    WLR_RENDERER=vulkan \
-    exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui"
+  #exec mysway
+  exec myriver
 fi
