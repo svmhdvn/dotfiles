@@ -1,12 +1,12 @@
 #!/bin/sh
 
-export BROWSER=firefox
-export QT_QPA_PLATFORM=wayland
-export SDL_VIDEODRIVER=wayland
-export WLR_RENDERER=vulkan
-export XDG_CURRENT_DESKTOP=river
-export XDG_SESSION_TYPE=wayland
-export XKB_DEFAULT_LAYOUT=us
-export XKB_DEFAULT_VARIANT=colemak
-
-exec dbus-run-session river
+BROWSER=firefox \
+  QT_QPA_PLATFORM=wayland \
+  SDL_VIDEODRIVER=wayland \
+  WLR_RENDERER=vulkan \
+  ANV_DEBUG=video-decode \
+  XDG_CURRENT_DESKTOP=river \
+  XDG_SESSION_TYPE=wayland \
+  XKB_DEFAULT_LAYOUT=us \
+  XKB_DEFAULT_VARIANT=colemak \
+  exec dbus-run-session -- river

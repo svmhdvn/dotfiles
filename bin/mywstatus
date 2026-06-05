@@ -9,4 +9,6 @@ _status() {
     "$(cat /sys/class/power_supply/BAT0/status)"
 }
 
-notify-send -t 5000 STATUS "$(_status)"
+_msg="$(_status)"
+echo "${_msg}"
+notify-send -t 5000 STATUS "${_msg}"

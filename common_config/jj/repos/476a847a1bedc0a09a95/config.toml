@@ -1,0 +1,6 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+[user]
+email = "siva@freebsd.org"
+
+[revset-aliases]
+"trunk()" = "master@origin"

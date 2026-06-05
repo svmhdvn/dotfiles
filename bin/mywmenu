@@ -28,6 +28,7 @@ mridangam_attendance
 firefox
 keepassxc
 signal
+steam
 "
 
 case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
@@ -41,5 +42,6 @@ case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
   firefox) firefox & ;;
   keepassxc) keepassxc & ;;
   signal) signal-desktop & ;;
+  steam) flatpak --user run com.valvesoftware.Steam & ;;
   *) exit 1 ;;
 esac
