@@ -42,6 +42,8 @@ case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
   firefox) firefox & ;;
   keepassxc) keepassxc & ;;
   signal) signal-desktop & ;;
-  steam) flatpak --user run com.valvesoftware.Steam & ;;
+  steam)
+    $HOME/src/steam-container/steam-container update && $HOME/src/steam-container/steam-container run &
+    ;;
   *) exit 1 ;;
 esac
