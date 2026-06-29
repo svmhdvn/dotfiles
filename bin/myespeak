@@ -1,10 +1,4 @@
 #!/bin/sh
-#    -g1 \
-espeak-ng \
-    -b1 \
-    -k40 \
-    -p25 \
-    -P99 \
-    -s300 \
-    -v'gmw/en-US' \
-    --stdin --stdout | pw-play --channels 1 --rate 22050 -
+#
+#    -g1 -s200
+espeak-ng --stdin -g0 -s175 -P99 -v mb-de5-en

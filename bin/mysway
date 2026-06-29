@@ -1,11 +1,11 @@
 #!/bin/sh
 
 BROWSER=firefox \
-  LIBSEAT_BACKEND=seatd \
   QT_QPA_PLATFORM=wayland \
   SDL_VIDEODRIVER=wayland \
   WLR_RENDERER=vulkan \
+  ANV_DEBUG=video-decode \
   XDG_CURRENT_DESKTOP=sway \
   XDG_SESSION_DESKTOP=sway \
   XDG_SESSION_TYPE=wayland \
-  exec dbus-run-session -- $HOME/src/dwl/dwl -s "openrc --user gui"
+  exec dbus-run-session -- $HOME/src/dwl/dwl -s "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP; openrc --user gui"
