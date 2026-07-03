@@ -23,12 +23,7 @@
 [pull]
     rebase = true
 [sendemail]
-    assume8bitencoding = utf-8
-    smtpserver = smtp.migadu.com
-    smtpuser = thinkpad-e495@svmhdvn.name
-    smtpencryption = ssl
-    smtpserverport = 465
-    annotate = yes
+    sendmailCmd = msmtp
 [commit]
     verbose = true
     #gpgsign = true
@@ -71,3 +66,5 @@
 [rerere]
     enabled = true
     autoupdate = true
+[pr]
+	remote = review

@@ -1,17 +1,17 @@
 #!/bin/sh
 
-set -e
-
 _host_arch="$(uname -p)"
 #_bricoler_test_task=freebsd-regression-test-suite-ci
+_bricoler=/home/siva/src/playground/venv/bin/bricoler
 _bricoler_test_task=freebsd-regression-test-suite
 
-while getopts cib:k:m:n:p:t: name
+while getopts cib:j:k:m:n:p:t: name
 do
   case "${name}" in
     c) _clean='--freebsd-src-build/clean=True' ;;
     i) _interactive="--${_bricoler_test_task}/interactive=True" ;;
     b) _branch="${OPTARG}" ;;
+    j) _parallelism="--${_bricoler_test_task}/parallelism=${OPTARG}" ;;
     k) _kernconf="${OPTARG}" ;;
     m) _klds="--freebsd-vm-image/rc_kld_list=${OPTARG}" ;;
     n) _count="--${_bricoler_test_task}/count=${OPTARG}" ;;
@@ -58,6 +58,11 @@ case "${_target_arch}" in
   *) ;;
 esac
 
+case "${_branch}" in
+  stable/14) _toolchain=llvm19 ;;
+  *) _toolchain=llvm21 ;;
+esac
+
 #if test "${_host_arch}" = "${_target_arch}" -a "${_branch}" = main; then
 #  _repo="--freebsd-vm-image/package_repo_file=/usr/local/etc/pkg/repos/siva-ports.conf"
 #else
@@ -67,16 +72,13 @@ esac
 # TODO "broken" testcases cause the command to pass, which is incorrect
 # TODO set option for choosing toolchain, currently hardcoding to llvm21
 #--freebsd-src-build/make_options='WITHOUT_LLDB= WITHOUT_LIB32= WITHOUT_ZFS_TESTS=' \
-#
-/home/siva/src/playground/venv/bin/bricoler \
-${_bricoler_test_task} \
+#--${_bricoler_test_task}/memory=3072 \
+#--${_bricoler_test_task}/ncpus=2 \
+${_bricoler} -w $HOME/bricoler ${_bricoler_test_task} \
 --freebsd-src-git-checkout/url=${HOME}/f/${_branch} \
 --freebsd-src-git-checkout/branch= \
 --freebsd-src-build/kernel_config=${_kernconf} \
---freebsd-src-build/toolchain=llvm21 \
---${_bricoler_test_task}/memory=3072 \
---${_bricoler_test_task}/ncpus=2 \
---${_bricoler_test_task}/parallelism=1 \
+--freebsd-src-build/toolchain=${_toolchain} \
 ${_machine} \
 ${_hypervisor} \
 ${_clean} \
@@ -84,11 +86,9 @@ ${_interactive} \
 ${_count} \
 ${_klds} \
 ${_packages} \
+${_parallelism} \
 ${_repo} \
---${_bricoler_test_task}/tests=$1
+--${_bricoler_test_task}/tests=$1 || exit 125 # git bisect skip
 
 #printf '========== SIVA BRICOLER ==========\n%s\n===================================\n' "${_cmd}"
-#${_cmd} || exit 125 # git bisect skip
-
-#/home/siva/src/playground/venv/bin/bricoler ${_bricoler_test_task} report | \
-#  { ! grep -q "${test_to_bisect}  ->  "; }
+${_bricoler} ${_bricoler_test_task} report | { ! grep -qF "$1  ->  failed"; }

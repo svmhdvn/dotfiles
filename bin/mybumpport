@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -eux
+
+port="$1"
+version="$2"
+if test -f /etc/alpine-release; then
+  host_os="alpine"
+  repo=src/aports
+  upstream_branch=master
+elif uname -o | grep -qx FreeBSD; then
+  host_os="freebsd"
+  repo=f/p
+  upstream_branch=main
+else
+  echo "ERROR: unknown OS" >&2
+  exit 1
+fi
+
+cd "${HOME}/${repo}/${port}"
+#myjj sync_fork
+jj new -m "${port}: upgrade to ${version}" ${upstream_branch}
+
+case "${host_os}" in
+  alpine)
+    sed -i "s/^pkgver=.*\$/pkgver=${version}/" APKBUILD
+    abuild checksum
+    abuild -r
+    ;;
+  freebsd)
+    sed \
+      -e "s|^DISTVERSION=\([ \t]*\).*$|DISTVERSION=\1${version}|g" \
+      -e "s|^PORTVERSION=\([ \t]*\).*$|PORTVERSION=\1${version}|g" \
+      -e "/^PORTREVISION=/d" \
+      -i '' Makefile
+    make makesum
+    doas poudriere testport -j c16 -p siva -NNi "${port}"
+    ;;
+esac
+
+#jj git push -c @

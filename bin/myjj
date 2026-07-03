@@ -21,7 +21,7 @@ backup_and_push() {
     echo "SIVA: no changes to backup, all good."
   else
     jj desc -m bak
-    jj bookmark move --from main --to @
+    jj bookmark move main
     jj git push --bookmark main --remote codeberg
     jj git push --bookmark main --remote github
     jj git push --bookmark main --remote sourcehut

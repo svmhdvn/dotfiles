@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+
+_usage() {
+  cat >&2 <<EOF
+Usage: $0 <command>
+
+Commands:
+  commitmsg: add freebsd committer tags to src commit msg
+EOF
+}
+
+_commitmsg() {
+  TODO
+}
+
+case "$1" in
+  commitmsg) _commitmsg ;;
+  *) _usage; exit 1 ;;
+esac

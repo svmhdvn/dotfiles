@@ -15,7 +15,7 @@ add-highlighter global/ show-matching
 #add-highlighter global/ruler column 80 default,rgb:222222
 
 #add-highlighter global/relative-linenums number-lines -relative
-add-highlighter global/highlight-todos regex \b(TODO|HACK|FIXME|XXX|NOTE)\b 0:+rb
+add-highlighter global/highlight-todos regex \b(TODO|SIVA|NOTE|XXX|HACK|FIXME)\b 0:+rb
 
 hook global WinSetOption filetype=mail %{
     set window autowrap_column 72
@@ -34,6 +34,9 @@ hook global BufCreate .+\.(tbf1|skf|FORTH) %{
 }
 hook global BufCreate .+\.(dmp|conf) %{
     set-option buffer filetype conf
+}
+hook global BufCreate .+\.py %{
+    set-option buffer indentwidth 4
 }
 hook global BufCreate .+/patch-.+ %{
     set-option buffer filetype diff
@@ -101,7 +104,7 @@ map global insert <c-h> <backspace>
 map global normal <c-]> :ctags-search<ret>
 
 # case insensitive search by default
-map global normal "/" "/(?i)"
+map global normal "/" "/(?iS)"
 
 # easy way to save file
 map global user w :write<ret>
