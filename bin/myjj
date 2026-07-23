@@ -47,9 +47,7 @@ clone_mine() {
   jj git remote add github "${github}"
   jj git remote add sourcehut "${sourcehut}"
   jj git fetch --all-remotes --branch main
-
-  jj bookmark track main@github
-  jj bookmark track main@sourcehut
+  jj bookmark track main
 }
 
 # $1: upstream https:// RO url

@@ -222,9 +222,9 @@ bindsym $mod+r mode "resize"
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    status_command 'while :; do printf "battery: %s%% (%s) | %s\n" "$(cat /sys/class/power_supply/BAT0/capacity)" "$(cat /sys/class/power_supply/BAT0/status)" "$(date \"+%a %F | %H:%M\")"; sleep 15; done'
+    status_command 'while :; do mywstatus; sleep 15; done'
     position top
-    font pango:Comic Code 10
+    font pango:Comic Code 12
     pango_markup enabled
 
     # Don't let mousewheel scrolling change workspaces
@@ -240,7 +240,7 @@ bar {
 # Siva's additional config #
 ############################
 
-xwayland disable
+#xwayland disable
 input "type:keyboard" {
     xkb_layout us,ca
     xkb_variant colemak,eng
@@ -254,7 +254,7 @@ input "type:touchpad" {
     accel_profile "flat" # disable mouse acceleration
 }
 client.focused #4c7899 #285577 #ffffff #2e9ef4 #ff00ff
-default_border pixel 1
+default_border pixel 3
 
 # for mywmenu
 for_window [app_id="mywmenu"] floating enable

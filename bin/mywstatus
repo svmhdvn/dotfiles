@@ -1,14 +1,16 @@
 #!/bin/sh
 
-set -eu
+set -u
 
-_status() {
-  printf '%s | battery %s%% (%s)\n' \
-    "$(date '+%a %F | %H:%M')" \
-    "$(cat /sys/class/power_supply/BAT0/capacity)" \
-    "$(cat /sys/class/power_supply/BAT0/status)"
-}
+threshold=25
+bat="$(cat /sys/class/power_supply/BAT0/capacity)"
+cap="$(cat /sys/class/power_supply/BAT0/status)"
+date="$(date '+%a %F | %H:%M')"
 
-_msg="$(_status)"
-echo "${_msg}"
-notify-send -t 5000 STATUS "${_msg}"
+battery_fmt='battery %s%% (%s)'
+
+if test "${cap}" = Discharging -a "${threshold}" -gt "${bat}"; then
+  battery_fmt="<span background='red' text_transform='uppercase' size='xx-large'><b>${battery_fmt}</b></span>"
+fi
+
+printf "%s | ${battery_fmt} \n" "${date}" "${bat}" "${cap}"

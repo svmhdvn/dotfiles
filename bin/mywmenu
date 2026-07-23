@@ -43,7 +43,8 @@ case "$(echo ${_choices} | xargs -n1 | _wmenu 'SIVA > ')" in
   keepassxc) keepassxc & ;;
   signal) signal-desktop & ;;
   steam)
-    $HOME/src/steam-container/steam-container update && $HOME/src/steam-container/steam-container run &
+    flatpak --user run com.valvesoftware.Steam &
+    #$HOME/src/steam-container/steam-container update && $HOME/src/steam-container/steam-container run &
     ;;
   *) exit 1 ;;
 esac
