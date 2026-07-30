@@ -95,13 +95,15 @@ sync_fork() {
   jj git push -b "${local_trunk}"
 }
 
-case "$1" in
+cmd="$1"
+shift
+case "${cmd}" in
   bak)        backup_and_push "$@" ;;
-  clone_mine) clone_mine "$2" ;;
+  clone_mine) clone_mine "$@" ;;
   sync_mine)  sync_mine       ;;
-  clone_fork) clone_fork "$2" ;;
+  clone_fork) clone_fork "$@" ;;
   sync_fork)  sync_fork       ;;
   *)
-      echo "ERROR: unrecognized command '$1'" >&2
+      echo "ERROR: unrecognized command '${cmd}'" >&2
       _usage
 esac

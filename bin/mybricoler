@@ -1,9 +1,10 @@
 #!/bin/sh
 
 _host_arch="$(uname -p)"
-#_bricoler_test_task=freebsd-regression-test-suite-ci
 _bricoler=/home/siva/src/playground/venv/bin/bricoler
-_bricoler_test_task=freebsd-regression-test-suite
+#_bricoler_test_task=freebsd-regression-test-suite-ci
+#_bricoler_test_task=freebsd-regression-test-suite
+_bricoler_test_task=freebsd-dtrace-test-suite
 
 while getopts cib:j:k:m:n:p:t: name
 do
@@ -69,6 +70,10 @@ esac
 #  _repo="--freebsd-vm-image/package_repo_file=${HOME}/freebsd-ports.repo.conf"
 #fi
 
+if test $# -ne 0; then
+  _tests="--${_bricoler_test_task}/tests=$@"
+fi
+
 # TODO "broken" testcases cause the command to pass, which is incorrect
 # TODO set option for choosing toolchain, currently hardcoding to llvm21
 #--freebsd-src-build/make_options='WITHOUT_LLDB= WITHOUT_LIB32= WITHOUT_ZFS_TESTS=' \
@@ -88,7 +93,7 @@ ${_klds} \
 ${_packages} \
 ${_parallelism} \
 ${_repo} \
---${_bricoler_test_task}/tests=$1 || exit 125 # git bisect skip
+${_tests} || exit 125 # git bisect skip
 
 #printf '========== SIVA BRICOLER ==========\n%s\n===================================\n' "${_cmd}"
-${_bricoler} ${_bricoler_test_task} report | { ! grep -qF "$1  ->  failed"; }
+#${_bricoler} ${_bricoler_test_task} report | { ! grep -qF "$1  ->  failed"; }
