@@ -5,7 +5,7 @@ set -eu
 _usage() {
   cat >&2 <<EOF
 usage:
-  myjj bak
+  myjj bak [message]
   myjj clone_mine <project name>
   myjj sync_mine
   myjj clone_fork <upstream https:// url>
@@ -20,8 +20,8 @@ backup_and_push() {
   if test -z "${_diff}"; then
     echo "SIVA: no changes to backup, all good."
   else
-    jj desc -m bak
     jj bookmark move main
+    jj commit -m "${1:-bak}"
     jj git push --bookmark main --remote codeberg
     jj git push --bookmark main --remote github
     jj git push --bookmark main --remote sourcehut
@@ -96,7 +96,7 @@ sync_fork() {
 }
 
 case "$1" in
-  bak)        backup_and_push ;;
+  bak)        backup_and_push "$@" ;;
   clone_mine) clone_mine "$2" ;;
   sync_mine)  sync_mine       ;;
   clone_fork) clone_fork "$2" ;;
