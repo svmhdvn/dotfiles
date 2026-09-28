@@ -9,6 +9,7 @@
     algorithm = histogram
     mnemonicPrefix = true
     renames = true
+    external = difft
 [fetch]
     prune = true
     pruneTags = true
@@ -61,6 +62,8 @@
 [tag]
     gpgSign = true
     sort = version:refname
+[show]
+    extDiff = true
 [advice]
     skippedCherryPicks = false
 [rerere]
@@ -68,3 +71,5 @@
     autoupdate = true
 [pr]
 	remote = review
+[includeIf "gitdir:~/f/main/"]
+	path = fbsdsrc.config.ini

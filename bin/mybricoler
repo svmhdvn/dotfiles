@@ -2,9 +2,10 @@
 
 _host_arch="$(uname -p)"
 _bricoler=/home/siva/src/playground/venv/bin/bricoler
+_bricoler_test_task=freebsd-regression-test-suite
 #_bricoler_test_task=freebsd-regression-test-suite-ci
-#_bricoler_test_task=freebsd-regression-test-suite
-_bricoler_test_task=freebsd-dtrace-test-suite
+#_bricoler_test_task=freebsd-dtrace-test-suite
+#_bricoler_test_task=freebsd-vm-image
 
 while getopts cib:j:k:m:n:p:t: name
 do
@@ -28,7 +29,6 @@ done
 shift $((OPTIND - 1))
 : ${_branch:=main}
 : ${_target_arch:=${_host_arch}}
-: ${_kernconf:=GENERIC}
 
 case "${_target_arch}" in
   armv7)
@@ -38,6 +38,7 @@ case "${_target_arch}" in
   aarch64)
     _machine='--freebsd-src-build/machine=arm64/aarch64'
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    _kernconf=VIRT
     ;;
   amd64)
     _machine='--freebsd-src-build/machine=amd64/amd64'
@@ -55,6 +56,7 @@ case "${_target_arch}" in
     _machine='--freebsd-src-build/machine=riscv/riscv64'
     #_hypervisor="--${_bricoler_test_task}/hypervisor=rvvm"
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    _kernconf=QEMU
     ;;
   *) ;;
 esac
@@ -79,21 +81,24 @@ fi
 #--freebsd-src-build/make_options='WITHOUT_LLDB= WITHOUT_LIB32= WITHOUT_ZFS_TESTS=' \
 #--${_bricoler_test_task}/memory=3072 \
 #--${_bricoler_test_task}/ncpus=2 \
-${_bricoler} -w $HOME/bricoler ${_bricoler_test_task} \
+#${_repo} \
+#--freebsd-src-build/make_targets='installworld installkernel distribution' \
+
+${_bricoler} ${_bricoler_test_task} \
 --freebsd-src-git-checkout/url=${HOME}/f/${_branch} \
 --freebsd-src-git-checkout/branch= \
---freebsd-src-build/kernel_config=${_kernconf} \
 --freebsd-src-build/toolchain=${_toolchain} \
+${_kernconf:+--freebsd-src-build/kernel_config=${_kernconf}} \
 ${_machine} \
-${_hypervisor} \
 ${_clean} \
-${_interactive} \
-${_count} \
 ${_klds} \
 ${_packages} \
+${_hypervisor} \
+${_interactive} \
 ${_parallelism} \
-${_repo} \
-${_tests} || exit 125 # git bisect skip
+${_count} \
+${_tests} \
+|| exit 125 # git bisect skip
 
-#printf '========== SIVA BRICOLER ==========\n%s\n===================================\n' "${_cmd}"
-#${_bricoler} ${_bricoler_test_task} report | { ! grep -qF "$1  ->  failed"; }
+#${_bricoler} ${_bricoler_test_task} report | grep -qF "$1  ->  failed";
+#test $? -ne 0
