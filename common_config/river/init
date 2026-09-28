@@ -7,5 +7,6 @@ if [ "$WAYLAND_DISPLAY" = "wayland-1" ]; then
 fi
 
 timestamp=$(date +%F-%R)
-$HOME/src/rijan/zig-out/bin/rijan > /tmp/rijan-${timestamp}.log 2>&1 &
+#$HOME/src/rijan/zig-out/bin/rijan > /tmp/rijan-${timestamp}.log 2>&1 &
+$HOME/src/tarazed/tarazed > /tmp/tarazed-${timestamp}.log 2>&1 &
 openrc --user gui

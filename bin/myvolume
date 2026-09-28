@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# TODO
+
+set -eu
+
+case "$1" in
+  up)          d=SINK;   wpctl set-volume "@DEFAULT_AUDIO_${d}@" 5%+    ;;
+  down)        d=SINK;   wpctl set-volume "@DEFAULT_AUDIO_${d}@" 5%-    ;;
+  speakermute) d=SINK;   wpctl set-mute   "@DEFAULT_AUDIO_${d}@" toggle ;;
+  micmute)     d=SOURCE; wpctl set-mute   "@DEFAULT_AUDIO_${d}@" toggle ;;
+  *)
+    echo "ERROR: unrecognized command '$1'" >&2
+    exit 1
+esac
+
+s="$(wpctl get-volume "@DEFAULT_AUDIO_${d}@" | sed -e 's/Volume: *0.//')"
+p="${s%%' [MUTED]'}"
+[ "${s}" != "${p}" ] && m=1
+
+fyi \
+  --app-name myvolume \
+  --hint "int:value:${p}" \
+  --hint string:x-canonical-private-synchronous:volume \
+  --expire-time 2000 \
+  ${m+--urgency critical} \
+  "${d}" "${p}%${m+ [MUTED]}"

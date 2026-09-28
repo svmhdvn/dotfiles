@@ -19,6 +19,7 @@ chmod 0700 "${XDG_RUNTIME_DIR}"
 if [ -z "$WAYLAND_DISPLAY" ] && [ $(tty) = "/dev/tty1" ]; then
   echo 5000 | doas tee /sys/class/backlight/intel_backlight/brightness
 
+  #exec mydwl
   exec mysway
   #exec myriver
 fi

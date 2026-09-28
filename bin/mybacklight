@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eu
+
+d="$(ls -1 /sys/class/backlight | head -1)"
+b="$(cat /sys/class/backlight/${d}/brightness)"
+m="$(cat /sys/class/backlight/${d}/max_brightness)"
+
+case "$1" in
+  up)   b=$((b + 2*m/100)) ;;
+  down) b=$((b - 2*m/100)) ;;
+  *)
+    echo "ERROR: unrecognized command '${cmd}'" >&2
+    exit 1
+esac
+[ "${b}" -lt 0 ] && b=0
+[ "${b}" -gt "${m}" ] && b="${m}"
+
+echo "${b}" | doas tee "/sys/class/backlight/${d}/brightness"
+b="$(cat /sys/class/backlight/${d}/brightness)"
+p=$((100 * b / m))
+fyi \
+  --app-name=mybrightness \
+  --hint int:value:${p} \
+  --hint string:x-canonical-private-synchronous:brightness \
+  --expire-time 2000 \
+  '' "${p}%"

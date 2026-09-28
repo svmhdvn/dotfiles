@@ -3,7 +3,6 @@ colorscheme red-phoenix
 set global completers word=all
 set global indentwidth 2
 
-# for FreeBSD ports universal-ctags only
 set global readtagscmd 'ureadtags'
 
 # show trailing whitespaces of any kind

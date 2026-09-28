@@ -1,4 +1,4 @@
 #!/bin/sh
 #
 #    -g1 -s200
-espeak-ng --stdin -g0 -s175 -P99 -v mb-de5-en
+espeak-ng --stdin -g0 -s175 -P99 -v mb-de5-en "$@"
