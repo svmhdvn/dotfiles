@@ -7,10 +7,14 @@ bat="$(cat /sys/class/power_supply/BAT0/capacity)"
 cap="$(cat /sys/class/power_supply/BAT0/status)"
 date="$(date '+%a %F | %H:%M')"
 
-battery_fmt='battery %s%% (%s)'
+u=low
+[ "${threshold}" -gt "${bat}"] && u=urgent
+[ "${cap}" = Discharging ] || u=normal
 
-if test "${cap}" = Discharging -a "${threshold}" -gt "${bat}"; then
-  battery_fmt="<span background='red' text_transform='uppercase' size='xx-large'><b>${battery_fmt}</b></span>"
-fi
-
-printf "%s | ${battery_fmt} \n" "${date}" "${bat}" "${cap}"
+fyi \
+  --app-name mywstatus \
+  --urgency "${u}" \
+  --hint "int:value:${bat}" \
+  --hint string:x-canonical-private-synchronous:battery \
+  --expire-time 5000 \
+"${date}" "battery ${bat}% (${cap})"

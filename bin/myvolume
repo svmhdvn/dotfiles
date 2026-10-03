@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# TODO
-
 set -eu
 
 case "$1" in

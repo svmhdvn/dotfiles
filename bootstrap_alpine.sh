@@ -2,18 +2,22 @@
 
 # must be run as non-root user after doas is installed and configured
 
-set -ex
+set -eux
 
-host_config="$PWD/host_specific/$(hostname)"
+realpath="$(realpath "$0")"
+top="$(dirname "${realpath}")"
+hostname="$(hostname)"
+host_config="${top}/host_specific/${hostname}"
+
 doas ln -sf "$host_config"/etc/apk/repositories /etc/apk/repositories
 doas ln -sf "$host_config"/etc/apk/world /etc/apk/world
 
 mkdir -p \
-	"$HOME/secrets" \
-	"$HOME/Mail" \
-	"$HOME/Syncthing" \
-	"$HOME/src" \
-	"$HOME/.local/bin"
+  "$HOME/secrets" \
+  "$HOME/Mail" \
+  "$HOME/Syncthing" \
+  "$HOME/src" \
+  "$HOME/.local/bin"
 
 doas apk update
 doas apk upgrade
