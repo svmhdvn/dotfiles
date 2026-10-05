@@ -1,38 +1,54 @@
 #!/bin/sh
 
-# must be run as non-root user after doas is installed and configured
-
+# Steps to bootstrap:
+# * fresh install alpinelinux from memstick installer ISO
+# * download mybootstrap-alpine from https://<forge>/svmhdvn/dotfiles
+# * install doas
 set -eux
 
-realpath="$(realpath "$0")"
-top="$(dirname "${realpath}")"
-hostname="$(hostname)"
-host_config="${top}/host_specific/${hostname}"
+_err() { >&2 echo "mybootstrap-alpine: ERROR: $@" && exit 1; }
 
-doas ln -sf "$host_config"/etc/apk/repositories /etc/apk/repositories
-doas ln -sf "$host_config"/etc/apk/world /etc/apk/world
+[ "$(id -u)" -eq 0 ] || _err "must be root"
 
-mkdir -p \
-  "$HOME/secrets" \
-  "$HOME/Mail" \
-  "$HOME/Syncthing" \
-  "$HOME/src" \
-  "$HOME/.local/bin"
+apk add doas git
+rm -rf /etc/doas.d/*
+echo 'permit nopass :wheel' > /etc/doas.conf
 
-doas apk update
-doas apk upgrade
-doas apk add
+# TODO
+# adduser siva -G wheel
 
-doas rm -rf /etc/iwd /etc/acpi/LID
-doas ln -sf "$host_config"/etc/acpi/LID /etc/acpi/LID
+bootstrap_siva() {
+  [ "$(whoami)" = siva ] || _err "must be siva"
 
-doas ln -sf "$host_config"/etc/iwd /etc/iwd
-doas rc-update add iwd
+  mkdir -p \
+    "${HOME}/secrets" \
+    "${HOME}/Mail" \
+    "${HOME}/Syncthing" \
+    "${HOME}/src" \
+    "${HOME}/.local/bin"
+
+  git clone https://<forge>/svmhdvn/dotfiles "${HOME}/src/dotfiles"
+  cd "${HOME}/src/dotfiles"
+  ./bootstrap_dotfiles.sh
+
+  hostname="$(hostname)"
+  host_config="host_specific/${hostname}"
+
+  xargs doas apk add < "${host_config}/etc/apk/world"
+
+  doas mkdir -p /etc/acpi/LID
+  printf '#!/bin/sh\necho mem > /sys/power/state\n' | doas tee /etc/acpi/LID/00000080
+  doas chmod +x /etc/acpi/LID/00000080
+
+  doas setup-desktop sway
+
+  doas sed '/^tty1::/c\tty1::respawn:/sbin/agetty --autologin siva tty1 linux' /etc/inittab
+}
 
 if test ! -r "$HOME/.ssh/id_ed25519.pub"; then
-	ssh-keygen -t ed25519
-	eval "$(ssh-agent -s)"
-	ssh-add "$HOME/.ssh/id_ed25519"
+  ssh-keygen -t ed25519
+  eval "$(ssh-agent -s)"
+  ssh-add "$HOME/.ssh/id_ed25519"
 fi
 
 # sway setup
