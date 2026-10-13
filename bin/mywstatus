@@ -7,9 +7,12 @@ bat="$(cat /sys/class/power_supply/BAT0/capacity)"
 cap="$(cat /sys/class/power_supply/BAT0/status)"
 date="$(date '+%a %F | %H:%M')"
 
-u=low
-[ "${threshold}" -gt "${bat}"] && u=urgent
-[ "${cap}" = Discharging ] || u=normal
+if [ "${cap}" = Discharging ]; then
+  u=low
+[ "${bat}" -gt "${threshold}" ] || u=critical
+else
+  u=normal
+fi
 
 fyi \
   --app-name mywstatus \

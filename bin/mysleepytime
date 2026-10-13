@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -ne 2 ]; then
+  >&2 echo "USAGE: $0 <lat> <long>"
+  exit 1
+fi
+
+year="$(date +%Y)"
+curl -s "https://api.sunrise-sunset.org/v2?lat=$1&lng=$2&date_start=${year}-01-01&date_end=${year}-12-31" | \
+  jq '.days[] | .sunrise' | \
+  grep -o '..:..:..' | \
+  awk -F: '
+{ total += $1*3600 + $2*60 + $3 }
+END {
+   avg = int(total/NR + 0.5)
+   printf "%02d:%02d:%02d\n", avg/3600, (avg%3600)/60, avg%60
+}
+'

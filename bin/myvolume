@@ -22,4 +22,4 @@ fyi \
   --hint string:x-canonical-private-synchronous:volume \
   --expire-time 2000 \
   ${m+--urgency critical} \
-  "${d}" "${p}%${m+ [MUTED]}"
+  "volume" "${d}: ${p}%${m+ [MUTED]}"
