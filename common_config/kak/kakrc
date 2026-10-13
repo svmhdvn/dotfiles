@@ -40,6 +40,10 @@ hook global BufCreate .+\.py %{
 hook global BufCreate .+/patch-.+ %{
     set-option buffer filetype diff
 }
+hook global BufCreate .+\.jjdescription %{
+    add-highlighter buffer/jjdescription regions
+    add-highlighter buffer/jjdescription/comment region "JJ:" "$" fill comment
+}
 
 ### colemak bindings ###
 

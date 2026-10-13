@@ -15,7 +15,13 @@ _commitmsg() {
   TODO
 }
 
+# TODO
+_flakytest() {
+  kyua list -k /usr/tests/Kyuafile sys/kern | sed -e /ssl_sendfile/d -e s/:.*$//g | sort -Ru
+}
+
 case "$1" in
   commitmsg) _commitmsg ;;
+  flakytest) _flakytest ;;
   *) _usage; exit 1 ;;
 esac

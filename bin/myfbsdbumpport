@@ -1,0 +1,112 @@
+#!/bin/sh
+
+set -eu
+
+# TODO
+# * early error if `mdo` fails with permission issues
+
+bump_port() {
+  origin="$1"
+  newversion="$2"
+
+  if ! grep -q -e '^DISTVERSION[ \t]*=' -e '^PORTVERSION[ \t]*=' ${PORTSDIR}/${origin}; then
+    tap 'not ok' 'cannot find DISTVERSION= or PORTVERSION= in Makefile, so cannot automatically bump version. This port needs manual verification.'
+    return
+  fi
+
+  curversion="$(make -C "${PORTSDIR}/${origin}" -V DISTVERSION)"
+  if [ "${curversion}" = "${newversion}" ]; then
+    tap ok 'nothing to do (%s == %s)' "${curversion}" "${newversion}"
+    return
+  fi
+
+  mkdir -p "${scratch}/${origin}"
+  cd "${scratch}/${origin}"
+
+  wrkdir="$(make -C "${PORTSDIR}/${origin}" -V WRKDIR)"
+  ls -1 "${PORTSDIR}/${origin}" | sed "/${wrkdir}/d" | xargs -J% cp -R % .
+
+  sed \
+    -e "s|^DISTVERSION=\([ \t]*\).*$|DISTVERSION=\1${newversion}|g" \
+    -e "s|^PORTVERSION=\([ \t]*\).*$|PORTVERSION=\1${newversion}|g" \
+    -e "/^PORTREVISION=/d" \
+    -i '' Makefile
+  makesum_log="${scratch}/${origin}/makesum.log"
+  if ! make makesum 2>&1 > "${makesum_log}"; then
+    tap 'not ok' '`make makesum` failed, please check %s' "${makesum_log}"
+    return
+  fi
+
+  testport_log="${scratch}/${origin}/poudriere_testport.log"
+  if ! mdo poudriere testport -NNI -j "${jail}" -p "${portstree}" "${origin}" 2>&1 > "${testport_log}"; then
+    tap 'not ok' '`poudriere testport` failed, please check %s' "${testport_log}"
+    return
+  fi
+
+  test_depends_origins="$(make -C "${PORTSDIR}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
+  test_depends_bulk_log="${scratch}/poudriere_bulk_test_depends.log"
+  if ! mdo poudriere bulk -j "${jail}" -p "${portstree}" ${test_depends_origins} 2>&1 > "${test_depends_bulk_log}"; then
+    printf \
+      'not ok %d - %s: failed to build all TEST_DEPENDS, please check the `poudriere bulk` log: %s\n' \
+      "${i}" "${test_depends_bulk_log}" \
+      | tee "${scratch}/results.tap"
+    return
+  fi
+  echo "${test_depends_origins}" | xargs mdo jexec "${jail}-${portstree}-n" pkg install -y
+  mdo jexec -U nobody "${jail}-${portstree}-n" make -C "/usr/ports/${origin}" test
+
+  printf 'ok %d - %s: %s -> %s\n' $(($# / 2)) | tee "${scratch}/results.tap"
+}
+
+'failed to build all TEST_DEPENDS, please check the `poudriere bulk` log: %s'
+
+tap() {
+  result="$1"; shift # either 'ok' or 'not ok'
+  printf '%s %d - %s: %s\n\n' \
+    "${result}" "${origin}" "$@" "${test_depends_bulk_log}" \
+    | tee "${scratch}/results.tap"
+}
+
+err() {
+  >&2 printf 'ERROR: %s\nUsage: %s: TODO\n' "$0" "$1"
+  exit 1
+}
+
+kill_jail() {
+  mdo poudriere jail -k -j "${jail}" -p "${portstree}"
+}
+
+cleanup() {
+  kill_jail
+  mdo poudriere ports -dy -p "${scratch}" || true
+  rm -rf "${scratch}"
+}
+
+while getopts j:p: name
+do
+  case "${name}" in
+    j) jail="${OPTARG}" ;;
+    p) portstree="${OPTARG}" ;;
+    ?) err "Unknown flag '${name}'"
+      ;;
+    *) ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+scratch="$(mktemp -d)"
+trap cleanup EXIT INT HUP
+mdo poudriere ports -c -p "$0-overlay" -m null -M "${scratch}"
+
+[ $(( $# % 2 )) -eq 0 ] || err "Wrong number of arguments"
+num=$(($# / 2))
+printf 'TAP version 14\n1..%d\n' "${num}" | tee "${scratch}/results.tap"
+for i in $(seq 1 "{num}"); do
+  bump_port "$1" "$2"
+  kill_jail
+  shift 2
+done
+
+#myjj sync_fork
+#jj new -m "${origin}: upgrade to ${newversion}" main
+#jj git push -c @
