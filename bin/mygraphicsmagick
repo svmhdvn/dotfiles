@@ -1,0 +1,68 @@
+#!/bin/sh
+
+set -eu
+
+# Builds a 10-page B7 pocket notebook imposed 2x2 on three US Letter sheets
+#
+# Layout:
+#   Sheet 1: p1 (sig1), p2, p3, p4
+#   Sheet 2: p5, p6, p7, p8 (sig8)
+#   Sheet 3: p9 (sig9), p10 (sig10), blank, blank
+
+# TODO allow any page size
+
+#### B7 SIZE ####
+DPI=300
+xpx=1039 # (DPI / mm_per_in) x width=88mm
+ypx=1476 # (DPI / mm_per_in) x height=125mm
+#### B7 SIZE ####
+
+LETTER_W=2550
+LETTER_H=3300
+
+blurscale=8
+dither_resize() {
+  gm convert "$1" \
+    -gravity center \
+    -resize "${xpx}x${ypx}^" \
+    -extent "${xpx}x${ypx}" \
+    +repage \
+    -normalize \
+    -modulate 125,0 \
+    -resize "$(( xpx / blurscale ))x$(( ypx / blurscale ))"\
+    -ordered-dither Intensity 4x4 \
+    -sample "${xpx}x${ypx}" \
+    -type TrueColor \
+    -fill '#cccccc' -opaque black -colorspace Gray \
+    -set units PixelsPerInch \
+    -density "${DPI}" \
+    "$2"
+}
+
+dither_resize "$1" sig1.tif
+dither_resize "$2" sig8.tif
+dither_resize "$3" sig9.tif
+dither_resize "$4" sig10.tif
+
+# blank B7 page
+gm convert -size "${xpx}x${ypx}" xc:white blank.tif
+
+# build each sheet as a 2x2 grid of B7 pages
+gm montage -tile 2x2 -geometry "${xpx}x${ypx}+0+0" -background white \
+    sig1.tif blank.tif blank.tif blank.tif page1.tif
+gm montage -tile 2x2 -geometry "${xpx}x${ypx}+0+0" -background white \
+    blank.tif blank.tif blank.tif sig8.tif page2.tif
+gm montage -tile 2x2 -geometry "${xpx}x${ypx}+0+0" -background white \
+    sig9.tif sig10.tif blank.tif blank.tif page3.tif
+
+# pad each sheet to US Letter
+for n in 1 2 3; do
+    gm convert "page${n}.tif" -gravity center -background white \
+        -extent "${LETTER_W}x${LETTER_H}" \
+        -units PixelsPerInch -density "${DPI}" \
+        "sheet${1}.tif"
+done
+
+# combine into a Letter PDF
+tiff2pdf -z -p letter -o notebook.pdf sheet*.tif
+pdfinfo notebook.pdf
