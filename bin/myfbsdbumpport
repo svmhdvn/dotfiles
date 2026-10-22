@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+set -euo pipefail
 
 # TODO
 # * early error if `mdo` fails with permission issues
@@ -20,9 +20,9 @@ bump_port() {
     return
   fi
 
-  git -C "${scratch}" sparse-checkout set --no-cone "${origin}"
-  git -C "${scratch}" read-tree -mu HEAD
-  cd "${scratch}/${origin}"
+  git -C "${scratch}/overlay" sparse-checkout set --no-cone "${origin}"
+  git -C "${scratch}/overlay" read-tree -u --reset HEAD
+  cd "${scratch}/overlay/${origin}"
 
   sed \
     -e "s|^DISTVERSION=\([ \t]*\).*$|DISTVERSION=\1${newversion}|g" \
@@ -30,33 +30,33 @@ bump_port() {
     -e "/^PORTREVISION=/d" \
     -i '' Makefile
   makesum_log="makesum.log"
-  if ! make makesum > "${makesum_log}" 2>&1; then
-    tap 'not ok' '`make makesum` failed, please check %s' "${makesum_log}"
+  if ! make makesum 2>&1 | tee "${makesum_log}"; then
+    tap 'not ok' '`make makesum` failed, please check %s' "logs/${origin}/${makesum_log}"
     return
   fi
 
   test_depends_origins="$(make -C "${PORTSDIR}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
-  test_depends_bulk_log="${scratch}/poudriere_bulk_test_depends.log"
-  if ! mdo poudriere bulk -j "${jail}" -p "${ports_tree}" ${test_depends_origins} > "${test_depends_bulk_log}" 2>&1; then
-    tap 'not ok' '`poudriere bulk` of TEST_DEPENDS failed, please check %s' "${test_depends_bulk_log}"
+  test_depends_bulk_log="poudriere_bulk_test_depends.log"
+  if ! mdo poudriere bulk -j "${jail}" -p "${ports_tree}" ${test_depends_origins} 2>&1 | tee "${test_depends_bulk_log}"; then
+    tap 'not ok' '`poudriere bulk` of TEST_DEPENDS failed, please check %s' "logs/${origin}/${test_depends_bulk_log}"
     return
   fi
 
   testport_log="poudriere_testport.log"
-  if ! mdo poudriere testport -NNI -j "${jail}" -p "${ports_tree}" -O "${ports_overlay}" "${origin}" > "${testport_log}" 2>&1; then
-    tap 'not ok' '`poudriere testport` failed, please check %s' "${testport_log}"
+  if ! mdo poudriere testport -NNI -j "${jail}" -p "${ports_tree}" -O "${ports_overlay}" "${origin}" 2>&1 | tee "${testport_log}"; then
+    tap 'not ok' '`poudriere testport` failed, please check %s' "logs/${origin}/${testport_log}"
     return
   fi
 
   test_depends_install_log="jail_test_depends_install.log"
-  if ! mdo jexec "${jail}-${ports_tree}-n" pkg install -y ${test_depends_origins} > "${test_depends_install_log}" 2>&1; then
-    tap 'not ok' 'failed to install TEST_DEPENDS inside testport jail, please check %s' "${test_depends_install_log}"
+  if ! mdo jexec "${jail}-${ports_tree}-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${test_depends_install_log}"; then
+    tap 'not ok' 'failed to install TEST_DEPENDS inside testport jail, please check %s' "logs/${origin}/${test_depends_install_log}"
     return
   fi
 
   make_test_log="make_test.log"
-  if ! mdo jexec -U nobody "${jail}-${ports_tree}-n" make -C "/overlays/${ports_overlay}/${origin}" test > "${make_test_log}" 2>&1; then
-    tap 'not ok' '`make test` failed, please check %s' "${make_test_log}"
+  if ! mdo jexec -U nobody "${jail}-${ports_tree}-n" make -C "/overlays/${ports_overlay}/${origin}" test 2>&1 | tee "${make_test_log}"; then
+    tap 'not ok' '`make test` failed, please check %s' "logs/${origin}/${make_test_log}"
     return
   fi
 
@@ -64,7 +64,6 @@ bump_port() {
   commit_msg="${origin}: update ${curversion} -> ${newversion}"
   git add Makefile distinfo
   git commit -m "${commit_msg}"
-  git format-patch -1 -o "${scratch}"
   tap ok '%s' "${commit_msg}"
 }
 
@@ -73,7 +72,10 @@ tap() {
   msg="$(printf "$@")"
   printf '%s %d - %s: %s\n' \
     "${result}" "${i}" "${origin}" "${msg}" \
-    | tee -a "${scratch}/results.tap"
+    >> "${scratch}/results.tap"
+
+  mkdir -p "${scratch}/logs/${origin}"
+  cp "${scratch}/overlay/${origin}"/*.log "${scratch}/logs/${origin}" || true
 }
 
 err() {
@@ -109,12 +111,13 @@ shift $((OPTIND - 1))
 scratch="$(mktemp -d)"
 trap cleanup EXIT INT HUP
 chmod 0755 "${scratch}"
+mkdir -p "${scratch}/logs"
 
-git -C "${PORTSDIR}" worktree add --no-checkout --detach "${scratch}" HEAD
-cd "${scratch}"
+git -C "${PORTSDIR}" worktree add --no-checkout --detach "${scratch}/overlay" HEAD
+detached_at="$(git -C "${scratch}/overlay" rev-parse HEAD)"
 
 ports_overlay=myfbsdbumpportoverlay
-mdo poudriere ports -c -p "${ports_overlay}" -m null -M "${scratch}"
+mdo poudriere ports -c -p "${ports_overlay}" -m null -M "${scratch}/overlay"
 
 num=$(($# / 2))
 printf 'TAP version 14\n1..%d\n' "${num}" | tee "${scratch}/results.tap"
@@ -123,6 +126,9 @@ for i in $(seq 1 "${num}"); do
   kill_jail
   shift 2
 done
+
+git -C "${scratch}/overlay" format-patch -o "${scratch}" "${detached_at}"
+cat "${scratch}/results.tap"
 
 #myjj sync_fork
 #jj new -m "${origin}: upgrade to ${newversion}" main
