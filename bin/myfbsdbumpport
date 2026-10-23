@@ -9,14 +9,19 @@ bump_port() {
   origin="$1"
   newversion="$2"
 
-  if ! grep -q -e '^DISTVERSION[ \t]*=' -e '^PORTVERSION[ \t]*=' "${PORTSDIR}/${origin}/Makefile"; then
-    tap 'not ok' 'cannot find DISTVERSION= or PORTVERSION= in Makefile, so cannot automatically bump version. This port needs manual verification.'
+  if ! grep -Eq '^(DIST|PORT)VERSION[ \t]*=' "${PORTSDIR}/${origin}/Makefile"; then
+    tap ok 'Cannot bump version unattended, needs manual verification # SKIP cannot find (DIST|PORT)VERSION= in Makefile'
+    return
+  fi
+
+  if grep -Eq '^(DIST|PORT)VERSION[ \t]*=[ \t]*.*\$' "${PORTSDIR}/${origin}/Makefile"; then
+    tap ok 'Cannot bump version unattended, needs manual verification # SKIP not trivial, (DIST|PORT)VERSION contains variables'
     return
   fi
 
   curversion="$(make -C "${PORTSDIR}/${origin}" -V DISTVERSION)"
   if [ "${curversion}" = "${newversion}" ]; then
-    tap ok 'nothing to do (%s == %s)' "${curversion}" "${newversion}"
+    tap ok '%s == %s # SKIP nothing to do' "${curversion}" "${newversion}"
     return
   fi
 
@@ -31,32 +36,20 @@ bump_port() {
     -i '' Makefile
   makesum_log="makesum.log"
   if ! make makesum 2>&1 | tee "${makesum_log}"; then
-    tap 'not ok' '`make makesum` failed, please check %s' "logs/${origin}/${makesum_log}"
+    tap 'not ok' 'ERROR: `make makesum` failed. Log: %s' "logs/${origin}/${makesum_log}"
     return
   fi
 
   test_depends_origins="$(make -C "${PORTSDIR}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
   test_depends_bulk_log="poudriere_bulk_test_depends.log"
   if ! mdo poudriere bulk -j "${jail}" -p "${ports_tree}" ${test_depends_origins} 2>&1 | tee "${test_depends_bulk_log}"; then
-    tap 'not ok' '`poudriere bulk` of TEST_DEPENDS failed, please check %s' "logs/${origin}/${test_depends_bulk_log}"
+    tap 'not ok' 'ERROR: `poudriere bulk` of TEST_DEPENDS failed. Log: %s' "logs/${origin}/${test_depends_bulk_log}"
     return
   fi
 
   testport_log="poudriere_testport.log"
   if ! mdo poudriere testport -NNI -j "${jail}" -p "${ports_tree}" -O "${ports_overlay}" "${origin}" 2>&1 | tee "${testport_log}"; then
-    tap 'not ok' '`poudriere testport` failed, please check %s' "logs/${origin}/${testport_log}"
-    return
-  fi
-
-  test_depends_install_log="jail_test_depends_install.log"
-  if ! mdo jexec "${jail}-${ports_tree}-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${test_depends_install_log}"; then
-    tap 'not ok' 'failed to install TEST_DEPENDS inside testport jail, please check %s' "logs/${origin}/${test_depends_install_log}"
-    return
-  fi
-
-  make_test_log="make_test.log"
-  if ! mdo jexec -U nobody "${jail}-${ports_tree}-n" make -C "/overlays/${ports_overlay}/${origin}" test 2>&1 | tee "${make_test_log}"; then
-    tap 'not ok' '`make test` failed, please check %s' "logs/${origin}/${make_test_log}"
+    tap 'not ok' 'ERROR: `poudriere testport` failed. Log: %s' "logs/${origin}/${testport_log}"
     return
   fi
 
@@ -64,6 +57,26 @@ bump_port() {
   commit_msg="${origin}: update ${curversion} -> ${newversion}"
   git add Makefile distinfo
   git commit -m "${commit_msg}"
+
+  test_depends_install_log="jail_test_depends_install.log"
+  if ! mdo jexec "${jail}-${ports_tree}-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${test_depends_install_log}"; then
+    tap 'not ok' 'CRITICAL: failed to install TEST_DEPENDS. Log: %s' "logs/${origin}/${test_depends_install_log}"
+    return
+  fi
+
+  make_test_log="make_test.log"
+  set +e
+  mdo jexec -U nobody "${jail}-${ports_tree}-n" timeout -k 30s "${test_timeout}" make -C "/overlays/${ports_overlay}/${origin}" test 2>&1 | tee "${make_test_log}"
+  make_test_rc=$?
+  set -e
+  if [ "${make_test_rc}" -eq 124 ]; then
+    tap 'not ok' 'CRITICAL: `make test` timed out after %s. Log: %s and report to MAINTAINER.' "${test_timeout}" "logs/${origin}/${make_test_log}"
+    return
+  elif [ "${make_test_rc}" -ne 0 ]; then
+    tap 'not ok' 'WARNING: `make test` failed. Log: %s' "logs/${origin}/${make_test_log}"
+    return
+  fi
+
   tap ok '%s' "${commit_msg}"
 }
 
@@ -72,10 +85,10 @@ tap() {
   msg="$(printf "$@")"
   printf '%s %d - %s: %s\n' \
     "${result}" "${i}" "${origin}" "${msg}" \
-    >> "${scratch}/results.tap"
+    | tee -a "${scratch}/results.tap"
 
   mkdir -p "${scratch}/logs/${origin}"
-  cp "${scratch}/overlay/${origin}"/*.log "${scratch}/logs/${origin}" || true
+  mv "${scratch}/overlay/${origin}"/*.log "${scratch}/logs/${origin}" || true
 }
 
 err() {
@@ -94,19 +107,24 @@ cleanup() {
   #rm -rf "${scratch}"
 }
 
-while getopts j:p: name
+while getopts j:p:t: name
 do
   case "${name}" in
     j) jail="${OPTARG}" ;;
     p) ports_tree="${OPTARG}" ;;
+    t) test_timeout="${OPTARG}" ;;
     ?) err "Unknown flag '${name}'"
       ;;
     *) ;;
   esac
 done
 shift $((OPTIND - 1))
+: "${test_timeout:=5m}"
 
 [ $(( $# % 2 )) -eq 0 ] || err "Wrong number of arguments"
+[ -d "${PORTSDIR}" ] || err "PORTSDIR=${PORTSDIR} doesn't exist"
+timeout "${test_timeout}" true || err "Bad argument: -t ${test_timeout}"
+
 
 scratch="$(mktemp -d)"
 trap cleanup EXIT INT HUP
@@ -127,8 +145,11 @@ for i in $(seq 1 "${num}"); do
   shift 2
 done
 
-git -C "${scratch}/overlay" format-patch -o "${scratch}" "${detached_at}"
+printf '\n##### RESULTS #####\n\nGenerated patches:\n'
+git -C "${scratch}/overlay" format-patch --no-cover-letter -o "${scratch}" "${detached_at}"
+printf '\nSummary:\n\n'
 cat "${scratch}/results.tap"
+printf '\n###################\n'
 
 #myjj sync_fork
 #jj new -m "${origin}: upgrade to ${newversion}" main
