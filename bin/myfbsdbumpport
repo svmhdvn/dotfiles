@@ -5,6 +5,56 @@ set -euo pipefail
 # TODO
 # * early error if `mdo` fails with permission issues
 
+cmd_bump() {
+  [ $(( $# % 2 )) -eq 0 ] || err "Wrong number of arguments"
+  num=$(($# / 2))
+  printf 'TAP version 14\n1..%d\n' "${num}" | tee "${scratch}/results.tap"
+  for i in $(seq 1 "${num}"); do
+    bump_port "$1" "$2"
+    kill_jail
+    shift 2
+  done
+
+  printf '\n##### RESULTS #####\n\nGenerated patches:\n'
+  git -C "${scratch}/overlay" format-patch --no-cover-letter -o "${scratch}" "${detached_at}"
+  printf '\nSummary:\n\n'
+  cat "${scratch}/results.tap"
+  printf '\n###################\n'
+}
+
+# returns 2 for fatal ERROR, 1 for non-fatal WARNING, 0 for success
+ci() {
+  test_depends_origins="$(make -C "${PORTSDIR}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
+  test_depends_bulk_log="poudriere_bulk_test_depends.log"
+  if ! mdo poudriere bulk -j "${jail}" -p "${ports_tree}" ${test_depends_origins} 2>&1 | tee "${test_depends_bulk_log}"; then
+    tap 'not ok' 'ERROR: `poudriere bulk` of TEST_DEPENDS failed. Log: %s' "logs/${origin}/${test_depends_bulk_log}"
+    return 2
+  fi
+
+  testport_log="poudriere_testport.log"
+  if ! mdo poudriere testport -NNI -j "${jail}" -p "${ports_tree}" -O "${ports_overlay}" "${origin}" 2>&1 | tee "${testport_log}"; then
+    tap 'not ok' 'ERROR: `poudriere testport` failed. Log: %s' "logs/${origin}/${testport_log}"
+    return 2
+  fi
+
+  test_depends_install_log="jail_test_depends_install.log"
+  if ! mdo jexec "${jail}-${ports_tree}-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${test_depends_install_log}"; then
+    tap 'not ok' 'CRITICAL: failed to install TEST_DEPENDS. Log: %s' "logs/${origin}/${test_depends_install_log}"
+    return 2
+  fi
+
+  make_test_log="make_test.log"
+  mdo jexec -U nobody "${jail}-${ports_tree}-n" timeout -k 30s "${test_timeout}" make -C "/overlays/${ports_overlay}/${origin}" test 2>&1 | tee "${make_test_log}"
+  rc=$?
+  if [ "${rc}" -eq 124 ]; then
+    tap 'not ok' 'CRITICAL: `make test` timed out after %s. Log: %s and report to MAINTAINER.' "${test_timeout}" "logs/${origin}/${make_test_log}"
+    return 2
+  elif [ "${rc}" -ne 0 ]; then
+    tap 'not ok' 'WARNING: `make test` failed. Log: %s' "logs/${origin}/${make_test_log}"
+    return 1
+  fi
+}
+
 bump_port() {
   origin="$1"
   newversion="$2"
@@ -35,49 +85,26 @@ bump_port() {
     -e "/^PORTREVISION=/d" \
     -i '' Makefile
   makesum_log="makesum.log"
-  if ! make makesum 2>&1 | tee "${makesum_log}"; then
+  if ! make OVERLAYS="${scratch}/overlay" makesum 2>&1 | tee "${makesum_log}"; then
     tap 'not ok' 'ERROR: `make makesum` failed. Log: %s' "logs/${origin}/${makesum_log}"
     return
   fi
 
-  test_depends_origins="$(make -C "${PORTSDIR}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
-  test_depends_bulk_log="poudriere_bulk_test_depends.log"
-  if ! mdo poudriere bulk -j "${jail}" -p "${ports_tree}" ${test_depends_origins} 2>&1 | tee "${test_depends_bulk_log}"; then
-    tap 'not ok' 'ERROR: `poudriere bulk` of TEST_DEPENDS failed. Log: %s' "logs/${origin}/${test_depends_bulk_log}"
-    return
-  fi
-
-  testport_log="poudriere_testport.log"
-  if ! mdo poudriere testport -NNI -j "${jail}" -p "${ports_tree}" -O "${ports_overlay}" "${origin}" 2>&1 | tee "${testport_log}"; then
-    tap 'not ok' 'ERROR: `poudriere testport` failed. Log: %s' "logs/${origin}/${testport_log}"
-    return
-  fi
-
-  # TODO figure out how to handle errors on these commands
-  commit_msg="${origin}: update ${curversion} -> ${newversion}"
-  git add Makefile distinfo
-  git commit -m "${commit_msg}"
-
-  test_depends_install_log="jail_test_depends_install.log"
-  if ! mdo jexec "${jail}-${ports_tree}-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${test_depends_install_log}"; then
-    tap 'not ok' 'CRITICAL: failed to install TEST_DEPENDS. Log: %s' "logs/${origin}/${test_depends_install_log}"
-    return
-  fi
-
-  make_test_log="make_test.log"
   set +e
-  mdo jexec -U nobody "${jail}-${ports_tree}-n" timeout -k 30s "${test_timeout}" make -C "/overlays/${ports_overlay}/${origin}" test 2>&1 | tee "${make_test_log}"
-  make_test_rc=$?
+  ci
+  rc=$?
   set -e
-  if [ "${make_test_rc}" -eq 124 ]; then
-    tap 'not ok' 'CRITICAL: `make test` timed out after %s. Log: %s and report to MAINTAINER.' "${test_timeout}" "logs/${origin}/${make_test_log}"
-    return
-  elif [ "${make_test_rc}" -ne 0 ]; then
-    tap 'not ok' 'WARNING: `make test` failed. Log: %s' "logs/${origin}/${make_test_log}"
-    return
-  fi
 
-  tap ok '%s' "${commit_msg}"
+  case "${rc}" in
+    0|1)
+      # TODO figure out how to handle errors on these commands
+      commit_msg="${origin}: update ${curversion} -> ${newversion}"
+      git add Makefile distinfo
+      git commit -m "${commit_msg}"
+      tap ok '%s' "${commit_msg}"
+      ;;
+    *)
+  esac
 }
 
 tap() {
@@ -113,18 +140,14 @@ do
     j) jail="${OPTARG}" ;;
     p) ports_tree="${OPTARG}" ;;
     t) test_timeout="${OPTARG}" ;;
-    ?) err "Unknown flag '${name}'"
-      ;;
+    ?) err "Unknown flag '${name}'" ;;
     *) ;;
   esac
 done
 shift $((OPTIND - 1))
 : "${test_timeout:=5m}"
-
-[ $(( $# % 2 )) -eq 0 ] || err "Wrong number of arguments"
-[ -d "${PORTSDIR}" ] || err "PORTSDIR=${PORTSDIR} doesn't exist"
 timeout "${test_timeout}" true || err "Bad argument: -t ${test_timeout}"
-
+[ -d "${PORTSDIR}" ] || err "PORTSDIR=${PORTSDIR} doesn't exist"
 
 scratch="$(mktemp -d)"
 trap cleanup EXIT INT HUP
@@ -137,19 +160,14 @@ detached_at="$(git -C "${scratch}/overlay" rev-parse HEAD)"
 ports_overlay=myfbsdbumpportoverlay
 mdo poudriere ports -c -p "${ports_overlay}" -m null -M "${scratch}/overlay"
 
-num=$(($# / 2))
-printf 'TAP version 14\n1..%d\n' "${num}" | tee "${scratch}/results.tap"
-for i in $(seq 1 "${num}"); do
-  bump_port "$1" "$2"
-  kill_jail
-  shift 2
-done
+subcmd="$1"
+shift
 
-printf '\n##### RESULTS #####\n\nGenerated patches:\n'
-git -C "${scratch}/overlay" format-patch --no-cover-letter -o "${scratch}" "${detached_at}"
-printf '\nSummary:\n\n'
-cat "${scratch}/results.tap"
-printf '\n###################\n'
+case "${subcmd}" in
+  ci) cmd_ci "$@" ;;
+  bump) cmd_bump "$@" ;;
+  ?) err "Unknown subcommand '${subcmd}'" ;;
+esac
 
 #myjj sync_fork
 #jj new -m "${origin}: upgrade to ${newversion}" main

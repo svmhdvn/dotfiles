@@ -88,8 +88,7 @@ sync_mine() {
 }
 
 sync_fork() {
-  _trunk_with_remote="$(jj config get 'revset-aliases."trunk()"')"
-  local_trunk="${_trunk_with_remote%%@*}"
+  local_trunk="${1:-main}"
   jj git fetch -b "${local_trunk}"
   jj rebase -b "${local_trunk}@origin+" -o "${local_trunk}" --skip-emptied
   jj git push -b "${local_trunk}"
@@ -102,7 +101,7 @@ case "${cmd}" in
   clone_mine) clone_mine "$@" ;;
   sync_mine)  sync_mine       ;;
   clone_fork) clone_fork "$@" ;;
-  sync_fork)  sync_fork       ;;
+  sync_fork)  sync_fork  "$@" ;;
   *)
       echo "ERROR: unrecognized command '${cmd}'" >&2
       _usage

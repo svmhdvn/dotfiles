@@ -13,11 +13,11 @@ do
     c) _clean='--freebsd-src-build/clean=True' ;;
     i) _interactive="--${_bricoler_test_task}/interactive=True" ;;
     b) _branch="${OPTARG}" ;;
-    j) _parallelism="--${_bricoler_test_task}/parallelism=${OPTARG}" ;;
+    j) _parallelism="${OPTARG}" ;;
     k) _kernconf="${OPTARG}" ;;
-    m) _klds="--freebsd-vm-image/rc_kld_list=${OPTARG}" ;;
+    m) _klds="--freebsd-vm-image/rc_kld_list='${OPTARG}'" ;;
     n) _count="--${_bricoler_test_task}/count=${OPTARG}" ;;
-    p) _packages="--freebsd-vm-image/packages=${OPTARG}" ;;
+    p) _packages="--freebsd-vm-image/packages='${OPTARG}'" ;;
     t) _target_arch="${OPTARG}" ;;
     ?)
       echo "Usage: $0: RTFM" >&2
@@ -27,36 +27,41 @@ do
   esac
 done
 shift $((OPTIND - 1))
-: ${_branch:=main}
+: ${_branch:=s}
 : ${_target_arch:=${_host_arch}}
+: ${_parallelism:=16}
 
 case "${_target_arch}" in
   armv7)
     _machine='--freebsd-src-build/machine=arm/armv7'
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    : ${_kernconf:=GENERIC}
     ;;
   aarch64)
     _machine='--freebsd-src-build/machine=arm64/aarch64'
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
-    _kernconf=VIRT
+    : ${_kernconf:=VIRT}
     ;;
   amd64)
     _machine='--freebsd-src-build/machine=amd64/amd64'
     _hypervisor="--${_bricoler_test_task}/hypervisor=bhyve"
+    : ${_kernconf:=GENERIC}
     ;;
   powerpc64)
     _machine='--freebsd-src-build/machine=powerpc/powerpc64'
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    : ${_kernconf:=GENERIC64}
     ;;
   powerpc64le)
     _machine='--freebsd-src-build/machine=powerpc/powerpc64le'
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    : ${_kernconf:=GENERIC64LE}
     ;;
   riscv64)
     _machine='--freebsd-src-build/machine=riscv/riscv64'
     #_hypervisor="--${_bricoler_test_task}/hypervisor=rvvm"
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
-    _kernconf=QEMU
+    : ${_kernconf:=QEMU}
     ;;
   *) ;;
 esac
@@ -73,7 +78,7 @@ esac
 #fi
 
 if test $# -ne 0; then
-  _tests="--${_bricoler_test_task}/tests=$@"
+  _tests="--${_bricoler_test_task}/tests='$@'"
 fi
 
 # TODO "broken" testcases cause the command to pass, which is incorrect
@@ -84,21 +89,21 @@ fi
 #${_repo} \
 #--freebsd-src-build/make_targets='installworld installkernel distribution' \
 
+sh -c "
 ${_bricoler} ${_bricoler_test_task} \
 --freebsd-src-git-checkout/url=${HOME}/f/${_branch} \
 --freebsd-src-git-checkout/branch= \
 --freebsd-src-build/toolchain=${_toolchain} \
-${_kernconf:+--freebsd-src-build/kernel_config=${_kernconf}} \
+--freebsd-src-build/kernel_config=${_kernconf} \
+--${_bricoler_test_task}/parallelism=${_parallelism} \
 ${_machine} \
 ${_clean} \
 ${_klds} \
 ${_packages} \
 ${_hypervisor} \
 ${_interactive} \
-${_parallelism} \
 ${_count} \
-${_tests} \
-|| exit 125 # git bisect skip
+${_tests}" || exit 125 # git bisect skip
 
 #${_bricoler} ${_bricoler_test_task} report | grep -qF "$1  ->  failed";
 #test $? -ne 0

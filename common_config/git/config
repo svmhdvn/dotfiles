@@ -11,9 +11,9 @@
     renames = true
     external = difft
 [fetch]
-    prune = true
-    pruneTags = true
     all = true
+    prune = true
+#    pruneTags = true
 [user]
     name = Siva Mahadevan
     email = me@svmhdvn.name
@@ -69,7 +69,10 @@
 [rerere]
     enabled = true
     autoupdate = true
-[pr]
-	remote = review
-[includeIf "gitdir:~/f/main/"]
-	path = fbsdsrc.config.ini
+
+[includeIf "gitdir:~/f/"]
+    path = fbsd.config.ini
+[includeIf "worktree:~/f/"]
+    path = fbsd.config.ini
+[includeIf "worktree:~/f/main"]
+    path = fbsdsrc.config.ini
