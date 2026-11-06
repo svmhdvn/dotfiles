@@ -2,9 +2,6 @@
 
 set -euo pipefail
 
-# TODO
-# * early error if `mdo` fails with permission issues
-
 err() {
   >&2 printf 'ERROR: %s.\nUsage: myfbsdportsci <forgejo runner workspace> <base ref> <head ref>\n' "$1"
   exit 1
@@ -52,7 +49,7 @@ ci() {
     tap 'not ok' 'CRITICAL: `make test` timed out after %s. Log: %s and report to MAINTAINER.' "${test_timeout}" "${make_test_log}"
     return 1
   elif [ "${rc}" -ne 0 ]; then
-    tap 'not ok' 'WARNING: `make test` failed. Log: %s' "logs/${origin}/${make_test_log}"
+    tap 'not ok' 'WARNING: `make test` failed. Log: %s' "${make_test_log}"
     return 2
   fi
 
@@ -75,9 +72,9 @@ shift $((OPTIND - 1))
 : "${test_timeout:=5m}"
 
 [ $# -eq 3 ]                   || err "wrong number of arguments"
-timeout "${test_timeout}" true || err "Bad argument: -t ${test_timeout}"
-[ -d "${portsdir}" ]           || err "portsdir=${portsdir} doesn't exist"
-mdo id -u | xargs test 0 -eq   || err "permission denied: mdo(1) not configured"
+timeout "${test_timeout}" true || err "Bad argument: -t ${test_timeout}: incorrect format"
+[ -d "${portsdir}" ]           || err "Bad argument: -p ${portsdir}: ports tree doesn't exist"
+mdo id -u | xargs test 0 -eq   || err "Permission denied: mdo(1) not configured"
 
 # from any incoming pull request, we will only get:
 # head ref (source branch)
@@ -88,10 +85,7 @@ headref="$3"
 summary="${workspace}/ports_ci_results/summary.tap"
 
 git -C "${portsdir}" fetch origin "${baseref}" "${headref}"
-git -C "${portsdir}" switch -d "${headref}"
-
-changed_files="$(git -C "${portsdir}" diff --name-only "origin/${headref}...origin/${baseref}")"
-maybe_origins="$(echo "${changed_files}" | awk -F/ -vOFS=/ '{ print $1, $2 }' | sort -u)"
+maybe_origins="$(git -C "${portsdir}" diff --name-only "origin/${headref}..origin/${baseref}" | awk -F/ -vOFS=/ '{ print $1, $2 }' | sort -u)"
 
 all_origins=
 num_origins=0
@@ -104,6 +98,10 @@ done <<EOF
 ${maybe_origins}
 EOF
 
+git -C "${portsdir}" switch -d "${headref}"
+mdo poudriere jail -k -j "${jail}" || true
+printf 'TAP version 14\n1..%d\n' "${num_origins}" > "${summary}"
+
 test_num=1
 for origin in ${all_origins}; do
   # Ignore the exit code here. We will simply grep for 'not ok' in the
@@ -114,5 +112,7 @@ for origin in ${all_origins}; do
 done
 
 tar --zstd -C "${workspace}" -cvf ports_ci_results.tar.zst ports_ci_results
+printf '\n########## RESULTS ##########\n\n'
 cat "${summary}"
-! grep '^not ok' "${summary}"
+printf '\n#############################\n'
+! grep -q '^not ok' "${summary}"
