@@ -18,31 +18,31 @@ tap() {
 ci() {
   origin="$1"
 
-  logs="${workspace}/ports_ci_results/${origin}"
+  logs="${results}/${origin}"
   mkdir -p "${logs}"
 
   test_depends_origins="$(make -C "${portsdir}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
   test_depends_bulk_log="poudriere_bulk_test_depends.log"
-  if ! mdo poudriere bulk -j "${jail}" ${test_depends_origins} 2>&1 | tee "${logs}/${test_depends_bulk_log}"; then
+  if ! ${su} poudriere bulk -j "${jail}" ${test_depends_origins} 2>&1 | tee "${logs}/${test_depends_bulk_log}"; then
     tap 'not ok' 'ERROR: `poudriere bulk` of TEST_DEPENDS failed. Log: %s' "${test_depends_bulk_log}"
     return 1
   fi
 
   testport_log="poudriere_testport.log"
-  if ! mdo poudriere testport -NNI -j "${jail}" "${origin}" 2>&1 | tee "${logs}/${testport_log}"; then
+  if ! ${su} poudriere testport -NNI -j "${jail}" "${origin}" 2>&1 | tee "${logs}/${testport_log}"; then
     tap 'not ok' 'ERROR: `poudriere testport` failed. Log: %s' "${testport_log}"
     return 1
   fi
 
   test_depends_install_log="jail_test_depends_install.log"
-  if ! mdo jexec "${jail}-default-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${logs}/${test_depends_install_log}"; then
+  if ! ${su} jexec "${jail}-default-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${logs}/${test_depends_install_log}"; then
     tap 'not ok' 'CRITICAL: failed to install TEST_DEPENDS. Log: %s' "${test_depends_install_log}"
     return 1
   fi
 
   make_test_log="make_test.log"
   set +e
-  mdo jexec -U nobody "${jail}-default-n" timeout -k 30s "${test_timeout}" make -C "/usr/ports/${origin}" test 2>&1 | tee "${logs}/${make_test_log}"
+  ${su} jexec -U nobody "${jail}-default-n" timeout -k 30s "${test_timeout}" make -C "/usr/ports/${origin}" test 2>&1 | tee "${logs}/${make_test_log}"
   rc=$?
   set -e
   if [ "${rc}" -eq 124 ]; then
@@ -74,7 +74,14 @@ shift $((OPTIND - 1))
 [ $# -eq 3 ]                   || err "wrong number of arguments"
 timeout "${test_timeout}" true || err "Bad argument: -t ${test_timeout}: incorrect format"
 [ -d "${portsdir}" ]           || err "Bad argument: -p ${portsdir}: ports tree doesn't exist"
-mdo id -u | xargs test 0 -eq   || err "Permission denied: mdo(1) not configured"
+
+for s in mdo doas sudo; do
+  if ${s} id -u 2>/dev/null | xargs test 0 -eq; then
+    su="${s}"
+    break
+  fi
+done
+[ -n "${su}" ] || err "Permission denied: mdo(1), doas(1), or sudo(1) not configured"
 
 # from any incoming pull request, we will only get:
 # head ref (source branch)
@@ -82,15 +89,17 @@ mdo id -u | xargs test 0 -eq   || err "Permission denied: mdo(1) not configured"
 workspace="$1"
 baseref="$2"
 headref="$3"
-summary="${workspace}/ports_ci_results/summary.tap"
+results="${workspace}/ports_ci_results"
+summary="${results}/summary.tap"
 
 git -C "${portsdir}" fetch origin "${baseref}" "${headref}"
 maybe_origins="$(git -C "${portsdir}" diff --name-only "origin/${headref}..origin/${baseref}" | awk -F/ -vOFS=/ '{ print $1, $2 }' | sort -u)"
+echo "SIVA maybe_origins: ${maybe_origins}"
 
 all_origins=
 num_origins=0
 while IFS= read -r origin; do
-  if [ -r "${origin}/Makefile" ]; then
+  if [ -r "${portsdir}/${origin}/Makefile" ]; then
     all_origins="${all_origins} ${origin}"
     num_origins=$(( num_origins + 1))
   fi
@@ -98,8 +107,9 @@ done <<EOF
 ${maybe_origins}
 EOF
 
-git -C "${portsdir}" switch -d "${headref}"
-mdo poudriere jail -k -j "${jail}" || true
+git -C "${portsdir}" switch "${headref}"
+${su} poudriere jail -k -j "${jail}" || true
+mkdir -p "${results}"
 printf 'TAP version 14\n1..%d\n' "${num_origins}" > "${summary}"
 
 test_num=1
@@ -107,11 +117,10 @@ for origin in ${all_origins}; do
   # Ignore the exit code here. We will simply grep for 'not ok' in the
   # TAP test results to determine the overall result.
   ci "${origin}" || true
-  mdo poudriere jail -k -j "${jail}" || true
+  ${su} poudriere jail -k -j "${jail}" || true
   test_num=$(( test_num + 1 ))
 done
 
-tar --zstd -C "${workspace}" -cvf ports_ci_results.tar.zst ports_ci_results
 printf '\n########## RESULTS ##########\n\n'
 cat "${summary}"
 printf '\n#############################\n'
