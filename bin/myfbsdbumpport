@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -euo pipefail
+set -euxo pipefail
 
 # TODO
 # * early error if `mdo` fails with permission issues
@@ -96,7 +96,7 @@ bump_port() {
   set -e
 
   case "${rc}" in
-    0|1)
+    0|1|2)
       # TODO figure out how to handle errors on these commands
       commit_msg="${origin}: update ${curversion} -> ${newversion}"
       git add Makefile distinfo

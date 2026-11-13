@@ -8,8 +8,8 @@ err() {
 }
 
 tap() {
-  result="$1"; shift # either 'ok' or 'not ok'
-  msg="$(printf "$@")"
+  result="$1" # either 'ok' or 'not ok'
+  msg="$2"
   printf '%s %d - %s: %s\n' \
     "${result}" "${test_num}" "${origin}" "${msg}" \
     >> "${summary}"
@@ -20,23 +20,24 @@ ci() {
 
   logs="${results}/${origin}"
   mkdir -p "${logs}"
+  ${su} poudriere jail -k -j "${jail}" || true
 
   test_depends_origins="$(make -C "${portsdir}/${origin}" -V TEST_DEPENDS | awk -v 'RS=[ \t]*' -v 'ORS= ' -F: '{ print $2 }')"
   test_depends_bulk_log="poudriere_bulk_test_depends.log"
   if ! ${su} poudriere bulk -j "${jail}" ${test_depends_origins} 2>&1 | tee "${logs}/${test_depends_bulk_log}"; then
-    tap 'not ok' 'ERROR: `poudriere bulk` of TEST_DEPENDS failed. Log: %s' "${test_depends_bulk_log}"
+    tap 'not ok' "ERROR: 'poudriere bulk' of TEST_DEPENDS failed. Log: ${test_depends_bulk_log}"
     return 1
   fi
 
   testport_log="poudriere_testport.log"
   if ! ${su} poudriere testport -NNI -j "${jail}" "${origin}" 2>&1 | tee "${logs}/${testport_log}"; then
-    tap 'not ok' 'ERROR: `poudriere testport` failed. Log: %s' "${testport_log}"
+    tap 'not ok' "ERROR: 'poudriere testport' failed. Log: ${testport_log}"
     return 1
   fi
 
   test_depends_install_log="jail_test_depends_install.log"
   if ! ${su} jexec "${jail}-default-n" pkg install -y ${test_depends_origins} 2>&1 | tee "${logs}/${test_depends_install_log}"; then
-    tap 'not ok' 'CRITICAL: failed to install TEST_DEPENDS. Log: %s' "${test_depends_install_log}"
+    tap 'not ok' "CRITICAL: failed to install TEST_DEPENDS. REPORT TO MAINTAINER. Log: ${test_depends_install_log}"
     return 1
   fi
 
@@ -46,10 +47,10 @@ ci() {
   rc=$?
   set -e
   if [ "${rc}" -eq 124 ]; then
-    tap 'not ok' 'CRITICAL: `make test` timed out after %s. Log: %s and report to MAINTAINER.' "${test_timeout}" "${make_test_log}"
+    tap 'not ok' "CRITICAL: 'make test' timed out after ${test_timeout}. REPORT TO MAINTAINER. Log: ${make_test_log}"
     return 1
   elif [ "${rc}" -ne 0 ]; then
-    tap 'not ok' 'WARNING: `make test` failed. Log: %s' "${make_test_log}"
+    tap 'not ok' "WARNING: 'make test' failed. Log: ${make_test_log}"
     return 2
   fi
 
@@ -71,9 +72,10 @@ shift $((OPTIND - 1))
 : "${portsdir:=/usr/ports}"
 : "${test_timeout:=5m}"
 
-[ $# -eq 3 ]                   || err "wrong number of arguments"
-timeout "${test_timeout}" true || err "Bad argument: -t ${test_timeout}: incorrect format"
-[ -d "${portsdir}" ]           || err "Bad argument: -p ${portsdir}: ports tree doesn't exist"
+[ $# -eq 3 ]                              || err "wrong number of arguments"
+poudriere jail -i -j "${jail}" >/dev/null || err "Bad option: -j ${jail}"
+[ -r "${portsdir}/MOVED" ]                || err "Bad option: -p ${portsdir}: invalid ports tree"
+timeout "${test_timeout}" true            || err "Bad option: -t ${test_timeout}: incorrect format"
 
 for s in mdo doas sudo; do
   if ${s} id -u 2>/dev/null | xargs test 0 -eq; then
@@ -89,12 +91,10 @@ done
 workspace="$1"
 baseref="$2"
 headref="$3"
-results="${workspace}/ports_ci_results"
-summary="${results}/summary.tap"
+[ -w "${portsdir}" ] || err "Bad argument: workspace=${workspace}: not found or not writeable"
 
 git -C "${portsdir}" fetch origin "${baseref}" "${headref}"
 maybe_origins="$(git -C "${portsdir}" diff --name-only "origin/${headref}..origin/${baseref}" | awk -F/ -vOFS=/ '{ print $1, $2 }' | sort -u)"
-echo "SIVA maybe_origins: ${maybe_origins}"
 
 all_origins=
 num_origins=0
@@ -106,9 +106,13 @@ while IFS= read -r origin; do
 done <<EOF
 ${maybe_origins}
 EOF
+echo "Testing these ports: "
+echo "${all_origins}" | xargs -n1 printf '\t%s\n'
 
 git -C "${portsdir}" switch "${headref}"
-${su} poudriere jail -k -j "${jail}" || true
+
+results="${workspace}/ports_ci_results"
+summary="${results}/summary.tap"
 mkdir -p "${results}"
 printf 'TAP version 14\n1..%d\n' "${num_origins}" > "${summary}"
 
@@ -117,9 +121,9 @@ for origin in ${all_origins}; do
   # Ignore the exit code here. We will simply grep for 'not ok' in the
   # TAP test results to determine the overall result.
   ci "${origin}" || true
-  ${su} poudriere jail -k -j "${jail}" || true
   test_num=$(( test_num + 1 ))
 done
+${su} poudriere jail -k -j "${jail}" || true
 
 printf '\n########## RESULTS ##########\n\n'
 cat "${summary}"

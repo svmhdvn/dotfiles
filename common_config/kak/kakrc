@@ -3,6 +3,7 @@
 
 set global completers word=all
 set global indentwidth 2
+set global scrolloff 3,0
 
 set global readtagscmd 'ureadtags'
 
@@ -108,7 +109,7 @@ map global insert <c-h> <backspace>
 map global normal <c-]> :ctags-search<ret>
 
 # case insensitive search by default
-map global normal "/" "/(?iS)"
+map global normal "/" "/(?Si)"
 
 # easy way to save file
 map global user w :write<ret>

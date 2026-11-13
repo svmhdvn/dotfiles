@@ -30,11 +30,13 @@ shift $((OPTIND - 1))
 : ${_branch:=s}
 : ${_target_arch:=${_host_arch}}
 : ${_parallelism:=16}
+: ${_memory:=8192}
 
 case "${_target_arch}" in
   armv7)
     _machine='--freebsd-src-build/machine=arm/armv7'
     _hypervisor="--${_bricoler_test_task}/hypervisor=qemu"
+    _memory=3072
     : ${_kernconf:=GENERIC}
     ;;
   aarch64)
@@ -84,11 +86,11 @@ fi
 # TODO "broken" testcases cause the command to pass, which is incorrect
 # TODO set option for choosing toolchain, currently hardcoding to llvm21
 #--freebsd-src-build/make_options='WITHOUT_LLDB= WITHOUT_LIB32= WITHOUT_ZFS_TESTS=' \
-#--${_bricoler_test_task}/memory=3072 \
 #--${_bricoler_test_task}/ncpus=2 \
 #${_repo} \
 #--freebsd-src-build/make_targets='installworld installkernel distribution' \
 
+#--freebsd-vm-image/sysctls='debug.kasan.panic_on_violation=0 debug.kmsan.panic_on_violation=0' \
 sh -c "
 ${_bricoler} ${_bricoler_test_task} \
 --freebsd-src-git-checkout/url=${HOME}/f/${_branch} \
@@ -96,6 +98,8 @@ ${_bricoler} ${_bricoler_test_task} \
 --freebsd-src-build/toolchain=${_toolchain} \
 --freebsd-src-build/kernel_config=${_kernconf} \
 --${_bricoler_test_task}/parallelism=${_parallelism} \
+--${_bricoler_test_task}/gdb_on_panic=True \
+--${_bricoler_test_task}/memory=${_memory} \
 ${_machine} \
 ${_clean} \
 ${_klds} \

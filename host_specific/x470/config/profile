@@ -1,13 +1,13 @@
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
+export COLORTERM=truecolor
+export PORTSDIR="$HOME/f/p"
+#export DISTDIR=/var/cache/distfiles
 export CCACHE_DIR="$HOME/.cache/ccache"
 export EDITOR=kak
 export FZF_DEFAULT_COMMAND='fd -t f'
 export LEDGER_FILE="$HOME/s/finances/current.journal"
 export PAGER='less -i'
-export PORTSDIR="$HOME/f/p"
-export DISTDIR="/var/cache/distfiles"
-export PORT_DBDIR="$HOME/.cache/port_dbdir"
 export TIMEWARRIORDB="$HOME/b/timewarrior"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_DIRS=/etc/xdg
